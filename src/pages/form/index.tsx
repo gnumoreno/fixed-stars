@@ -149,9 +149,9 @@ const FixedStarsTable: React.FC<FixedStarsTableProps> = ({ starsArray }) => {
             <th className={Style.th} onClick={() =>setSort("constellation")}>Alt Name</th>
             <th className={Style.th} onClick={() =>setSort("long")}>Long (decimal)</th>
             <th className={Style.th} onClick={() =>setSort("sign")}>Sign</th>
-            <th className={Style.th}>Long (Degree)</th>
-            <th className={Style.th}>Long (Minute)</th>
-            <th className={Style.th}>Long (Second)</th>
+            <th className={Style.th}>Deg</th>
+            <th className={Style.th}>Min</th>
+            <th className={Style.th}>Sec</th>
             <th className={Style.th} onClick={() =>setSort("lat")}>Latitude</th>
             <th className={Style.th} onClick={() =>setSort("speed")}>Speed</th>
             <th className={Style.th} onClick={() =>setSort("house")}>House</th>

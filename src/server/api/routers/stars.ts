@@ -87,7 +87,7 @@ export const starsRouter = createTRPCRouter({
         const fixedStars = [] as majorStar[];
 
         for (const star of majorStars) {
-          const command = `/Users/morenogarciaesilva/swisseph/swetest -b${formatedDate} -pf -fPlbsjR= -xf${star} -head -g,`;
+          const command = `swetest -b${formatedDate} -pf -fPlbsjR= -xf${star} -head -g,`;
           // console.log("comando:", command);
 
           const getStarOutput = execSync(command, {
