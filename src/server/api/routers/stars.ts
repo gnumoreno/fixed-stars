@@ -18,7 +18,7 @@ export const starsRouter = createTRPCRouter({
         date: z.date(),
       })
     )
-    .mutation(async ({ input }) => {
+    .mutation(({ input }) => {
       const home = "/Users/morenogarciaesilva/";
       // console.log(input.date);
       const day = input.date.getDate();
@@ -93,7 +93,7 @@ export const starsRouter = createTRPCRouter({
           const getStarOutput = execSync(command, {
             encoding: "utf-8",
           });
-          let myData = getStarOutput.split(",");
+          const myData = getStarOutput.split(",");
           const long = parseFloat(myData[2]!);
           // console.log("getStarOutput");
           // console.log(getStarOutput);
@@ -125,7 +125,7 @@ export const starsRouter = createTRPCRouter({
       } catch (error) {
         console.log(error);
         return {
-          error: error,
+          error: "Erro",
         };
       }
     }),

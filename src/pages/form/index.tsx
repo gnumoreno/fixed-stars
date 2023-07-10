@@ -29,11 +29,11 @@ const ChartForm: React.FC = () => {
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // console.log(date);
-    testCommand.mutateAsync(
+    testCommand.mutate(
       { date: date },
       {
         onSuccess: (data) => {
-        //   console.log(data);
+          //   console.log(data);
           if (data.output) {
             setFixedStarsData(data.output);
           }
@@ -43,11 +43,11 @@ const ChartForm: React.FC = () => {
     // console.log("submit:", { date: date, time: time, location: location });
 
     return;
-  };
+  }
 
   return (
     <div className={Style.page}>
-      <form onSubmit={handleFormSubmit} className={Style.form}>
+      <form onSubmit={(e) => { handleFormSubmit(e) }} className={Style.form}>
         <h1 className={Style.title}>Fixed Stars</h1>
         <label htmlFor="date">Date:</label>
         <input
@@ -109,7 +109,7 @@ const FixedStarsTable: React.FC<FixedStarsTableProps> = ({ starsArray }) => {
     const output = starsArray;
     return output
       .sort((a, b) => {
-        
+
         if (a[sort] < b[sort]) return -1;
         if (a[sort] > b[sort]) return 1;
         return 0;
@@ -120,7 +120,7 @@ const FixedStarsTable: React.FC<FixedStarsTableProps> = ({ starsArray }) => {
           <td className={Style.td}>{star.constellation}</td>
           <td className={Style.td}>{star.long}</td>
           <td className={Style.td}>{star.sign}</td>
-          <td className={Style.td}>{star.longDegree}° {star.longMinute}' {star.longSecond}"</td>
+          <td className={Style.td}>{star.longDegree}° {star.longMinute}&quot; {star.longSecond}&quot;</td>
           <td className={Style.td}>{star.lat}</td>
           <td className={Style.td}>{star.speed}</td>
           <td className={Style.td}>{star.house}</td>
@@ -130,9 +130,9 @@ const FixedStarsTable: React.FC<FixedStarsTableProps> = ({ starsArray }) => {
       ));
   };
 
-  const limitCharacters = (string:string) => {
-    if(string.length >= 120) {
-        return string.slice(120).concat('...')
+  const limitCharacters = (string: string) => {
+    if (string.length >= 120) {
+      return string.slice(120).concat('...')
     }
 
     return string
@@ -143,16 +143,16 @@ const FixedStarsTable: React.FC<FixedStarsTableProps> = ({ starsArray }) => {
       <table className={Style.table}>
         <thead>
           <tr className={Style.thead}>
-            <th className={Style.th} onClick={() =>setSort("star")}>Star</th>
-            <th className={Style.th} onClick={() =>setSort("constellation")}>Alt Name</th>
-            <th className={Style.th} onClick={() =>setSort("long")}>Long (decimal)</th>
-            <th className={Style.th} onClick={() =>setSort("sign")}>Sign</th>
+            <th className={Style.th} onClick={() => setSort("star")}>Star</th>
+            <th className={Style.th} onClick={() => setSort("constellation")}>Alt Name</th>
+            <th className={Style.th} onClick={() => setSort("long")}>Long (decimal)</th>
+            <th className={Style.th} onClick={() => setSort("sign")}>Sign</th>
             <th className={Style.th}>Long (DMS)</th>
-            <th className={Style.th} onClick={() =>setSort("lat")}>Latitude</th>
-            <th className={Style.th} onClick={() =>setSort("speed")}>Speed</th>
-            <th className={Style.th} onClick={() =>setSort("house")}>House</th>
-            <th className={Style.th} onClick={() =>setSort("distance")}>Distance</th>
-            <th className={Style.th} onClick={() =>setSort("magnitude")}>Magnitude</th>
+            <th className={Style.th} onClick={() => setSort("lat")}>Latitude</th>
+            <th className={Style.th} onClick={() => setSort("speed")}>Speed</th>
+            <th className={Style.th} onClick={() => setSort("house")}>House</th>
+            <th className={Style.th} onClick={() => setSort("distance")}>Distance</th>
+            <th className={Style.th} onClick={() => setSort("magnitude")}>Magnitude</th>
           </tr>
         </thead>
         <tbody>{sortedArray(starsArray)}</tbody>
