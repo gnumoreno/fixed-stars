@@ -160,3 +160,4 @@ const FixedStarsTable: React.FC<FixedStarsTableProps> = ({ starsArray }) => {
     </div>
   );
 };
+// 
