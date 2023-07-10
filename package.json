@@ -7,7 +7,7 @@
     "dev": "next dev",
     "postinstall": "prisma generate",
     "lint": "next lint",
-    "start": "PORT=80 next start"
+    "start": "PORT=8080 next start"
   },
   "dependencies": {
     "@prisma/client": "^4.16.2",
