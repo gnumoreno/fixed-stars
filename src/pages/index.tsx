@@ -120,7 +120,7 @@ const FixedStarsTable: React.FC<FixedStarsTableProps> = ({ starsArray }) => {
           <td className={Style.td}>{star.constellation}</td>
           <td className={Style.td}>{star.long}</td>
           <td className={Style.td}>{star.sign}</td>
-          <td className={Style.td} style={{minWidth: "130px"}}>{star.longDegree}° {star.longMinute}&sbquo; {star.longSecond}&quot;</td>
+          <td className={Style.td} style={{minWidth: "130px"}}>{star.longDegree}° {star.longMinute}&lsquo; {star.longSecond}&quot;</td>
           <td className={Style.td}>{star.lat}</td>
           <td className={Style.td}>{star.speed}</td>
           <td className={Style.td}>{star.house}</td>
