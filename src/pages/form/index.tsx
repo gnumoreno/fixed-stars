@@ -120,9 +120,7 @@ const FixedStarsTable: React.FC<FixedStarsTableProps> = ({ starsArray }) => {
           <td className={Style.td}>{star.constellation}</td>
           <td className={Style.td}>{star.long}</td>
           <td className={Style.td}>{star.sign}</td>
-          <td className={Style.td}>{star.longDegree}</td>
-          <td className={Style.td}>{star.longMinute}</td>
-          <td className={Style.td}>{star.longSecond}</td>
+          <td className={Style.td}>{star.longDegree}° {star.longMinute}' {star.longSecond}"</td>
           <td className={Style.td}>{star.lat}</td>
           <td className={Style.td}>{star.speed}</td>
           <td className={Style.td}>{star.house}</td>
@@ -149,9 +147,7 @@ const FixedStarsTable: React.FC<FixedStarsTableProps> = ({ starsArray }) => {
             <th className={Style.th} onClick={() =>setSort("constellation")}>Alt Name</th>
             <th className={Style.th} onClick={() =>setSort("long")}>Long (decimal)</th>
             <th className={Style.th} onClick={() =>setSort("sign")}>Sign</th>
-            <th className={Style.th}>Deg</th>
-            <th className={Style.th}>Min</th>
-            <th className={Style.th}>Sec</th>
+            <th className={Style.th}>Long (DMS)</th>
             <th className={Style.th} onClick={() =>setSort("lat")}>Latitude</th>
             <th className={Style.th} onClick={() =>setSort("speed")}>Speed</th>
             <th className={Style.th} onClick={() =>setSort("house")}>House</th>
