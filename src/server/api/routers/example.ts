@@ -15,21 +15,6 @@ export const exampleRouter = createTRPCRouter({
     return ctx.prisma.example.findMany();
   }),
 
-  newRequest: publicProcedure.query(({ctx}) => {
-    let test = 'oi'
-    ctx.prisma.$queryRaw`
-      select as
-    `
-
-    return {
-          data: {
-            novoCampo: "QUalquer coisa"
-          },
-          error: null,
-          status: 200
-    }
-  })
-
 
   
 });

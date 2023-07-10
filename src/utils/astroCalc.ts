@@ -25,7 +25,7 @@ export const signFromDec = (long:number) => {
         if (signOver(long) < sign.angle && stop === false) {
             mySign = Signs[idx-1]!
             stop = true
-        };
+        }
     });
     return mySign;
   };
