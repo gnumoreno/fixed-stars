@@ -1,9 +1,9 @@
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
-import { spawn, exec, spawnSync, execSync } from "child_process";
+// import { spawn, exec, spawnSync, execSync } from "child_process";
 import { decToDMS } from "~/utils/astroCalc";
 
-const GO_API_ENDPOINT = "http://18.231.181.140:8000/"
+export const GO_API_ENDPOINT = "http://18.231.181.140:8000"
 
 const majorStars = [
   "Menkar",
@@ -70,142 +70,182 @@ export const starsRouter = createTRPCRouter({
       };
     }),
 
-  getStars: publicProcedure
-    .input(
-      z.object({
-        date: z.date(),
-      })
-    )
-    .mutation(({ input }) => {
-      const home = "/Users/morenogarciaesilva/";
-      // console.log(input.date);
+  // getStars: publicProcedure
+  //   .input(
+  //     z.object({
+  //       date: z.date(),
+  //     })
+  //   )
+  //   .mutation(({ input }) => {
+  //     const home = "/Users/morenogarciaesilva/";
+  //     // console.log(input.date);
+  //     const day = input.date.getDate();
+  //     const month = input.date.getMonth() + 1;
+  //     const year = input.date.getFullYear();
+  //     const formatedDate = `${day}.${month}.${year}`;
+  //     // console.log("Data: ", formatedDate);
+
+  //     const majorStars = [
+  //       "Menkar",
+  //       "BatenKaitos",
+  //       "DenebKaitos",
+  //       "Difda",
+  //       "Scheat",
+  //       "Markab",
+  //       "Algenib",
+  //       "Enif",
+  //       "Hamal",
+  //       "Sheratan",
+  //       "Aldebaran",
+  //       "ElNath",
+  //       "AlHecka",
+  //       "Alcyone",
+  //       "Pollux",
+  //       "Castor",
+  //       "Sirius",
+  //       "Procyon",
+  //       "Praesepe",
+  //       "AsellusAustralis",
+  //       "AsellusBorealis",
+  //       "Betelgeuse",
+  //       "Bellatrix",
+  //       "Rigel",
+  //       "Saiph",
+  //       "Alpheratz",
+  //       "Almach",
+  //       "Mirach",
+  //       "Algol",
+  //       "Mirfak",
+  //       "Capella",
+  //       "Menkalinan",
+  //       "Regulus",
+  //       "Denebola",
+  //       "Zosma",
+  //       "Spica",
+  //       "Vindemiatrix",
+  //       "Algorab",
+  //       "Unukalhai",
+  //       "Toliman",
+  //       "Agena",
+  //       "Zubenelgenubi",
+  //       "Zubeneshamali",
+  //       "Antares",
+  //       "Shaula",
+  //       "Aculeus",
+  //       "Acumen",
+  //       "Alphard",
+  //       "Rasalgethi",
+  //       "Ascella",
+  //       "Facies",
+  //       "Nunki",
+  //       "Vega",
+  //     ];
+
+  //     try {
+  //       const fixedStars = [] as majorStar[];
+
+  //       for (const star of majorStars) {
+  //         const command = `swetest -b${formatedDate} -pf -fPlbsjR= -xf${star} -head -g,`;
+  //         // console.log("comando:", command);
+
+  //         const getStarOutput = execSync(command, {
+  //           encoding: "utf-8",
+  //         });
+  //         const myData = getStarOutput.split(",");
+  //         const long = parseFloat(myData[2]!);
+  //         // console.log("getStarOutput");
+  //         // console.log(getStarOutput);
+  //         const tmp = decToDMS(long);
+  //         const result = {
+  //           star: myData[0],
+  //           constellation: myData[1],
+  //           long: long,
+  //           sign: tmp.sign,
+  //           longDegree: tmp.signDegree,
+  //           longMinute: tmp.signMinute,
+  //           longSecond: tmp.signSecond,
+  //           lat: parseFloat(myData[3]!),
+  //           speed: parseFloat(myData[4]!),
+  //           house: Math.floor(parseFloat(myData[5]!)),
+  //           distance: Number(parseFloat(myData[6]!).toFixed(2)),
+  //           magnitude: parseFloat(myData[7]!.replace("m", "")),
+  //         } as majorStar;
+  //         fixedStars.push(result);
+  //       }
+
+  //       // console.log('rodei')
+
+  //       // console.log('nao crashei')
+  //       // console.log(fixedStars);
+  //       return {
+  //         output: fixedStars,
+  //       };
+  //     } catch (error) {
+  //       console.log(error);
+  //       return {
+  //         error: "Erro",
+  //       };
+  //     }
+  //   }),
+
+  newGetStars: publicProcedure.input(z.object({
+    date: z.date(),
+    time: z.string(),
+  })).mutation(async ({ input }) => {
+    try {
+
       const day = input.date.getDate();
       const month = input.date.getMonth() + 1;
       const year = input.date.getFullYear();
       const formatedDate = `${day}.${month}.${year}`;
-      // console.log("Data: ", formatedDate);
 
-      const majorStars = [
-        "Menkar",
-        "BatenKaitos",
-        "DenebKaitos",
-        "Difda",
-        "Scheat",
-        "Markab",
-        "Algenib",
-        "Enif",
-        "Hamal",
-        "Sheratan",
-        "Aldebaran",
-        "ElNath",
-        "AlHecka",
-        "Alcyone",
-        "Pollux",
-        "Castor",
-        "Sirius",
-        "Procyon",
-        "Praesepe",
-        "AsellusAustralis",
-        "AsellusBorealis",
-        "Betelgeuse",
-        "Bellatrix",
-        "Rigel",
-        "Saiph",
-        "Alpheratz",
-        "Almach",
-        "Mirach",
-        "Algol",
-        "Mirfak",
-        "Capella",
-        "Menkalinan",
-        "Regulus",
-        "Denebola",
-        "Zosma",
-        "Spica",
-        "Vindemiatrix",
-        "Algorab",
-        "Unukalhai",
-        "Toliman",
-        "Agena",
-        "Zubenelgenubi",
-        "Zubeneshamali",
-        "Antares",
-        "Shaula",
-        "Aculeus",
-        "Acumen",
-        "Alphard",
-        "Rasalgethi",
-        "Ascella",
-        "Facies",
-        "Nunki",
-        "Vega",
-      ];
+      const queryURL = `${GO_API_ENDPOINT}/run-star?birthdate=${formatedDate}&utctime=${input.time}&stars=${majorStars.join(',')}`
+      console.log('queryURL', queryURL)
 
-      try {
-        const fixedStars = [] as majorStar[];
+      const starsArrayResponse = await fetch(queryURL, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      })
+      // console.log('afterFetch', starsArrayResponse)
+      const starsArray = await starsArrayResponse.json() as majorStarResponse[]
+      // console.log('afterJson', starsArray)
 
-        for (const star of majorStars) {
-          const command = `swetest -b${formatedDate} -pf -fPlbsjR= -xf${star} -head -g,`;
-          // console.log("comando:", command);
+     const output = starsArray.map(star => {
+        const tmp = decToDMS(parseFloat(star.longitude));
 
-          const getStarOutput = execSync(command, {
-            encoding: "utf-8",
-          });
-          const myData = getStarOutput.split(",");
-          const long = parseFloat(myData[2]!);
-          // console.log("getStarOutput");
-          // console.log(getStarOutput);
-          const tmp = decToDMS(long);
-          const result = {
-            star: myData[0],
-            constellation: myData[1],
-            long: long,
-            sign: tmp.sign,
-            longDegree: tmp.signDegree,
-            longMinute: tmp.signMinute,
-            longSecond: tmp.signSecond,
-            lat: parseFloat(myData[3]!),
-            speed: parseFloat(myData[4]!),
-            house: Math.floor(parseFloat(myData[5]!)),
-            distance: Number(parseFloat(myData[6]!).toFixed(2)),
-            magnitude: parseFloat(myData[7]!.replace("m", "")),
-          } as majorStar;
-          fixedStars.push(result);
+        const result: majorStar = {
+          star: star.starName,
+          constellation: star.altName,
+          long: parseFloat(star.longitude),
+          distance: parseFloat(star.distance),
+          house: parseFloat(star.house),
+          lat: parseFloat(star.latitude),
+          magnitude: parseFloat(star.magnitude),
+          speed: parseFloat(star.speed),
+          sign: tmp.sign,
+          longDegree: tmp.signDegree,
+          longMinute: tmp.signMinute,
+          longSecond: tmp.signSecond,
+
         }
 
-        // console.log('rodei')
+        return result
+      })
 
-        // console.log('nao crashei')
-        // console.log(fixedStars);
-        return {
-          output: fixedStars,
-        };
-      } catch (error) {
-        console.log(error);
-        return {
-          error: "Erro",
-        };
+      return {
+        output: output
       }
-    }),
-
-    // newGetStarts: publicProcedure.input(z.object({
-    //   date: z.date(),
-    //   time: z.string(),
-    // })).mutation(async ({input}) => {
-
-    //   const day = input.date.getDate();
-    //   const month = input.date.getMonth() + 1;
-    //   const year = input.date.getFullYear();
-    //   const formatedDate = `${day}.${month}.${year}`;
-
-    //   const queryURL = `${GO_API_ENDPOINT}/run-star}?birthdate=${formatedDate}&utctime=${input.time}&stars=${majorStars.join(',')}`
-
-    //   const starsArrayResponse = await fetch(queryURL)
-
-    //   const starsArray = await starsArrayResponse.json()
+    } catch (error) {
+      console.log(error)
+      return {
+        error: 'error'
+      }
+    }
 
 
-    // }),
+  }),
 });
 
 export type majorStar = {
@@ -222,3 +262,14 @@ export type majorStar = {
   distance: number;
   magnitude: number;
 };
+
+export type majorStarResponse = {
+  starName: string;
+  longitude: string;
+  latitude: string;
+  house: string;
+  distance: string;
+  speed: string;
+  magnitude: string;
+  altName: string;
+}

@@ -13,13 +13,13 @@ const Signs = [
   { sign: "Pisces", angle: 330 },
 ];
 
-const aspectType = [
-  { name: "conjunction", angle: 0, unicode: "u260C" },
-  { name: "sextile", angle: 60, unicode: "u26B9" },
-  { name: "square", angle: 90, unicode: "u25A1" },
-  { name: "trine", angle: 120, unicode: "u25B3" },
-  { name: "oposition", angle: 180, unicode: "u260D" },
-];
+// const aspectType = [
+//   { name: "conjunction", angle: 0, unicode: "u260C" },
+//   { name: "sextile", angle: 60, unicode: "u26B9" },
+//   { name: "square", angle: 90, unicode: "u25A1" },
+//   { name: "trine", angle: 120, unicode: "u25B3" },
+//   { name: "oposition", angle: 180, unicode: "u260D" },
+// ];
 
 export const signOver = (dec: number) => {
   const cycle = dec % 360;
