@@ -3,6 +3,64 @@ import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { spawn, exec, spawnSync, execSync } from "child_process";
 import { decToDMS } from "~/utils/astroCalc";
 
+const GO_API_ENDPOINT = "http://18.231.181.140:8000/"
+
+const majorStars = [
+  "Menkar",
+  "BatenKaitos",
+  "DenebKaitos",
+  "Difda",
+  "Scheat",
+  "Markab",
+  "Algenib",
+  "Enif",
+  "Hamal",
+  "Sheratan",
+  "Aldebaran",
+  "ElNath",
+  "AlHecka",
+  "Alcyone",
+  "Pollux",
+  "Castor",
+  "Sirius",
+  "Procyon",
+  "Praesepe",
+  "AsellusAustralis",
+  "AsellusBorealis",
+  "Betelgeuse",
+  "Bellatrix",
+  "Rigel",
+  "Saiph",
+  "Alpheratz",
+  "Almach",
+  "Mirach",
+  "Algol",
+  "Mirfak",
+  "Capella",
+  "Menkalinan",
+  "Regulus",
+  "Denebola",
+  "Zosma",
+  "Spica",
+  "Vindemiatrix",
+  "Algorab",
+  "Unukalhai",
+  "Toliman",
+  "Agena",
+  "Zubenelgenubi",
+  "Zubeneshamali",
+  "Antares",
+  "Shaula",
+  "Aculeus",
+  "Acumen",
+  "Alphard",
+  "Rasalgethi",
+  "Ascella",
+  "Facies",
+  "Nunki",
+  "Vega",
+];
+
 export const starsRouter = createTRPCRouter({
   hello: publicProcedure
     .input(z.object({ text: z.string() }))
@@ -129,6 +187,25 @@ export const starsRouter = createTRPCRouter({
         };
       }
     }),
+
+    // newGetStarts: publicProcedure.input(z.object({
+    //   date: z.date(),
+    //   time: z.string(),
+    // })).mutation(async ({input}) => {
+
+    //   const day = input.date.getDate();
+    //   const month = input.date.getMonth() + 1;
+    //   const year = input.date.getFullYear();
+    //   const formatedDate = `${day}.${month}.${year}`;
+
+    //   const queryURL = `${GO_API_ENDPOINT}/run-star}?birthdate=${formatedDate}&utctime=${input.time}&stars=${majorStars.join(',')}`
+
+    //   const starsArrayResponse = await fetch(queryURL)
+
+    //   const starsArray = await starsArrayResponse.json()
+
+
+    // }),
 });
 
 export type majorStar = {
