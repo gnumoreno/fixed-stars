@@ -4,6 +4,7 @@ import { api } from "~/utils/api";
 import Style from "./Index.module.css";
 import Head from "next/head";
 import { type majorStar } from "~/server/api/routers/stars";
+import { Loading } from "~/components/utils/Loading";
 
 const Testpage: NextPage = () => {
   return (
@@ -78,11 +79,18 @@ const ChartForm: React.FC = () => {
         <button type="submit">Calculate</button>
       </form>
 
-      {fixedStarsData ? (
-        <FixedStarsTable starsArray={fixedStarsData} />
-      ) : (
-        <p>You haven&apos;t submit any data</p>
-      )}
+      {
+        testCommand.isLoading
+          ?
+          <Loading />
+          :
+          fixedStarsData
+            ?
+            <FixedStarsTable starsArray={fixedStarsData} />
+            :
+
+            <p>You haven&apos;t submit any data</p>
+      }
     </div>
   );
 };
@@ -116,11 +124,11 @@ const FixedStarsTable: React.FC<FixedStarsTableProps> = ({ starsArray }) => {
       })
       .map((star, index) => (
         <tr className={Style.tr} key={index}>
-          <td className={Style.td} style={{minWidth: "150px", maxWidth:"150px"}} title={star.star}>{limitCharacters(star.star)}</td>
+          <td className={Style.td} style={{ minWidth: "150px", maxWidth: "150px" }} title={star.star}>{limitCharacters(star.star)}</td>
           <td className={Style.td}>{star.constellation}</td>
           <td className={Style.td}>{star.long}</td>
           <td className={Style.td}>{star.sign}</td>
-          <td className={Style.td} style={{minWidth: "130px"}}>{star.longDegree}° {star.longMinute}&lsquo; {star.longSecond}&quot;</td>
+          <td className={Style.td} style={{ minWidth: "130px" }}>{star.longDegree}° {star.longMinute}&lsquo; {star.longSecond}&quot;</td>
           <td className={Style.td}>{star.lat}</td>
           <td className={Style.td}>{star.speed}</td>
           <td className={Style.td}>{star.house}</td>
@@ -143,11 +151,11 @@ const FixedStarsTable: React.FC<FixedStarsTableProps> = ({ starsArray }) => {
       <table className={Style.table}>
         <thead>
           <tr className={Style.thead}>
-            <th className={Style.th} style={{minWidth: "150px", maxWidth:"150px"}} onClick={() => setSort("star")}>Star</th>
+            <th className={Style.th} style={{ minWidth: "150px", maxWidth: "150px" }} onClick={() => setSort("star")}>Star</th>
             <th className={Style.th} onClick={() => setSort("constellation")}>Alt Name</th>
             <th className={Style.th} onClick={() => setSort("long")}>Long (decimal)</th>
             <th className={Style.th} onClick={() => setSort("sign")}>Sign</th>
-            <th className={Style.th} style={{minWidth: "130px"}}>Long (DMS)</th>
+            <th className={Style.th} style={{ minWidth: "130px" }}>Long (DMS)</th>
             <th className={Style.th} onClick={() => setSort("lat")}>Latitude</th>
             <th className={Style.th} onClick={() => setSort("speed")}>Speed</th>
             <th className={Style.th} onClick={() => setSort("house")}>House</th>

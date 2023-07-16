@@ -1,9 +1,10 @@
-import {type NextPage } from "next";
+import { type NextPage } from "next";
 import React, { useState } from "react";
 import { api } from "~/utils/api";
 import Style from "./Index.module.css";
 import Head from "next/head";
-import {type planet } from "~/server/api/routers/planets";
+import { type planet } from "~/server/api/routers/planets";
+import { Loading } from "~/components/utils/Loading";
 
 const Testpage: NextPage = () => {
   return (
@@ -78,11 +79,17 @@ const PlanetsForm: React.FC = () => {
         <button type="submit">Calculate</button>
       </form>
 
-      {planetsData ? (
-        <PlanetsTable planetsArray={planetsData} />
-      ) : (
-        <p>You haven&apos;t submit any data</p>
-      )}
+      {
+        testCommand.isLoading
+          ?
+          <Loading />
+          :
+          planetsData
+            ?
+            <PlanetsTable planetsArray={planetsData} />
+            :
+            <p>You haven&apos;t submit any data</p>
+      }
     </div>
   );
 };
@@ -113,10 +120,10 @@ const PlanetsTable: React.FC<PlanetsTableProps> = ({ planetsArray }) => {
       })
       .map((planet, index) => (
         <tr className={Style.tr} key={index}>
-          <td className={Style.td} style={{minWidth: "150px", maxWidth:"150px"}} title={planet.name}>{limitCharacters(planet.name)}</td>
+          <td className={Style.td} style={{ minWidth: "150px", maxWidth: "150px" }} title={planet.name}>{limitCharacters(planet.name)}</td>
           <td className={Style.td}>{planet.position}</td>
           <td className={Style.td}>{planet.sign}</td>
-          <td className={Style.td} style={{minWidth: "130px"}}>{planet.longDegree}° {planet.longMinute}&lsquo; {planet.longSecond}&quot;</td>
+          <td className={Style.td} style={{ minWidth: "130px" }}>{planet.longDegree}° {planet.longMinute}&lsquo; {planet.longSecond}&quot;</td>
           <td className={Style.td}>{planet.lat}</td>
           <td className={Style.td}>{planet.speed}</td>
           {/* <td className={Style.td}>{star.house}</td> */}
@@ -137,10 +144,10 @@ const PlanetsTable: React.FC<PlanetsTableProps> = ({ planetsArray }) => {
       <table className={Style.table}>
         <thead>
           <tr className={Style.thead}>
-            <th className={Style.th} style={{minWidth: "150px", maxWidth:"150px"}} onClick={() => setSort("name")}>Planet</th>
+            <th className={Style.th} style={{ minWidth: "150px", maxWidth: "150px" }} onClick={() => setSort("name")}>Planet</th>
             <th className={Style.th} onClick={() => setSort("long")}>Long (decimal)</th>
             <th className={Style.th} onClick={() => setSort("sign")}>Sign</th>
-            <th className={Style.th} style={{minWidth: "130px"}}>Long (DMS)</th>
+            <th className={Style.th} style={{ minWidth: "130px" }}>Long (DMS)</th>
             <th className={Style.th} onClick={() => setSort("lat")}>Latitude</th>
             <th className={Style.th} onClick={() => setSort("speed")}>Speed</th>
             {/* <th className={Style.th} onClick={() => setSort("house")}>House</th> */}
