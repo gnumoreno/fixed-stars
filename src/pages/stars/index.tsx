@@ -1,30 +1,30 @@
-import {type NextPage } from "next";
+import { type NextPage } from "next";
 import React, { useState } from "react";
 import { api } from "~/utils/api";
 import Style from "./Index.module.css";
 import Head from "next/head";
-import {type planet } from "~/server/api/routers/planets";
+import { type majorStar } from "~/server/api/routers/stars";
 
 const Testpage: NextPage = () => {
   return (
     <div>
       <Head>
-        <title>Planets</title>
+        <title>Fixed Stars</title>
       </Head>
-      <PlanetsForm></PlanetsForm>
+      <ChartForm></ChartForm>
     </div>
   );
 };
 export default Testpage;
 
-const PlanetsForm: React.FC = () => {
-  const testCommand = api.planets.getPlanets.useMutation();
+const ChartForm: React.FC = () => {
+  const testCommand = api.stars.newGetStars.useMutation();
 
   const [date, setDate] = useState<Date>(new Date());
   const [time, setTime] = useState<string>("00:00");
   // const [location, setLocation] = useState<string>("");
 
-  const [planetsData, setplanetsData] = useState<planet[] | null>(null);
+  const [fixedStarsData, setFixedStarsData] = useState<majorStar[] | null>(null);
 
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,7 +35,7 @@ const PlanetsForm: React.FC = () => {
         onSuccess: (data) => {
           //   console.log(data);
           if (data.output) {
-            setplanetsData(data.output);
+            setFixedStarsData(data.output);
           }
         },
       }
@@ -48,7 +48,7 @@ const PlanetsForm: React.FC = () => {
   return (
     <div className={Style.page}>
       <form onSubmit={(e) => { handleFormSubmit(e) }} className={Style.form}>
-        <h1 className={Style.title}>Planets</h1>
+        <h1 className={Style.title}>Fixed Stars</h1>
         <label htmlFor="date">Date:</label>
         <input
           name="date"
@@ -78,8 +78,8 @@ const PlanetsForm: React.FC = () => {
         <button type="submit">Calculate</button>
       </form>
 
-      {planetsData ? (
-        <PlanetsTable planetsArray={planetsData} />
+      {fixedStarsData ? (
+        <FixedStarsTable starsArray={fixedStarsData} />
       ) : (
         <p>You haven&apos;t submit any data</p>
       )}
@@ -87,23 +87,26 @@ const PlanetsForm: React.FC = () => {
   );
 };
 
-type PlanetsTableProps = {
-  planetsArray: planet[];
+type FixedStarsTableProps = {
+  starsArray: majorStar[];
 };
 
-const PlanetsTable: React.FC<PlanetsTableProps> = ({ planetsArray }) => {
+const FixedStarsTable: React.FC<FixedStarsTableProps> = ({ starsArray }) => {
   type sortOptions =
-    | "name"
+    | "star"
+    | "constellation"
     | "long"
     | "lat"
     | "speed"
-    // | "house"
+    | "house"
+    | "distance"
+    | "magnitude"
     | "sign";
 
   const [sort, setSort] = useState<sortOptions>("long");
 
-  const sortedArray = (planetsArray: planet[]) => {
-    const output = planetsArray;
+  const sortedArray = (starsArray: majorStar[]) => {
+    const output = starsArray;
     return output
       .sort((a, b) => {
 
@@ -111,15 +114,18 @@ const PlanetsTable: React.FC<PlanetsTableProps> = ({ planetsArray }) => {
         if (a[sort] > b[sort]) return 1;
         return 0;
       })
-      .map((planet, index) => (
+      .map((star, index) => (
         <tr className={Style.tr} key={index}>
-          <td className={Style.td} style={{minWidth: "150px", maxWidth:"150px"}} title={planet.name}>{limitCharacters(planet.name)}</td>
-          <td className={Style.td}>{planet.position}</td>
-          <td className={Style.td}>{planet.sign}</td>
-          <td className={Style.td} style={{minWidth: "130px"}}>{planet.longDegree}° {planet.longMinute}&lsquo; {planet.longSecond}&quot;</td>
-          <td className={Style.td}>{planet.lat}</td>
-          <td className={Style.td}>{planet.speed}</td>
-          {/* <td className={Style.td}>{star.house}</td> */}
+          <td className={Style.td} style={{minWidth: "150px", maxWidth:"150px"}} title={star.star}>{limitCharacters(star.star)}</td>
+          <td className={Style.td}>{star.constellation}</td>
+          <td className={Style.td}>{star.long}</td>
+          <td className={Style.td}>{star.sign}</td>
+          <td className={Style.td} style={{minWidth: "130px"}}>{star.longDegree}° {star.longMinute}&lsquo; {star.longSecond}&quot;</td>
+          <td className={Style.td}>{star.lat}</td>
+          <td className={Style.td}>{star.speed}</td>
+          <td className={Style.td}>{star.house}</td>
+          <td className={Style.td}>{star.distance}</td>
+          <td className={Style.td}>{star.magnitude}</td>
         </tr>
       ));
   };
@@ -137,16 +143,19 @@ const PlanetsTable: React.FC<PlanetsTableProps> = ({ planetsArray }) => {
       <table className={Style.table}>
         <thead>
           <tr className={Style.thead}>
-            <th className={Style.th} style={{minWidth: "150px", maxWidth:"150px"}} onClick={() => setSort("name")}>Planet</th>
+            <th className={Style.th} style={{minWidth: "150px", maxWidth:"150px"}} onClick={() => setSort("star")}>Star</th>
+            <th className={Style.th} onClick={() => setSort("constellation")}>Alt Name</th>
             <th className={Style.th} onClick={() => setSort("long")}>Long (decimal)</th>
             <th className={Style.th} onClick={() => setSort("sign")}>Sign</th>
             <th className={Style.th} style={{minWidth: "130px"}}>Long (DMS)</th>
             <th className={Style.th} onClick={() => setSort("lat")}>Latitude</th>
             <th className={Style.th} onClick={() => setSort("speed")}>Speed</th>
-            {/* <th className={Style.th} onClick={() => setSort("house")}>House</th> */}
+            <th className={Style.th} onClick={() => setSort("house")}>House</th>
+            <th className={Style.th} onClick={() => setSort("distance")}>Distance</th>
+            <th className={Style.th} onClick={() => setSort("magnitude")}>Magnitude</th>
           </tr>
         </thead>
-        <tbody>{sortedArray(planetsArray)}</tbody>
+        <tbody>{sortedArray(starsArray)}</tbody>
       </table>
     </div>
   );

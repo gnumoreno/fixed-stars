@@ -1,9 +1,9 @@
-import { NextPage } from "next";
+import { type NextPage } from "next";
 import React, { useState } from "react";
 import { api } from "~/utils/api";
 import Style from "./Index.module.css";
 import Head from "next/head";
-import { planet } from "~/server/api/routers/planets";
+import { type planet } from "~/server/api/routers/planets";
 
 const Testpage: NextPage = () => {
   return (
@@ -21,8 +21,8 @@ const ChartForm: React.FC = () => {
   const testCommand = api.planets.getPlanets.useMutation();
 
   const [date, setDate] = useState<Date>(new Date());
-  const [time, setTime] = useState<string>("00:00");
-  const [location, setLocation] = useState<string>("");
+  // const [time, setTime] = useState<string>("00:00");
+  // const [location, setLocation] = useState<string>("");
 
   const [planetsData, setplanetsData] = useState<planet[] | null>(null);
 
