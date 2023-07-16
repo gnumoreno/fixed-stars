@@ -81,7 +81,7 @@ const ChartForm: React.FC = () => {
       {fixedStarsData ? (
         <FixedStarsTable starsArray={fixedStarsData} />
       ) : (
-        <p>You haven't submit any data</p>
+        <p>You haven&apos;t submit any data</p>
       )}
     </div>
   );
