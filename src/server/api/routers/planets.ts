@@ -30,9 +30,9 @@ export const planetsRouter = createTRPCRouter({
         const year = input.date.getFullYear();
         const formatedDate = `${day}.${month}.${year}`;
         // console.log("Date: ", formatedDate);
-
+        console.log(input.time)
         // Hardcoded values until we have a way to fetch geoposition (using Curitiba) and time input. Also using Placidus in all calculations for now.
-        const formatedTime = "10:15"
+        const formatedTime = input.time
         const long = -49.27305556
         const lat = -25.42777778
         const alt = 935
