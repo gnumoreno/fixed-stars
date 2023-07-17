@@ -34,6 +34,12 @@ const NavButtons: React.FC = () => {
              Planets
             </p>
           </Link>
+          
+          <Link href="/houses" >
+            <p className={Style.button}>
+             Houses
+            </p>
+          </Link>
     </div>
   )
 }

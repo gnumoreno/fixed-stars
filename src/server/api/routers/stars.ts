@@ -4,7 +4,7 @@ import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { decToDMS } from "~/utils/astroCalc";
 
 export const GO_API_ENDPOINT = "http://18.231.181.140:8000"
-
+//shor-version: http://18.231.181.140:8000/run-star?birthdate=1.12.1986&utctime=10:15&stars=Antares,Aldebaran,Algol,Regulus
 const majorStars = [
   "Menkar",
   "BatenKaitos",
