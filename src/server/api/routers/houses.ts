@@ -4,7 +4,7 @@ import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { decToDMS } from "~/utils/astroCalc";
 import { GO_API_ENDPOINT } from "./stars";
 
-export const planetsRouter = createTRPCRouter({
+export const housesRouter = createTRPCRouter({
   hello: publicProcedure
     .input(z.object({ text: z.string() }))
     .query(({ input }) => {
@@ -13,7 +13,7 @@ export const planetsRouter = createTRPCRouter({
       };
     }),
 
-  getPlanets: publicProcedure
+  getHouses: publicProcedure
     .input(
       z.object({
         date: z.date(),
@@ -37,54 +37,61 @@ export const planetsRouter = createTRPCRouter({
         const lat = -25.42777778
         const alt = 935
         const houseSystem = "P"
-        // http://18.231.181.140:8000/run-planets?birthdate=1.12.1986&utctime=10:15&latitude=-25.42777778&longitude=-49.27305556&altitude=935&housesystem=P
+        // http://18.231.181.140:8000/run-houses?birthdate=1.12.1986&utctime=10:15&latitude=-25.42777778&longitude=-49.27305556&altitude=935&housesystem=P
 
-        const queryURL = `${GO_API_ENDPOINT}/run-planets?birthdate=${formatedDate}&utctime=${formatedTime}&latitude=${lat}&longitude=${long}&altitude=${alt}&housesystem=${houseSystem}`
-
-        const planetsArrayResponse = await fetch(queryURL, {
+        const queryURL = `${GO_API_ENDPOINT}/run-houses?birthdate=${formatedDate}&utctime=${formatedTime}&latitude=${lat}&longitude=${long}&altitude=${alt}&housesystem=${houseSystem}`
+        console
+        const housesArrayResponse = await fetch(queryURL, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
           }
         })
 
-        const planetsArray = await planetsArrayResponse.json() as planetAPI[]
+        const housesArray = await housesArrayResponse.json() as houseAPI[]
 
 
-        // Not sure this is needed but I have a feeling it will be.
-        // Not sure this is needed but I have a feeling it will be.
-        // const planets = [
-        //   "Sun",
-        //   "Moon",
-        //   "Mercury",
-        //   "Venus",
-        //   "Mars",
-        //   "Jupiter",
-        //   "Saturn",
-        //   "Uranus",
-        //   "Neptune",
-        //   "Pluto",
-        //   "true Node",
-        // ];
+      // Not sure this is needed but I have a feeling it will be.
+      //   const houses = [
+      //     "house  1"
+      //     "house  2"
+      //     "house  3"
+      //     "house  4"
+      //     "house  5"
+      //     "house  6"
+      //     "house  7"
+      //     "house  8"
+      //     "house  9"
+      //     "house 10"
+      //     "house 11"
+      //     "house 12"
+      //     "Ascendant"
+      //     "MC"
+      //     "ARMC"
+      //     "Vertex"
+      //     "equat. Asc."
+      //     "co-Asc. W.Koch"
+      //     "co-Asc Munkasey"
+      //     "Polar Asc."
+      // ];
 
-        const myPlanets = planetsArray.map((planet) => {
-          const long = parseFloat(planet.longitude);
+
+        const myhouses = housesArray.map((house) => {
+          const long = parseFloat(house.longitude);
           const tmp = decToDMS(long);
           const result = {
-            name: planet.name,
+            name: house.name,
             position: long,
             sign: tmp.sign,
             longDegree: tmp.signDegree,
             longMinute: tmp.signMinute,
             longSecond: tmp.signSecond,
-            lat: parseFloat(planet.latitude),
-            speed: parseFloat(planet.dailySpeed),
-          } as planet;
+          } as house;
           return result
         })
 
         return {
-          output: myPlanets
+          output: myhouses
         }
 
 
@@ -97,20 +104,16 @@ export const planetsRouter = createTRPCRouter({
     }),
 });
 
-export type planet = {
+export type house = {
   name: string;
   position: number;
   sign: string;
   longDegree: number;
   longMinute: number;
   longSecond: number;
-  lat: number;
-  speed: number;
 };
 
-export type planetAPI = {
+export type houseAPI = {
   name: string;
-  latitude: string;
   longitude: string;
-  dailySpeed: string;
 }

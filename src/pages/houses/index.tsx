@@ -3,39 +3,40 @@ import React, { useState } from "react";
 import { api } from "~/utils/api";
 import Style from "./Index.module.css";
 import Head from "next/head";
-import { type planet } from "~/server/api/routers/planets";
+import { type house } from "~/server/api/routers/houses";
+import { Loading } from "~/components/utils/Loading";
 
 const Testpage: NextPage = () => {
   return (
     <div>
       <Head>
-        <title>Planets</title>
+        <title>Houses</title>
       </Head>
-      <ChartForm></ChartForm>
+      <HousesForm></HousesForm>
     </div>
   );
 };
 export default Testpage;
 
-const ChartForm: React.FC = () => {
-  const testCommand = api.planets.getPlanets.useMutation();
+const HousesForm: React.FC = () => {
+  const testCommand = api.houses.getHouses.useMutation();
 
   const [date, setDate] = useState<Date>(new Date());
-  // const [time, setTime] = useState<string>("00:00");
+  const [time, setTime] = useState<string>("00:00");
   // const [location, setLocation] = useState<string>("");
 
-  const [planetsData, setplanetsData] = useState<planet[] | null>(null);
+  const [housesData, setHousesData] = useState<house[] | null>(null);
 
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // console.log(date);
     testCommand.mutate(
-      { date: date },
+      { date: date, time: time },
       {
         onSuccess: (data) => {
           //   console.log(data);
           if (data.output) {
-            setplanetsData(data.output);
+            setHousesData(data.output);
           }
         },
       }
@@ -48,7 +49,7 @@ const ChartForm: React.FC = () => {
   return (
     <div className={Style.page}>
       <form onSubmit={(e) => { handleFormSubmit(e) }} className={Style.form}>
-        <h1 className={Style.title}>Planets</h1>
+        <h1 className={Style.title}>Houses</h1>
         <label htmlFor="date">Date:</label>
         <input
           name="date"
@@ -61,14 +62,14 @@ const ChartForm: React.FC = () => {
             setDate(changeDate)
           }}
         />
-        {/* <label htmlFor="time">Time:</label>
+        <label htmlFor="time">Time:</label>
         <input
           name="time"
           type="time"
           value={time}
           onChange={(e) => setTime(e.currentTarget.value)}
         />
-        <label htmlFor="location">Location:</label>
+        {/* <label htmlFor="location">Location:</label>
         <input
           name="location"
           type="text"
@@ -78,20 +79,26 @@ const ChartForm: React.FC = () => {
         <button type="submit">Calculate</button>
       </form>
 
-      {planetsData ? (
-        <PlanetsTable planetsArray={planetsData} />
-      ) : (
-        <p>You haven&apos;t submit any data</p>
-      )}
+      {
+        testCommand.isLoading
+          ?
+          <Loading />
+          :
+          housesData
+            ?
+            <HousesTable housesArray={housesData} />
+            :
+            <p>You haven&apos;t submit any data</p>
+      }
     </div>
   );
 };
 
-type PlanetsTableProps = {
-  planetsArray: planet[];
+type HousesTableProps = {
+  housesArray: house[];
 };
 
-const PlanetsTable: React.FC<PlanetsTableProps> = ({ planetsArray }) => {
+const HousesTable: React.FC<HousesTableProps> = ({ housesArray }) => {
   type sortOptions =
     | "name"
     | "long"
@@ -102,8 +109,8 @@ const PlanetsTable: React.FC<PlanetsTableProps> = ({ planetsArray }) => {
 
   const [sort, setSort] = useState<sortOptions>("long");
 
-  const sortedArray = (planetsArray: planet[]) => {
-    const output = planetsArray;
+  const sortedArray = (housesArray: house[]) => {
+    const output = housesArray;
     return output
       .sort((a, b) => {
 
@@ -111,15 +118,12 @@ const PlanetsTable: React.FC<PlanetsTableProps> = ({ planetsArray }) => {
         if (a[sort] > b[sort]) return 1;
         return 0;
       })
-      .map((planet, index) => (
+      .map((house, index) => (
         <tr className={Style.tr} key={index}>
-          <td className={Style.td} style={{minWidth: "150px", maxWidth:"150px"}} title={planet.name}>{limitCharacters(planet.name)}</td>
-          <td className={Style.td}>{planet.position}</td>
-          <td className={Style.td}>{planet.sign}</td>
-          <td className={Style.td} style={{minWidth: "130px"}}>{planet.longDegree}° {planet.longMinute}&lsquo; {planet.longSecond}&quot;</td>
-          <td className={Style.td}>{planet.lat}</td>
-          <td className={Style.td}>{planet.speed}</td>
-          {/* <td className={Style.td}>{star.house}</td> */}
+          <td className={Style.td} style={{ minWidth: "150px", maxWidth: "150px" }} title={house.name}>{limitCharacters(house.name)}</td>
+          <td className={Style.td}>{house.position}</td>
+          <td className={Style.td}>{house.sign}</td>
+          <td className={Style.td} style={{ minWidth: "130px" }}>{house.longDegree}° {house.longMinute}&lsquo; {house.longSecond}&quot;</td>
         </tr>
       ));
   };
@@ -137,16 +141,13 @@ const PlanetsTable: React.FC<PlanetsTableProps> = ({ planetsArray }) => {
       <table className={Style.table}>
         <thead>
           <tr className={Style.thead}>
-            <th className={Style.th} style={{minWidth: "150px", maxWidth:"150px"}} onClick={() => setSort("name")}>Planet</th>
+            <th className={Style.th} style={{ minWidth: "150px", maxWidth: "150px" }} onClick={() => setSort("name")}>house</th>
             <th className={Style.th} onClick={() => setSort("long")}>Long (decimal)</th>
             <th className={Style.th} onClick={() => setSort("sign")}>Sign</th>
-            <th className={Style.th} style={{minWidth: "130px"}}>Long (DMS)</th>
-            <th className={Style.th} onClick={() => setSort("lat")}>Latitude</th>
-            <th className={Style.th} onClick={() => setSort("speed")}>Speed</th>
-            {/* <th className={Style.th} onClick={() => setSort("house")}>House</th> */}
+            <th className={Style.th} style={{ minWidth: "130px" }}>Long (DMS)</th>
           </tr>
         </thead>
-        <tbody>{sortedArray(planetsArray)}</tbody>
+        <tbody>{sortedArray(housesArray)}</tbody>
       </table>
     </div>
   );
