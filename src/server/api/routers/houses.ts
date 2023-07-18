@@ -50,7 +50,7 @@ export const housesRouter = createTRPCRouter({
         if (input.inputType === "decimal") {
           longitude = input.long;
           latitude = input.lat;
-        } if (input.inputType === "dms") {
+        } else if (input.inputType === "dms") {
           longitude = dmsToDec(input.dmsLong.degrees, input.dmsLong.minutes, input.dmsLong.seconds);
           latitude = dmsToDec(input.dmsLat.degrees, input.dmsLat.minutes, input.dmsLat.seconds);
         } else {
@@ -99,7 +99,6 @@ export const housesRouter = createTRPCRouter({
 
         const myhouses = housesArray.map((house) => {
           const long = parseFloat(house.longitude);
-          const decimalLongitude = dmsToDec(longitude.degrees, longitude.minutes, longitude.seconds);
           const tmp = decToDMS(long);
           const result = {
             name: house.name,

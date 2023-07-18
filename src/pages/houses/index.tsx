@@ -28,31 +28,30 @@ const HousesForm: React.FC = () => {
 
   const [housesData, setHousesData] = useState<house[] | null>(null);
   const [inputType, setInputType] = useState<"decimal" | "dms">("decimal");
-  const [longDec, setLongitudeDec] = useState<number>();
-  const [latDec, setLatitudeDec] = useState<number>();
-  const [longitude, setLongitude] = useState<{
-    degrees: number;
-    minutes: number;
-    seconds: number;
-  }>({
-    degrees: 0,
-    minutes: 0,
-    seconds: 0,
-  });
-  const [latitude, setLatitude] = useState<{
-    degrees: number;
-    minutes: number;
-    seconds: number;
-  }>({
-    degrees: 0,
-    minutes: 0,
-    seconds: 0,
-  });
+  const [decimalValues, setDecimalValues] = useState<{ long: number | undefined; lat: number | undefined }>({ long: undefined, lat: undefined });
+  const [longitude, setLongitude] = useState<{ degrees: number; minutes: number; seconds: number }>({ degrees: 0, minutes: 0, seconds: 0 });
+  const [latitude, setLatitude] = useState<{ degrees: number; minutes: number; seconds: number }>({ degrees: 0, minutes: 0, seconds: 0 });
 
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     testCommand.mutate(
-      { date: date, time: time, long: longDec, lat: latDec, dmsLong: longitude, dmsLat: latitude, inputType: inputType },
+      {
+        date: date,
+        time: time,
+        long: decimalValues.long || 0,
+        lat: decimalValues.lat || 0,
+        dmsLong: {
+          degrees: longitude.degrees,
+          minutes: longitude.minutes,
+          seconds: longitude.seconds,
+        },
+        dmsLat: {
+          degrees: latitude.degrees,
+          minutes: latitude.minutes,
+          seconds: latitude.seconds,
+        },
+        inputType: inputType,
+      },
       {
         onSuccess: (data) => {
           // console.log(data.output);
@@ -64,88 +63,57 @@ const HousesForm: React.FC = () => {
     );
     return;
   }
+  const handleLongitudeDecChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const longitudeValue = parseFloat(e.currentTarget.value);
+    setDecimalValues((prevValues) => ({ ...prevValues, long: isNaN(longitudeValue) ? undefined : longitudeValue }));
+  };
 
-    // console.log("submit:", { date: date, time: time, location: location });
-    const handleLongitudeDecChange = (
-      e: React.ChangeEvent<HTMLInputElement>
-    ) => {
-      const longitudeValue = parseFloat(e.currentTarget.value);
-      setLongitudeDec(isNaN(longitudeValue) ? 0 : longitudeValue);
-    };
-    
-    const handleLatitudeDecChange = (
-      e: React.ChangeEvent<HTMLInputElement>
-    ) => {
-      const latitudeValue = parseFloat(e.currentTarget.value);
-      setLatitudeDec(isNaN(latitudeValue) ? 0 : latitudeValue);
-    };
+  const handleLatitudeDecChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const latitudeValue = parseFloat(e.currentTarget.value);
+    setDecimalValues((prevValues) => ({ ...prevValues, lat: isNaN(latitudeValue) ? undefined : latitudeValue }));
+  };
 
-    const handleLongitudeDegreesChange = (
-      e: React.ChangeEvent<HTMLInputElement>
-    ) => {
-      const degreesValue = parseFloat(e.currentTarget.value);
-      setLongitude((prevLongitude) => ({
-        ...prevLongitude,
-        degrees: isNaN(degreesValue) ? 0 : degreesValue,
-      }));
-    };
-  
-    const handleLongitudeMinutesChange = (
-      e: React.ChangeEvent<HTMLInputElement>
-    ) => {
-      const minutesValue = parseFloat(e.currentTarget.value);
-      setLongitude((prevLongitude) => ({
-        ...prevLongitude,
-        minutes: isNaN(minutesValue) ? 0 : minutesValue,
-      }));
-    };
-  
-    const handleLongitudeSecondsChange = (
-      e: React.ChangeEvent<HTMLInputElement>
-    ) => {
-      const secondsValue = parseFloat(e.currentTarget.value);
-      setLongitude((prevLongitude) => ({
-        ...prevLongitude,
-        seconds: isNaN(secondsValue) ? 0 : secondsValue,
-      }));
-    };
-  
-    const handleLatitudeDegreesChange = (
-      e: React.ChangeEvent<HTMLInputElement>
-    ) => {
-      const degreesValue = parseFloat(e.currentTarget.value);
-      setLatitude((prevLatitude) => ({
-        ...prevLatitude,
-        degrees: isNaN(degreesValue) ? 0 : degreesValue,
-      }));
-    };
-  
-    const handleLatitudeMinutesChange = (
-      e: React.ChangeEvent<HTMLInputElement>
-    ) => {
-      const minutesValue = parseFloat(e.currentTarget.value);
-      setLatitude((prevLatitude) => ({
-        ...prevLatitude,
-        minutes: isNaN(minutesValue) ? 0 : minutesValue,
-      }));
-    };
-  
-    const handleLatitudeSecondsChange = (
-      e: React.ChangeEvent<HTMLInputElement>
-    ) => {
-      const secondsValue = parseFloat(e.currentTarget.value);
-      setLatitude((prevLatitude) => ({
-        ...prevLatitude,
-        seconds: isNaN(secondsValue) ? 0 : secondsValue,
-      }));
-    };
-  
-    const handleInputTypeChange = (
-      e: React.ChangeEvent<HTMLInputElement>
-    ) => {
-      setInputType(e.target.value as "decimal" | "dms");
-    };
+  const handleLongitudeDegreesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const degreesValue = parseFloat(e.currentTarget.value);
+    setLongitude((prevValues) => ({ ...prevValues, degrees: isNaN(degreesValue) ? 0 : degreesValue }));
+  };
 
+  const handleLongitudeMinutesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const minutesValue = parseFloat(e.currentTarget.value);
+    setLongitude((prevValues) => ({ ...prevValues, minutes: isNaN(minutesValue) ? 0 : minutesValue }));
+  };
+
+  const handleLongitudeSecondsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const secondsValue = parseFloat(e.currentTarget.value);
+    setLongitude((prevValues) => ({ ...prevValues, seconds: isNaN(secondsValue) ? 0 : secondsValue }));
+  };
+
+  const handleLatitudeDegreesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const degreesValue = parseFloat(e.currentTarget.value);
+    setLatitude((prevValues) => ({ ...prevValues, degrees: isNaN(degreesValue) ? 0 : degreesValue }));
+  };
+
+  const handleLatitudeMinutesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const minutesValue = parseFloat(e.currentTarget.value);
+    setLatitude((prevValues) => ({ ...prevValues, minutes: isNaN(minutesValue) ? 0 : minutesValue }));
+  };
+
+  const handleLatitudeSecondsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const secondsValue = parseFloat(e.currentTarget.value);
+    setLatitude((prevValues) => ({ ...prevValues, seconds: isNaN(secondsValue) ? 0 : secondsValue }));
+  };
+
+  const handleInputTypeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const inputType = e.target.value as "decimal" | "dms";
+    setInputType(inputType);
+
+    if (inputType === "decimal") {
+      setLongitude({ degrees: 0, minutes: 0, seconds: 0 });
+      setLatitude({ degrees: 0, minutes: 0, seconds: 0 });
+    } else {
+      setDecimalValues({ long: undefined, lat: undefined });
+    }
+  };
 
   return (
     <div className={Style.page}>
@@ -176,7 +144,7 @@ const HousesForm: React.FC = () => {
             name="longitude"
             type="number"
             step="any"
-            value={longDec}
+            value={decimalValues.long ?? ""}
             min={-180}
             max={180}
             onChange={handleLongitudeDecChange}
@@ -221,7 +189,7 @@ const HousesForm: React.FC = () => {
             name="latitude"
             type="number"
             step="any"
-            value={latDec}
+            value={decimalValues.lat ?? ""}
             min={-90}
             max={90}
             onChange={handleLatitudeDecChange}
@@ -281,7 +249,7 @@ const HousesForm: React.FC = () => {
             />
             Degrees, Minutes, Seconds (DMS)
           </label>
-  </div>
+        </div>
         <button type="submit">Calculate</button>
       </form>
       {
