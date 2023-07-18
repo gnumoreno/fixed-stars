@@ -2,7 +2,9 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 // import { spawn, exec, spawnSync, execSync } from "child_process";
 import { decToDMS } from "~/utils/astroCalc";
+import { dmsToDec } from "~/utils/astroCalc";
 import { GO_API_ENDPOINT } from "./stars";
+import { object } from "prop-types";
 
 export const housesRouter = createTRPCRouter({
   hello: publicProcedure
@@ -14,33 +16,52 @@ export const housesRouter = createTRPCRouter({
     }),
 
   getHouses: publicProcedure
-    .input(
-      z.object({
-        date: z.date(),
-        time: z.string(),
-      })
-    )
+  .input(
+    z.object({
+      date: z.date(),
+      time: z.string(),
+      long: z.number(),
+      lat: z.number(),
+      dmsLong: z.object({
+        degrees: z.number(),
+        minutes: z.number(),
+        seconds: z.number(),
+      }),
+      dmsLat: z.object({
+        degrees: z.number(),
+        minutes: z.number(),
+        seconds: z.number(),
+      }),
+      inputType: z.enum(["decimal", "dms"]),
+    })
+  )
     .mutation(async ({ input }) => {
 
 
       try {
-        console.log(input.date);
         const day = input.date.getDate();
         const month = input.date.getMonth() + 1;
         const year = input.date.getFullYear();
         const formatedDate = `${day}.${month}.${year}`;
-        // console.log("Date: ", formatedDate);
-        console.log(input.time)
-        // Hardcoded values until we have a way to fetch geoposition (using Curitiba) and time input. Also using Placidus in all calculations for now.
-        const formatedTime = input.time
-        const long = -49.27305556
-        const lat = -25.42777778
-        const alt = 935
+        const formatedTime = input.time;
+        let longitude: number;
+        let latitude: number;
+
+        if (input.inputType === "decimal") {
+          longitude = input.long;
+          latitude = input.lat;
+        } if (input.inputType === "dms") {
+          longitude = dmsToDec(input.dmsLong.degrees, input.dmsLong.minutes, input.dmsLong.seconds);
+          latitude = dmsToDec(input.dmsLat.degrees, input.dmsLat.minutes, input.dmsLat.seconds);
+        } else {
+          // Raise an error however the fuck we do this here
+        }
+        const alt = 0
         const houseSystem = "P"
         // http://18.231.181.140:8000/run-houses?birthdate=1.12.1986&utctime=10:15&latitude=-25.42777778&longitude=-49.27305556&altitude=935&housesystem=P
 
-        const queryURL = `${GO_API_ENDPOINT}/run-houses?birthdate=${formatedDate}&utctime=${formatedTime}&latitude=${lat}&longitude=${long}&altitude=${alt}&housesystem=${houseSystem}`
-        console
+        const queryURL = `${GO_API_ENDPOINT}/run-houses?birthdate=${formatedDate}&utctime=${formatedTime}&latitude=${latitude}&longitude=${longitude}&altitude=${alt}&housesystem=${houseSystem}`
+        console.log(queryURL)
         const housesArrayResponse = await fetch(queryURL, {
           method: 'GET',
           headers: {
@@ -78,6 +99,7 @@ export const housesRouter = createTRPCRouter({
 
         const myhouses = housesArray.map((house) => {
           const long = parseFloat(house.longitude);
+          const decimalLongitude = dmsToDec(longitude.degrees, longitude.minutes, longitude.seconds);
           const tmp = decToDMS(long);
           const result = {
             name: house.name,
