@@ -1,11 +1,11 @@
 import { type NextPage } from "next";
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { api } from "~/utils/api";
 import Style from "./Index.module.css";
 import Head from "next/head";
 import { type house } from "~/server/api/routers/houses";
 import { Loading } from "~/components/utils/Loading";
-import { number } from "prop-types";
+import { SVG } from '@svgdotjs/svg.js';
 
 const Testpage: NextPage = () => {
   return (
@@ -31,7 +31,33 @@ const HousesForm: React.FC = () => {
   const [decimalValues, setDecimalValues] = useState<{ long: number | undefined; lat: number | undefined }>({ long: undefined, lat: undefined });
   const [longitude, setLongitude] = useState<{ degrees: number; minutes: number; seconds: number }>({ degrees: 0, minutes: 0, seconds: 0 });
   const [latitude, setLatitude] = useState<{ degrees: number; minutes: number; seconds: number }>({ degrees: 0, minutes: 0, seconds: 0 });
+  const svgContainerRef = useRef<SVGSVGElement>(null);
 
+  useEffect(() => {
+    const createCircle = () => {
+      if (svgContainerRef.current) {
+        const draw = SVG(svgContainerRef.current);
+  
+        const radius = 100;
+        const strokeWidth = 5;
+        const strokeColor = '#000000';
+        const fillColor = 'none';
+  
+        const circle = draw.circle(radius * 2)
+          .center(radius + strokeWidth, radius + strokeWidth)
+          .stroke({ color: strokeColor, width: strokeWidth })
+          .fill(fillColor);
+      }
+    };
+  
+    if (housesData) {
+      createCircle();
+    }
+  }, [housesData]);
+  
+  
+  
+  
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     testCommand.mutate(
@@ -252,6 +278,7 @@ const HousesForm: React.FC = () => {
         </div>
         <button type="submit">Calculate</button>
       </form>
+      <svg id="svg-container" ref={svgContainerRef}></svg>
       {
         testCommand.isLoading
           ?
@@ -323,6 +350,7 @@ const HousesTable: React.FC<HousesTableProps> = ({ housesArray }) => {
         <tbody>{sortedArray(housesArray)}</tbody>
       </table>
     </div>
+    
   );
 };
 // 
