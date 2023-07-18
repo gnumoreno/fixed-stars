@@ -50,13 +50,6 @@ export const decToDMS = (long: number) => {
   };
 };
 
-export const dmsToDec = (degrees: number, minutes: number, seconds: number): number => {
-  const sign = degrees < 0 ? -1 : 1; // Determine the sign of the degrees
-  const positiveDegrees = Math.abs(degrees); // Convert degrees to positive value for calculation
-  const decimal = positiveDegrees + (minutes / 60) + (seconds / 3600);
-  return decimal * sign; // Apply the sign to the calculated decimal value
-};
-
 export const antiscia = (long: number) => {
   return ( 90 - (long - 90 ) ) % 360 ;
 }
