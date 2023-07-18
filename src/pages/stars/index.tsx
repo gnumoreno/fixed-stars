@@ -12,13 +12,13 @@ const Testpage: NextPage = () => {
       <Head>
         <title>Fixed Stars</title>
       </Head>
-      <ChartForm></ChartForm>
+      <StarsTable></StarsTable>
     </div>
   );
 };
 export default Testpage;
 
-const ChartForm: React.FC = () => {
+const StarsTable: React.FC = () => {
   const testCommand = api.stars.newGetStars.useMutation();
 
   const [date, setDate] = useState<Date>(new Date());
@@ -95,11 +95,11 @@ const ChartForm: React.FC = () => {
   );
 };
 
-type FixedStarsTableProps = {
+export type FixedStarsTableProps = {
   starsArray: majorStar[];
 };
 
-const FixedStarsTable: React.FC<FixedStarsTableProps> = ({ starsArray }) => {
+export const FixedStarsTable: React.FC<FixedStarsTableProps> = ({ starsArray }) => {
   type sortOptions =
     | "star"
     | "constellation"

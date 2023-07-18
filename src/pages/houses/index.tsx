@@ -33,27 +33,27 @@ const HousesForm: React.FC = () => {
   const [latitude, setLatitude] = useState<{ degrees: number; minutes: number; seconds: number }>({ degrees: 0, minutes: 0, seconds: 0 });
   const svgContainerRef = useRef<SVGSVGElement>(null);
 
-  useEffect(() => {
-    const createCircle = () => {
-      if (svgContainerRef.current) {
-        const draw = SVG(svgContainerRef.current);
+  // useEffect(() => {
+  //   const createCircle = () => {
+  //     if (svgContainerRef.current) {
+  //       const draw = SVG(svgContainerRef.current);
   
-        const radius = 100;
-        const strokeWidth = 5;
-        const strokeColor = '#000000';
-        const fillColor = 'none';
+  //       const radius = 100;
+  //       const strokeWidth = 5;
+  //       const strokeColor = '#000000';
+  //       const fillColor = 'none';
   
-        const circle = draw.circle(radius * 2)
-          .center(radius + strokeWidth, radius + strokeWidth)
-          .stroke({ color: strokeColor, width: strokeWidth })
-          .fill(fillColor);
-      }
-    };
+  //       const circle = draw.circle(radius * 2)
+  //         .center(radius + strokeWidth, radius + strokeWidth)
+  //         .stroke({ color: strokeColor, width: strokeWidth })
+  //         .fill(fillColor);
+  //     }
+  //   };
   
-    if (housesData) {
-      createCircle();
-    }
-  }, [housesData]);
+  //   if (housesData) {
+  //     createCircle();
+  //   }
+  // }, [housesData]);
   
   
   
@@ -298,7 +298,7 @@ type HousesTableProps = {
   housesArray: house[];
 };
 
-const HousesTable: React.FC<HousesTableProps> = ({ housesArray }) => {
+export const HousesTable: React.FC<HousesTableProps> = ({ housesArray }) => {
   type sortOptions =
     | "name"
     | "long"
