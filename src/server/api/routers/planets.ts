@@ -104,6 +104,7 @@ export type planet = {
   longDegree: number;
   longMinute: number;
   longSecond: number;
+  house: string;
   lat: number;
   speed: number;
 };
