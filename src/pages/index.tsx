@@ -12,10 +12,11 @@ import { FixedStarsTable } from "./stars";
 import { PlanetsTable } from "./planets";
 import { HousesTable } from "./houses";
 import { Loading } from "~/components/utils/Loading";
+import { ChartSVG } from "~/components/astroChart/DrawChart";
 
 const Testpage: NextPage = () => {
   return (
-    <div>
+    <div className={Style.pageContainer2}>
       <Head>
         <title>Fixed Stars</title>
       </Head>
@@ -75,6 +76,7 @@ const NavButtons: React.FC = () => {
         },
       }
     );
+    setRefreshChart((prev) => !prev);
     return;
   }
   const handleLongitudeDecChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -132,6 +134,8 @@ const NavButtons: React.FC = () => {
 
 
   const [selectedCalc, setSelectedCalc] = useState<"houses" | "planets" | "stars">("houses");
+
+  const [refreshChart, setRefreshChart] = useState<boolean>(false);
 
   return (
     <div className={Style.pageContainer}>
@@ -274,6 +278,10 @@ const NavButtons: React.FC = () => {
             !testCommand.data && <p>You haven&apos;t submit any data</p>
           }
         </form>
+        {
+          testCommand.data && <ChartSVG refresh={refreshChart} />
+        }
+
 
       </div>
 
@@ -312,22 +320,22 @@ const NavButtons: React.FC = () => {
 
         {
           testCommand.isLoading
-          ?
-          <Loading />
-          :
-          selectedCalc === "houses" && housesData
-          ?
-          <HousesTable housesArray={housesData} />
-          :
-          selectedCalc === "planets" && planetsData
-          ?
-          <PlanetsTable planetsArray={planetsData} />
-          :
-          selectedCalc === "stars" && starsData
-          ?
-          <FixedStarsTable starsArray={starsData} />
-          :
-          null
+            ?
+            <Loading />
+            :
+            selectedCalc === "houses" && housesData
+              ?
+              <HousesTable housesArray={housesData} />
+              :
+              selectedCalc === "planets" && planetsData
+                ?
+                <PlanetsTable planetsArray={planetsData} />
+                :
+                selectedCalc === "stars" && starsData
+                  ?
+                  <FixedStarsTable starsArray={starsData} />
+                  :
+                  null
         }
 
       </div>

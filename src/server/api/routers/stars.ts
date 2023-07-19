@@ -218,7 +218,7 @@ export const starsRouter = createTRPCRouter({
         const result: majorStar = {
           star: star.starName,
           constellation: star.altName,
-          long: parseFloat(star.longitude),
+          position: parseFloat(star.longitude),
           distance: parseFloat(star.distance),
           house: parseFloat(star.house),
           lat: parseFloat(star.latitude),
@@ -251,7 +251,7 @@ export const starsRouter = createTRPCRouter({
 export type majorStar = {
   star: string;
   constellation: string;
-  long: number;
+  position: number;
   sign: string;
   longDegree: number;
   longMinute: number;

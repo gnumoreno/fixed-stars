@@ -63,6 +63,7 @@
   .th {
     background-color: #f2f2f2;
     font-weight: bold;
+    cursor: pointer;
   }
   
   /* CSS for table rows */

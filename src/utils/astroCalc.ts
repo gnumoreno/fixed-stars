@@ -1,3 +1,7 @@
+import { house } from "~/server/api/routers/houses";
+import { planet } from "~/server/api/routers/planets";
+import { majorStar } from "~/server/api/routers/stars";
+
 const Signs = [
   { sign: "Aries", angle: 0 },
   { sign: "Taurus", angle: 30 },
@@ -37,6 +41,35 @@ export const signFromDec = (long: number) => {
   return mySign;
 };
 
+
+
+export const houseFromDec = (houses: house[], element: number) => {
+  console.log('func houses', houses.length)
+  console.log('element', element)
+  const onlyHouses = houses.filter(house => house.name.includes("house")).sort((a, b) => a.position - b.position);
+  // console.log('Planet Long: ', element)
+  // console.log(onlyHouses)
+  let stop = false;
+  let myHouse = onlyHouses[onlyHouses.length - 1];
+  console.log('func myHouse', myHouse.name)
+  // console.log('for each')
+  onlyHouses.forEach((house, idx) => {
+    if (element < house.position && stop === false) {
+      if(idx === 0) {
+        return;
+      }
+      console.log('Selected idx', idx)
+      myHouse = onlyHouses[idx - 1]!;
+      stop = true;
+    }
+  })
+  // console.log('end for each')
+  console.log('==========================================')
+  console.log('func house name', myHouse)
+  return myHouse.name.split(" ").pop();
+
+}
+
 export const decToDMS = (long: number) => {
   const mySign = signFromDec(long);
   const signDegree = long - mySign.angle;
@@ -58,9 +91,9 @@ export const dmsToDec = (degrees: number, minutes: number, seconds: number): num
 };
 
 export const antiscia = (long: number) => {
-  return ( 90 - (long - 90 ) ) % 360 ;
+  return (90 - (long - 90)) % 360;
 }
 
 export const contraantiscia = (antiscia: number) => {
-  return ( antiscia + 180) % 360 ;
+  return (antiscia + 180) % 360;
 }

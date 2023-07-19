@@ -103,7 +103,7 @@ export const FixedStarsTable: React.FC<FixedStarsTableProps> = ({ starsArray }) 
   type sortOptions =
     | "star"
     | "constellation"
-    | "long"
+    | "position"
     | "lat"
     | "speed"
     | "house"
@@ -111,7 +111,7 @@ export const FixedStarsTable: React.FC<FixedStarsTableProps> = ({ starsArray }) 
     | "magnitude"
     | "sign";
 
-  const [sort, setSort] = useState<sortOptions>("long");
+  const [sort, setSort] = useState<sortOptions>("position");
 
   const sortedArray = (starsArray: majorStar[]) => {
     const output = starsArray;
@@ -126,12 +126,12 @@ export const FixedStarsTable: React.FC<FixedStarsTableProps> = ({ starsArray }) 
         <tr className={Style.tr} key={index}>
           <td className={Style.td} style={{ minWidth: "150px", maxWidth: "150px" }} title={star.star}>{limitCharacters(star.star)}</td>
           <td className={Style.td}>{star.constellation}</td>
-          <td className={Style.td}>{star.long}</td>
+          <td className={Style.td}>{star.position}</td>
           <td className={Style.td}>{star.sign}</td>
           <td className={Style.td} style={{ minWidth: "130px" }}>{star.longDegree}° {star.longMinute}&lsquo; {star.longSecond}&quot;</td>
+          <td className={Style.td}>{star.house}</td>
           <td className={Style.td}>{star.lat}</td>
           <td className={Style.td}>{star.speed}</td>
-          <td className={Style.td}>{star.house}</td>
           <td className={Style.td}>{star.distance}</td>
           <td className={Style.td}>{star.magnitude}</td>
         </tr>
@@ -153,12 +153,12 @@ export const FixedStarsTable: React.FC<FixedStarsTableProps> = ({ starsArray }) 
           <tr className={Style.thead}>
             <th className={Style.th} style={{ minWidth: "150px", maxWidth: "150px" }} onClick={() => setSort("star")}>Star</th>
             <th className={Style.th} onClick={() => setSort("constellation")}>Alt Name</th>
-            <th className={Style.th} onClick={() => setSort("long")}>Long (decimal)</th>
+            <th className={Style.th} onClick={() => setSort("position")}>Long (decimal)</th>
             <th className={Style.th} onClick={() => setSort("sign")}>Sign</th>
             <th className={Style.th} style={{ minWidth: "130px" }}>Long (DMS)</th>
+            <th className={Style.th} onClick={() => setSort("house")}>House</th>
             <th className={Style.th} onClick={() => setSort("lat")}>Latitude</th>
             <th className={Style.th} onClick={() => setSort("speed")}>Speed</th>
-            <th className={Style.th} onClick={() => setSort("house")}>House</th>
             <th className={Style.th} onClick={() => setSort("distance")}>Distance</th>
             <th className={Style.th} onClick={() => setSort("magnitude")}>Magnitude</th>
           </tr>

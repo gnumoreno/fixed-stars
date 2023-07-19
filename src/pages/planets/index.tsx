@@ -104,7 +104,7 @@ export const PlanetsTable: React.FC<PlanetsTableProps> = ({ planetsArray }) => {
     | "long"
     | "lat"
     | "speed"
-    // | "house"
+    | "house"
     | "sign";
 
   const [sort, setSort] = useState<sortOptions>("long");
@@ -126,7 +126,7 @@ export const PlanetsTable: React.FC<PlanetsTableProps> = ({ planetsArray }) => {
           <td className={Style.td} style={{ minWidth: "130px" }}>{planet.longDegree}° {planet.longMinute}&lsquo; {planet.longSecond}&quot;</td>
           <td className={Style.td}>{planet.lat}</td>
           <td className={Style.td}>{planet.speed}</td>
-          {/* <td className={Style.td}>{star.house}</td> */}
+          <td className={Style.td}>{planet.house}</td>
         </tr>
       ));
   };
@@ -150,7 +150,7 @@ export const PlanetsTable: React.FC<PlanetsTableProps> = ({ planetsArray }) => {
             <th className={Style.th} style={{ minWidth: "130px" }}>Long (DMS)</th>
             <th className={Style.th} onClick={() => setSort("lat")}>Latitude</th>
             <th className={Style.th} onClick={() => setSort("speed")}>Speed</th>
-            {/* <th className={Style.th} onClick={() => setSort("house")}>House</th> */}
+            <th className={Style.th} onClick={() => setSort("house")}>House</th>
           </tr>
         </thead>
         <tbody>{sortedArray(planetsArray)}</tbody>
