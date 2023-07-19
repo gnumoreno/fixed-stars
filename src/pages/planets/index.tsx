@@ -94,11 +94,11 @@ const PlanetsForm: React.FC = () => {
   );
 };
 
-type PlanetsTableProps = {
+export type PlanetsTableProps = {
   planetsArray: planet[];
 };
 
-const PlanetsTable: React.FC<PlanetsTableProps> = ({ planetsArray }) => {
+export const PlanetsTable: React.FC<PlanetsTableProps> = ({ planetsArray }) => {
   type sortOptions =
     | "name"
     | "long"
