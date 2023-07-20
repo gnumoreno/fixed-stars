@@ -50,9 +50,7 @@ export const chartRouter = createTRPCRouter({
             const houseSystem = "P"
 
             // houses
-            console.log('Start houses')
             const housesURL = `${GO_API_ENDPOINT}/run-houses?birthdate=${formatedDate}&utctime=${formatedTime}&latitude=${latitude}&longitude=${longitude}&altitude=${alt}&housesystem=${houseSystem}`
-            // console.log(housesURL)
             const housesArrayResponse = await fetch(housesURL, {
                 method: 'GET',
                 headers: {
@@ -62,27 +60,25 @@ export const chartRouter = createTRPCRouter({
 
             const housesArray = await housesArrayResponse.json() as houseAPI[]
 
-            const myhouses = housesArray.map((house) => {
-                const long = parseFloat(house.longitude);
-                const tmp = decToDMS(long);
-                const result = {
-                    name: house.name,
-                    position: long,
-                    sign: tmp.sign,
-                    longDegree: tmp.signDegree,
-                    longMinute: tmp.signMinute,
-                    longSecond: tmp.signSecond,
-                } as house;
-                return result
-            })
+                const myhouses = housesArray.map((house) => {
+                    const long = parseFloat(house.longitude);
+                    const tmp = decToDMS(long);
+                    const result = {
+                        name: house.name,
+                        position: long,
+                        sign: tmp.sign,
+                        longDegree: tmp.signDegree,
+                        longMinute: tmp.signMinute,
+                        longSecond: tmp.signSecond,
+                    } as house;
+                    return result
+                })
 
 
             // get Stars
-            console.log('Start stars')
 
 
             const starsURL = `${GO_API_ENDPOINT}/run-star?birthdate=${formatedDate}&utctime=${input.time}&stars=${majorStars.join(',')}`
-            console.log('starsURL', starsURL)
 
             const starsArrayResponse = await fetch(starsURL, {
                 method: 'GET',
@@ -97,8 +93,6 @@ export const chartRouter = createTRPCRouter({
                 const tmp = decToDMS(parseFloat(star.longitude));
                 // const long = parseFloat(star.longitude);
                 const longitude = parseFloat(star.longitude);
-                console.log('req houses', myhouses.length);
-                console.log('req longitude', longitude);
                 const starHouse = houseFromDec(myhouses, longitude);
                 const result: majorStar = {
                     star: star.starName,
@@ -122,8 +116,6 @@ export const chartRouter = createTRPCRouter({
 
 
             // get Planets
-            console.log('Start planets')
-
             const planetsURL = `${GO_API_ENDPOINT}/run-planets?birthdate=${formatedDate}&utctime=${formatedTime}&latitude=${latitude}&longitude=${longitude}&altitude=${alt}&housesystem=${houseSystem}`
 
             const planetsArrayResponse = await fetch(planetsURL, {
@@ -138,7 +130,6 @@ export const chartRouter = createTRPCRouter({
             const myPlanets = planetsArray.map((planet) => {
                 const long = parseFloat(planet.longitude);
                 const tmp = decToDMS(long);
-                console.log(myhouses.length)
                 const house = houseFromDec(myhouses, long)
                 const result = {
                     name: planet.name,
@@ -153,7 +144,6 @@ export const chartRouter = createTRPCRouter({
                 } as planet;
                 return result
             })
-            console.log('end planets')
             // end Planets
 
 

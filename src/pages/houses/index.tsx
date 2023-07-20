@@ -1,11 +1,10 @@
 import { type NextPage } from "next";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
 import { api } from "~/utils/api";
 import Style from "./Index.module.css";
 import Head from "next/head";
 import { type house } from "~/server/api/routers/houses";
 import { Loading } from "~/components/utils/Loading";
-import { SVG } from '@svgdotjs/svg.js';
 
 const Testpage: NextPage = () => {
   return (

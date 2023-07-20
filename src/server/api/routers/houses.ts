@@ -4,7 +4,6 @@ import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { decToDMS } from "~/utils/astroCalc";
 import { dmsToDec } from "~/utils/astroCalc";
 import { GO_API_ENDPOINT } from "./stars";
-import { object } from "prop-types";
 
 export const housesRouter = createTRPCRouter({
   hello: publicProcedure
