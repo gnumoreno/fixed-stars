@@ -1,3 +1,4 @@
+import { Sign } from "crypto";
 import { house } from "~/server/api/routers/houses";
 import { planet } from "~/server/api/routers/planets";
 import { majorStar } from "~/server/api/routers/stars";
@@ -44,30 +45,42 @@ export const signFromDec = (long: number) => {
 
 
 export const houseFromDec = (houses: house[], element: number) => {
-  console.log('func houses', houses.length)
-  console.log('element', element)
   const onlyHouses = houses.filter(house => house.name.includes("house")).sort((a, b) => a.position - b.position);
-  // console.log('Planet Long: ', element)
-  // console.log(onlyHouses)
   let stop = false;
   let myHouse = onlyHouses[onlyHouses.length - 1];
-  console.log('func myHouse', myHouse.name)
-  // console.log('for each')
   onlyHouses.forEach((house, idx) => {
     if (element < house.position && stop === false) {
       if(idx === 0) {
         return;
       }
-      console.log('Selected idx', idx)
       myHouse = onlyHouses[idx - 1]!;
       stop = true;
     }
   })
-  // console.log('end for each')
-  console.log('==========================================')
-  console.log('func house name', myHouse)
   return myHouse.name.split(" ").pop();
 
+}
+
+const calculateModulo360becauseJSisStupid = (value: number) => {
+  const result = value % 360;
+  return result >= 0 ? result : result + 360;
+};
+
+export const housePositions = (houses: house[]) => {  
+  const ascendant = houses.find((house) => house.name === "house  1");
+  const ascendantPos = ascendant ? ascendant.position : null;
+  const onlyHouses = houses.filter(house => house.name.includes("house"));
+  const drawHousePositions = onlyHouses.map((house) => calculateModulo360becauseJSisStupid(house.position - ascendantPos)).sort((a, b) => a - b);
+  // console.log("house positions:", ascendant, ascendantPos, onlyHouses, drawHousePositions)
+  return drawHousePositions;
+}
+
+export const signPositions = (houses: house[]) => {  
+  const ascendant = houses.find((house) => house.name === "house  1");
+  const ascendantPos = ascendant ? ascendant.position : null;
+  const drawSignPositions = Signs.map((sign) => calculateModulo360becauseJSisStupid(sign.angle - ascendantPos)).sort((a, b) => a - b);
+  // console.log("sign positions:", ascendant, ascendantPos, drawSignPositions)
+  return drawSignPositions;
 }
 
 export const decToDMS = (long: number) => {
