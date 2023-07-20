@@ -1,7 +1,4 @@
-import { Sign } from "crypto";
-import { house } from "~/server/api/routers/houses";
-import { planet } from "~/server/api/routers/planets";
-import { majorStar } from "~/server/api/routers/stars";
+import { type house } from "~/server/api/routers/houses";
 
 const Signs = [
   { sign: "Aries", angle: 0 },

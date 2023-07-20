@@ -4,10 +4,8 @@ import { api } from "~/utils/api";
 import Style from "./Index.module.css";
 import Head from "next/head";
 import { type majorStar } from "~/server/api/routers/stars";
-import { useRouter } from "next/router";
-import Link from "next/link";
-import { house } from "~/server/api/routers/houses";
-import { planet } from "~/server/api/routers/planets";
+import { type house } from "~/server/api/routers/houses";
+import { type planet } from "~/server/api/routers/planets";
 import { FixedStarsTable } from "./stars";
 import { PlanetsTable } from "./planets";
 import { HousesTable } from "./houses";
@@ -76,7 +74,6 @@ const NavButtons: React.FC = () => {
         },
       }
     );
-    setRefreshChart((prev) => !prev);
     return;
   }
   const handleLongitudeDecChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -135,7 +132,6 @@ const NavButtons: React.FC = () => {
 
   const [selectedCalc, setSelectedCalc] = useState<"houses" | "planets" | "stars">("houses");
 
-  const [refreshChart, setRefreshChart] = useState<boolean>(false);
 
   return (
     <div className={Style.pageContainer}>
@@ -279,7 +275,6 @@ const NavButtons: React.FC = () => {
           }
         </form>
         {testCommand.data && <ChartSVG
-          refresh={refreshChart}
           housesData={housesData}
           planetsData={planetsData}
           starsData={starsData}
