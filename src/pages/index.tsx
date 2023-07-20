@@ -278,9 +278,12 @@ const NavButtons: React.FC = () => {
             !testCommand.data && <p>You haven&apos;t submit any data</p>
           }
         </form>
-        {
-          testCommand.data && <ChartSVG refresh={refreshChart} />
-        }
+        {testCommand.data && <ChartSVG
+          refresh={refreshChart}
+          housesData={housesData}
+          planetsData={planetsData}
+          starsData={starsData}
+        />}
 
 
       </div>
