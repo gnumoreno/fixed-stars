@@ -75,7 +75,8 @@ export const housePositions = (houses: house[]) => {
 export const signPositions = (houses: house[]) => {  
   const ascendant = houses.find((house) => house.name === "house  1");
   const ascendantPos = ascendant ? ascendant.position : null;
-  const drawSignPositions = Signs.map((sign) => calculateModulo360becauseJSisStupid(sign.angle - ascendantPos)).sort((a, b) => a - b);
+  const drawSignPositions = Signs.map((sign) => calculateModulo360becauseJSisStupid(sign.angle - ascendantPos));
+  // const drawSignPositions = Signs.map((sign) => calculateModulo360becauseJSisStupid(sign.angle - ascendantPos)).sort((a, b) => a - b);
   // console.log("sign positions:", ascendant, ascendantPos, drawSignPositions)
   return drawSignPositions;
 }
