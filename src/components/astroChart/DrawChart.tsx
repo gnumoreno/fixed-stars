@@ -17,14 +17,15 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
 
     const svgContainerRef = useRef<SVGSVGElement>(null);
 
-    const centerX = 300;
-    const centerY = 300;
+    const centerX = 400;
+    const centerY = 400;
     const radius = 300;
     const percentages = [10, 60, 80, 84, 88, 92, 100];
     const startAngles = [355, 85, 175, 265];
+    const signSymbols = ['\u2648', '\u2649', '\u264A', '\u264B','\u264C','\u264D','\u264E','\u264F','\u2650','\u2651','\u2652','\u2653']
     const houseAngles = housePositions(housesData);
     const signAngles = signPositions(housesData);
-    // console.log("Angles (H, S)", houseAngles, signAngles)
+    console.log("Angles (H, S)", houseAngles, signAngles)
 
 
 
@@ -48,25 +49,24 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
     const createCircleTextPaths = (draw: Svg, centerX: number, centerY: number, radius: number, percentages: number[], startAngles: number[]) => {
         const textPaths: Path[] = [];
 
-        for (let i = 0; i < percentages.length; i++) {
-            const circleRadius = (percentages[i] / 100) * radius;
+        const circleRadius = ((percentages[5] / 100) * radius +7);
 
-            for (let j = 0; j < startAngles.length; j++) {
-                const startAngle = (startAngles[j] + 180)
-                const startAngleRad = (startAngle + 360 / startAngles.length * i) * Math.PI / 180;
+        for (let j = 0; j < signAngles.length; j++) {
+            const startAngle = ((signAngles[j] + 180) * -1) -16
+            const startAngleRad = (startAngle + 360 / startAngles.length * circleRadius) * Math.PI / 180;
 
-                // Calculate the starting and ending coordinates of the arc
-                const startX = centerX + Math.cos(startAngleRad) * circleRadius;
-                const startY = centerY + Math.sin(startAngleRad) * circleRadius;
-                const endX = centerX + Math.cos(startAngleRad + Math.PI) * circleRadius;
-                const endY = centerY + Math.sin(startAngleRad + Math.PI) * circleRadius;
+            // Calculate the starting and ending coordinates of the arc
+            const startX = centerX + Math.cos(startAngleRad) * circleRadius;
+            const startY = centerY + Math.sin(startAngleRad) * circleRadius;
+            const endX = centerX + Math.cos(startAngleRad + Math.PI) * circleRadius;
+            const endY = centerY + Math.sin(startAngleRad + Math.PI) * circleRadius;
 
-                const textPath = draw.path(`M ${startX},${startY} A ${circleRadius},${circleRadius} 0 0,1 ${endX},${endY}`)
-                    .attr({ fill: 'none', stroke: 'none' });
+            const textPath = draw.path(`M ${startX},${startY} A ${circleRadius},${circleRadius} 0 0,1 ${endX},${endY}`)
+                .attr({ fill: 'none', stroke: 'none' });
 
-                textPaths.push(textPath);
-            }
+            textPaths.push(textPath);
         }
+
 
         return textPaths;
     };
@@ -115,7 +115,7 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
 
     const createTextsonPath = (draw: Svg, textPaths: Path[]) => {
         for (let i = 0; i < textPaths.length; i++) {
-            const text = draw.text(`h${i}`)
+            const text = draw.text(`${signSymbols[i]}`)
                 .font({ size: 12 })
                 .fill('#000000');
 
@@ -129,9 +129,9 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
             console.log("drawRef is null", drawRef)
             return;
         }
-        createCircle(drawRef, percentages);
         houseLines(drawRef);
         signLines(drawRef);
+        createCircle(drawRef, percentages);
         createTextsonPath(drawRef, createCircleTextPaths(drawRef, centerX, centerY, radius, percentages, startAngles));
     }
 
