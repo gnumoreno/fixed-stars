@@ -1,10 +1,11 @@
 import {type Path, SVG,type Svg } from "@svgdotjs/svg.js";
 import { useEffect, useRef } from "react";
 import Style from './DrawChart.module.css'
-import { housePositions, signPositions } from "~/utils/astroCalc";
+import { housePositions, signPositions, planetPositions } from "~/utils/astroCalc";
 import { type house } from "~/server/api/routers/houses";
 import { type planet } from "~/server/api/routers/planets";
 import { type majorStar } from "~/server/api/routers/stars";
+import { Signs } from "~/utils/astroCalc";
 
 
 type ChartSVGProps = {
@@ -22,9 +23,10 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
     const radius = 300;
     const percentages = [60, 80, 84, 88, 92, 100];
     const startAngles = [355, 85, 175, 265];
-    const signSymbols = ['\u2648','\u2649','\u264A','\u264B','\u264C','\u264D',
-                         '\u264E','\u264F','\u2650','\u2651','\u2652','\u2653'];
+    const signSymbols = Signs.map((sign) => sign.unicode);
+    const planetSymbols = planetsData.map((planet) => planet.unicode);
     const houseAngles = housePositions(housesData);
+    const planetAngles = planetPositions(planetsData, housesData);
     const signAngles = signPositions(housesData);
 
 
@@ -88,7 +90,7 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
         }
     };
 
-    const createCircleTextPaths = (draw: Svg, centerX: number, centerY: number, radius: number, percentages: number[], startAngles: number[]) => {
+    const createSignCircleTextPaths = (draw: Svg, centerX: number, centerY: number, radius: number, percentages: number[], startAngles: number[]) => {
         const textPaths: Path[] = [];
 
         const circleRadius = (((percentages[4] + 2) / 100) * radius );
@@ -109,14 +111,47 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
             textPaths.push(textPath);
         }
 
-
         return textPaths;
     };
 
-    const createTextsonPath = (draw: Svg, textPaths: Path[]) => {
+    const createSignTextsonPath = (draw: Svg, textPaths: Path[]) => {
         for (let i = 0; i < textPaths.length; i++) {
             const text = draw.text(`${signSymbols[i]}`)
                 .font({ size: 12 })
+                .fill('#000000');
+
+            // Position the text along the textPath
+            text.path(textPaths[i]);
+        }
+    };
+
+    const createPlanetCircleTextPaths = (draw: Svg, centerX: number, centerY: number, radius: number, percentages: number[], startAngles: number[]) => {
+        const textPaths: Path[] = [];
+
+        const circleRadius = (((percentages[2] - 10) / 100) * radius);
+
+        for (let j = 0; j < planetAngles.length; j++) {
+            const startAngle = (planetAngles[j] * -1)
+            const startAngleRad = (startAngle + 360 / startAngles.length * circleRadius) * Math.PI / 180;
+
+            // Calculate the starting and ending coordinates of the arc
+            const startX = centerX + Math.cos(startAngleRad) * circleRadius;
+            const startY = centerY + Math.sin(startAngleRad) * circleRadius;
+            const endX = centerX + Math.cos(startAngleRad + Math.PI) * circleRadius;
+            const endY = centerY + Math.sin(startAngleRad + Math.PI) * circleRadius;
+
+            const textPath = draw.path(`M ${startX},${startY} A ${circleRadius},${circleRadius} 0 0,1 ${endX},${endY}`)
+                .attr({ fill: 'none', stroke: 'none' });
+
+            textPaths.push(textPath);
+        }
+            return textPaths;
+    };
+
+    const createPlanetTextsonPath = (draw: Svg, textPaths: Path[]) => {
+        for (let i = 0; i < textPaths.length; i++) {
+            const text = draw.text(`${planetSymbols[i]}`)
+                .font({ size: 20 })
                 .fill('#000000');
 
             // Position the text along the textPath
@@ -132,7 +167,8 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
         houseLines(drawRef);
         signLines(drawRef);
         createCircle(drawRef, percentages);
-        createTextsonPath(drawRef, createCircleTextPaths(drawRef, centerX, centerY, radius, percentages, startAngles));
+        createSignTextsonPath(drawRef, createSignCircleTextPaths(drawRef, centerX, centerY, radius, percentages, startAngles));
+        createPlanetTextsonPath(drawRef, createPlanetCircleTextPaths(drawRef, centerX, centerY, radius, percentages, startAngles));
     }
 
     useEffect(() => {

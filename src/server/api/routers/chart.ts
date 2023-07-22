@@ -3,8 +3,9 @@ import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { getErrorMessage } from "~/utils/error";
 import { type majorStar, type majorStarResponse } from "./stars";
 import { decToDMS, dmsToDec, houseFromDec } from "~/utils/astroCalc";
-import { type planet, type planetAPI } from "./planets";
+import { type planet, type planetAPI, type PlanetProperties } from "./planets";
 import { type house, type houseAPI } from "./houses";
+import { planets } from "~/server/api/routers/planets";
 export const GO_API_ENDPOINT = "http://18.231.181.140:8000"
 export const chartRouter = createTRPCRouter({
 
@@ -131,6 +132,13 @@ export const chartRouter = createTRPCRouter({
                 const long = parseFloat(planet.longitude);
                 const tmp = decToDMS(long);
                 const house = houseFromDec(myhouses, long)
+                const planetProps = planets.find((p) => p.name === planet.name) || {
+                    unicode: "",
+                    temperature: "",
+                    humidity: "",
+                    element: "",
+                  } as PlanetProperties;
+
                 const result = {
                     name: planet.name,
                     position: long,
@@ -141,6 +149,10 @@ export const chartRouter = createTRPCRouter({
                     house: house,
                     lat: parseFloat(planet.latitude),
                     speed: parseFloat(planet.dailySpeed),
+                    unicode: planetProps.unicode,
+                    temperature: planetProps.temperature,
+                    humidity: planetProps.humidity,
+                    element: planetProps.element,
                 } as planet;
                 return result
             })
