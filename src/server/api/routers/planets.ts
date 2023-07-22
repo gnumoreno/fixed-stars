@@ -4,6 +4,20 @@ import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { decToDMS } from "~/utils/astroCalc";
 import { GO_API_ENDPOINT } from "./stars";
 
+export const planets: PlanetProperties[] = [
+  { name: "Sun", unicode: '\u2609', temperature: "hot", humidity: "dry", element: "fire" },
+  { name: "Moon", unicode: '\u263E', temperature: "cold", humidity: "wet", element: "water" },
+  { name: "Mercury", unicode: '\u263F', temperature: "cold", humidity: "dry", element: "earth" },
+  { name: "Venus", unicode: '\u2640', temperature: "cold", humidity: "wet", element: "water" },
+  { name: "Mars", unicode: '\u2641', temperature: "hot", humidity: "dry", element: "fire" },
+  { name: "Jupiter", unicode: '\u2643', temperature: "hot", humidity: "wet", element: "air" },
+  { name: "Saturn", unicode: '\u2644', temperature: "cold", humidity: "dry", element: "earth" },
+  { name: "Uranus", unicode: '\u2645', temperature: "", humidity: "", element: "" },
+  { name: "Neptune", unicode: '\u2646', temperature: "", humidity: "", element: "" },
+  { name: "Pluto", unicode: '\u2647', temperature: "", humidity: "", element: "" },
+  { name: "true Node", unicode: '\u260A', temperature: "", humidity: "", element: "" },
+];
+
 export const planetsRouter = createTRPCRouter({
   hello: publicProcedure
     .input(z.object({ text: z.string() }))
@@ -49,24 +63,7 @@ export const planetsRouter = createTRPCRouter({
         })
 
         const planetsArray = await planetsArrayResponse.json() as planetAPI[]
-
-
-        // Not sure this is needed but I have a feeling it will be.
-        // Not sure this is needed but I have a feeling it will be.
-        // const planets = [
-        //   "Sun",
-        //   "Moon",
-        //   "Mercury",
-        //   "Venus",
-        //   "Mars",
-        //   "Jupiter",
-        //   "Saturn",
-        //   "Uranus",
-        //   "Neptune",
-        //   "Pluto",
-        //   "true Node",
-        // ];
-
+      
         const myPlanets = planetsArray.map((planet) => {
           const long = parseFloat(planet.longitude);
           const tmp = decToDMS(long);
@@ -107,7 +104,29 @@ export type planet = {
   house: string;
   lat: number;
   speed: number;
+  unicode: string;
+  temperature: string;
+  humidity: string;
+  element: string;
 };
+
+// planets.ts
+
+export type PlanetProperties = {
+  name: string;
+  unicode: string;
+  temperature: string;
+  humidity: string;
+  element: string;
+};
+
+export interface PlanetData {
+  name: string;
+  unicode: string;
+  temperature: string;
+  humidity: string;
+  element: string;
+}
 
 export type planetAPI = {
   name: string;

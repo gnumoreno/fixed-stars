@@ -1,18 +1,19 @@
 import { type house } from "~/server/api/routers/houses";
+import { type planet } from "~/server/api/routers/planets"
 
-const Signs = [
-  { sign: "Aries", angle: 0 },
-  { sign: "Taurus", angle: 30 },
-  { sign: "Gemini", angle: 60 },
-  { sign: "Cancer", angle: 90 },
-  { sign: "Leo", angle: 120 },
-  { sign: "Virgo", angle: 150 },
-  { sign: "Libra", angle: 180 },
-  { sign: "Scorpio", angle: 210 },
-  { sign: "Sagittarius", angle: 240 },
-  { sign: "Capricorn", angle: 270 },
-  { sign: "Aquarius", angle: 300 },
-  { sign: "Pisces", angle: 330 },
+export const Signs = [
+  { sign: "Aries", unicode: '\u2648', angle: 0, domicile: "Mars", exaltation: "Sun", triplicity_day: "Sun", triplicity_night: "Jupiter", detriment: "Venus", fall: "Saturn", terms: [], faces: [] },
+  { sign: "Taurus", unicode: '\u2649', angle: 30, domicile: "Venus", exaltation: "Moon", triplicity_day: "Venus", triplicity_night: "Moon", detriment: "Mars", fall: "none", terms: [], faces: [] },
+  { sign: "Gemini", unicode: '\u264A', angle: 60, domicile: "Mercury", exaltation: "none", triplicity_day: "Saturn", triplicity_night: "Mercury", detriment: "Jupiter", fall: "none", terms: [], faces: [] },
+  { sign: "Cancer", unicode: '\u264B', angle: 90, domicile: "Moon", exaltation: "Jupiter", triplicity_day: "Mars", triplicity_night: "Mars", detriment: "Saturn", fall: "Mars", terms: [], faces: [] },
+  { sign: "Leo", unicode: '\u264C', angle: 120, domicile: "Sun", exaltation: "none", triplicity_day: "Sun", triplicity_night: "Jupiter", detriment: "Saturn", fall: "none", terms: [], faces: [] },
+  { sign: "Virgo", unicode: '\u264D', angle: 150, domicile: "Mercury", exaltation: "Mercury", triplicity_day: "Venus", triplicity_night: "Moon", detriment: "Jupiter", fall: "Venus", terms: [], faces: [] },
+  { sign: "Libra", unicode: '\u264E', angle: 180, domicile: "Venus", exaltation: "Saturn", triplicity_day: "Saturn", triplicity_night: "Mercury", detriment: "Mars", fall: "Sun", terms: [], faces: [] },
+  { sign: "Scorpio", unicode: '\u264F', angle: 210, domicile: "Mars", exaltation: "none", triplicity_day: "Mars", triplicity_night: "Mars", detriment: "Venus", fall: "Moon", terms: [], faces: [] },
+  { sign: "Sagittarius", unicode: '\u2650', angle: 240, domicile: "Jupiter", exaltation: "none", triplicity_day: "Sun", triplicity_night: "Jupiter", detriment: "Mercury", fall: "none", terms: [], faces: [] },
+  { sign: "Capricorn", unicode: '\u2651', angle: 270, domicile: "Saturn", exaltation: "Mars", triplicity_day: "Venus", triplicity_night: "Moon", detriment: "Moon", fall: "Jupiter", terms: [], faces: [] },
+  { sign: "Aquarius", unicode: '\u2652', angle: 300, domicile: "Saturn", exaltation: "none", triplicity_day: "Saturn", triplicity_night: "Mercury", detriment: "Sun", fall: "none", terms: [], faces: [] },
+  { sign: "Pisces", unicode: '\u2653', angle: 330, domicile: "Jupiter", exaltation: "Venus", triplicity_day: "Mars", triplicity_night: "Mars", detriment: "Mercury", fall: "Mercury", terms: [], faces: [] },
 ];
 
 // const aspectType = [
@@ -38,8 +39,6 @@ export const signFromDec = (long: number) => {
   });
   return mySign;
 };
-
-
 
 export const houseFromDec = (houses: house[], element: number) => {
   const onlyHouses = houses.filter(house => house.name.includes("house")).sort((a, b) => a.position - b.position);
@@ -68,7 +67,6 @@ export const housePositions = (houses: house[]) => {
   const ascendantPos = ascendant ? ascendant.position : null;
   const onlyHouses = houses.filter(house => house.name.includes("house"));
   const drawHousePositions = onlyHouses.map((house) => calculateModulo360becauseJSisStupid(house.position - ascendantPos)).sort((a, b) => a - b);
-  // console.log("house positions:", ascendant, ascendantPos, onlyHouses, drawHousePositions)
   return drawHousePositions;
 }
 
@@ -76,8 +74,13 @@ export const signPositions = (houses: house[]) => {
   const ascendant = houses.find((house) => house.name === "house  1");
   const ascendantPos = ascendant ? ascendant.position : null;
   const drawSignPositions = Signs.map((sign) => calculateModulo360becauseJSisStupid(sign.angle - ascendantPos));
-  // const drawSignPositions = Signs.map((sign) => calculateModulo360becauseJSisStupid(sign.angle - ascendantPos)).sort((a, b) => a - b);
-  // console.log("sign positions:", ascendant, ascendantPos, drawSignPositions)
+  return drawSignPositions;
+}
+
+export const planetPositions = (planets: planet[], houses: house[]) => {  
+  const ascendant = houses.find((house) => house.name === "house  1");
+  const ascendantPos = ascendant ? ascendant.position : null;
+  const drawSignPositions = planets.map((planet) => calculateModulo360becauseJSisStupid(planet.position - ascendantPos));
   return drawSignPositions;
 }
 
