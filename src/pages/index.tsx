@@ -35,7 +35,7 @@ const NavButtons: React.FC = () => {
   const [housesData, setHousesData] = useState<house[] | null>(null);
   const [planetsData, setPlanetsData] = useState<planet[] | null>(null);
   const [starsData, setStarsData] = useState<majorStar[] | null>(null);
-  const [inputType, setInputType] = useState<"decimal" | "dms">("decimal");
+  const [inputType, setInputType] = useState<"decimal" | "dms">("dms");
   const [decimalValues, setDecimalValues] = useState<{ long: number | undefined; lat: number | undefined }>({ long: undefined, lat: undefined });
   const [longitude, setLongitude] = useState<{ degrees: number; minutes: number; seconds: number }>({ degrees: 0, minutes: 0, seconds: 0 });
   const [latitude, setLatitude] = useState<{ degrees: number; minutes: number; seconds: number }>({ degrees: 0, minutes: 0, seconds: 0 });
@@ -137,7 +137,7 @@ const NavButtons: React.FC = () => {
     <div className={Style.pageContainer}>
       <div className={Style.formContainer}>
         <form onSubmit={(e) => { handleFormSubmit(e) }} className={Style.form}>
-          <h1 className={Style.title}>Houses</h1>
+          <h1 className={Style.title}>BirthData</h1>
           <label htmlFor="date">Date:</label>
           <input
             name="date"
@@ -150,7 +150,7 @@ const NavButtons: React.FC = () => {
               setDate(changeDate)
             }}
           />
-          <label htmlFor="time">Time:</label>
+          <label htmlFor="time">Time (UTC):</label>
           <input
             name="time"
             type="time"

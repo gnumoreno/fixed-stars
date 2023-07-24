@@ -135,6 +135,25 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
         }
     };
 
+    const antisciaLines = (draw: Svg) => {
+        // Draw degree marks
+        const angles = antisciaAngles;
+        const endRadius = (percentages[1] / 100) * radius; // Radius of the second circle
+        const startRadius = ((percentages[1] - 6) / 100) * radius;
+
+        for (let i = 0; i < angles.length; i++) {
+            const angle = (angles[i] + 180) * -1 ; // Calculate the angle for each line
+            // const angle = (angles[i] - signAngles[0]) * -1; // Calculate the angle for each line
+            const startX = centerX + Math.cos(angle * Math.PI / 180) * startRadius;
+            const startY = centerY + Math.sin(angle * Math.PI / 180) * startRadius;
+            const endX = centerX + Math.cos(angle * Math.PI / 180) * endRadius;
+            const endY = centerY + Math.sin(angle * Math.PI / 180) * endRadius;
+
+            // Draw the line
+            const line = draw.line(startX, startY, endX, endY)
+            line.stroke({ color: '#D3D3D3', width: 1 });
+        }
+    };
     const createSignCircleTextPaths = (draw: Svg, centerX: number, centerY: number, radius: number, percentages: number[]) => {
         const textPaths: Path[] = [];
     
@@ -248,6 +267,7 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
             console.log("drawRef is null", drawRef)
             return;
         }
+        antisciaLines(drawRef);
         degreeLines(drawRef);
         houseLines(drawRef);
         signLines(drawRef);
