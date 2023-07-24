@@ -28,6 +28,7 @@ export const signOver = (dec: number) => {
   const cycle = dec % 360;
   return cycle;
 };
+
 export const signFromDec = (long: number) => {
   let mySign = { sign: "Pisces", angle: 330 };
   let stop = false;
@@ -55,34 +56,72 @@ export const houseFromDec = (houses: house[], element: number) => {
   })
   return myHouse.name.split(" ").pop();
 
-}
+};
 
 const calculateModulo360becauseJSisStupid = (value: number) => {
   const result = value % 360;
   return result >= 0 ? result : result + 360;
 };
 
-export const housePositions = (houses: house[]) => {  
+export const ascPos = (houses: house[]) => {
   const ascendant = houses.find((house) => house.name === "house  1");
   const ascendantPos = ascendant ? ascendant.position : null;
-  const onlyHouses = houses.filter(house => house.name.includes("house"));
-  const drawHousePositions = onlyHouses.map((house) => calculateModulo360becauseJSisStupid(house.position - ascendantPos)).sort((a, b) => a - b);
-  return drawHousePositions;
-}
+  return ascendantPos;
+};
 
-export const signPositions = (houses: house[]) => {  
+export const housePositions = (houses: house[]) => {  
+  const onlyHouses = houses.filter(house => house.name.includes("house"));
+  const drawHousePositions = onlyHouses.map((house) => calculateModulo360becauseJSisStupid(house.position - ascPos(houses))).sort((a, b) => a - b);
+  return drawHousePositions;
+};
+
+export const findHorizon = (houses: house[]) => {
   const ascendant = houses.find((house) => house.name === "house  1");
-  const ascendantPos = ascendant ? ascendant.position : null;
-  const drawSignPositions = Signs.map((sign) => calculateModulo360becauseJSisStupid(sign.angle - ascendantPos));
+  const descendant = houses.find((house) => house.name === "house  7");
+  const ascendantPos = calculateModulo360becauseJSisStupid(ascendant ? ascendant.position : null);
+  const descendantPos = calculateModulo360becauseJSisStupid(descendant ? descendant.position : null);
+  const horizon = [ascendantPos, descendantPos];
+  return horizon;
+};
+
+export const dayOrNight = (planets: planet[]) => {
+  const sun = planets.find((planet) => planet.name === "Sun");
+  const sunPos = sun ? sun.position : null;
+  let dayOrNight: string;
+  if (calculateModulo360becauseJSisStupid(sunPos) >= findHorizon[2] && calculateModulo360becauseJSisStupid(sunPos) <= findHorizon[0]) {
+    dayOrNight = "day";
+  } else if (calculateModulo360becauseJSisStupid(sunPos) < findHorizon[2] && calculateModulo360becauseJSisStupid(sunPos) > findHorizon[0]) {
+    dayOrNight = "night";
+  }
+  return dayOrNight;
+};
+
+export const antiscia = (long: number) => {
+  return calculateModulo360becauseJSisStupid(90 - (long - 90));
+};
+
+export const contraAntiscia = (antiscia: number) => {
+  return calculateModulo360becauseJSisStupid(antiscia + 180);
+};
+export const signPositions = (houses: house[]) => {  
+  const drawSignPositions = Signs.map((sign) => calculateModulo360becauseJSisStupid(sign.angle - ascPos(houses)));
   return drawSignPositions;
-}
+};
 
 export const planetPositions = (planets: planet[], houses: house[]) => {  
-  const ascendant = houses.find((house) => house.name === "house  1");
-  const ascendantPos = ascendant ? ascendant.position : null;
-  const drawSignPositions = planets.map((planet) => calculateModulo360becauseJSisStupid(planet.position - ascendantPos));
+  const drawSignPositions = planets.map((planet) => calculateModulo360becauseJSisStupid(planet.position - ascPos(houses)));
   return drawSignPositions;
-}
+};
+
+export const planetAntiscia = (planets: planet[], houses: house[]) => {
+  const drawAntisciaPositions = planets.map((planet) => calculateModulo360becauseJSisStupid(antiscia(planet.position) - ascPos(houses)));
+  return drawAntisciaPositions;
+};
+
+export const planetContraAntiscia = (planets: planet[], houses: house[]) => {
+  const drawContraAntisciaPositions = planets.map((planet) => calculateModulo360becauseJSisStupid(contraAntiscia(planet.position) - ascPos(houses)));
+  return drawContraAntisciaPositions;
+};
 
 export const decToDMS = (long: number) => {
   const mySign = signFromDec(long);
@@ -103,11 +142,3 @@ export const dmsToDec = (degrees: number, minutes: number, seconds: number): num
   const decimal = positiveDegrees + (minutes / 60) + (seconds / 3600);
   return decimal * sign; // Apply the sign to the calculated decimal value
 };
-
-export const antiscia = (long: number) => {
-  return (90 - (long - 90)) % 360;
-}
-
-export const contraantiscia = (antiscia: number) => {
-  return (antiscia + 180) % 360;
-}

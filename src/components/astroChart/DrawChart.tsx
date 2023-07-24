@@ -1,7 +1,7 @@
 import {type Path, SVG,type Svg } from "@svgdotjs/svg.js";
 import { useEffect, useRef } from "react";
 import Style from './DrawChart.module.css'
-import { housePositions, signPositions, planetPositions } from "~/utils/astroCalc";
+import { housePositions, signPositions, planetPositions, planetAntiscia } from "~/utils/astroCalc";
 import { type house } from "~/server/api/routers/houses";
 import { type planet } from "~/server/api/routers/planets";
 import { type majorStar } from "~/server/api/routers/stars";
@@ -24,11 +24,12 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
     const percentages = [60, 80, 84, 88, 92, 100];
     const percentageSign = 71;
     // StartHouse, Planets, EndHouse, Term, Face, Triplicity, Sign
-    const signSymbols = Signs.map((sign) => sign.unicode);
+    const signSymbols: string[] = Signs.map((sign) => sign.unicode);
     const planetSymbols = planetsData.map((planet) => planet.unicode);
     const houseAngles = housePositions(housesData);
-    const planetAngles = planetPositions(planetsData, housesData);
+    const planetAngles = planetPositions(planetsData.slice(0,8), housesData);
     const signAngles = signPositions(housesData);
+    const antisciaAngles = planetAntiscia(planetsData.slice(0,7), housesData);
 
     const createCircle = (draw: Svg, percentages: number[]) => {
         // const draw = SVG(svgContainerRef.current);        
@@ -170,6 +171,41 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
             text.path(textPaths[i]);
         }
     };
+    const createAntisciaPlanetCircleTextPaths = (draw: Svg, centerX: number, centerY: number, radius: number, percentageSign) => {
+        const textPaths: Path[] = [];
+    
+        const circleRadius = ((percentageSign / 100) * radius);
+    
+        for (let j = 0; j < antisciaAngles.length; j++) {
+            const startAngle = ((antisciaAngles[j] + 181) * -1);
+            const startAngleRad = (startAngle) * (Math.PI / 180);
+    
+            // Calculate the starting and ending coordinates of the arc
+            const startX = centerX + Math.cos(startAngleRad) * circleRadius;
+            const startY = centerY + Math.sin(startAngleRad) * circleRadius;
+            const endX = centerX + Math.cos(startAngleRad + Math.PI) * circleRadius;
+            const endY = centerY + Math.sin(startAngleRad + Math.PI) * circleRadius;
+    
+            // Use sweep-flag 0 to reverse the arc direction
+            const textPath = draw.path(`M ${startX},${startY} A ${circleRadius},${circleRadius} 0 0,1 ${endX},${endY}`)
+                .attr({ fill: 'none', stroke: 'none' });
+    
+            textPaths.push(textPath);
+        }
+    
+        return textPaths;
+    };
+
+    const createAntisciaPlanetTextsonPath = (draw: Svg, textPaths: Path[]) => {
+        for (let i = 0; i < textPaths.length; i++) {
+            const text = draw.text(`${planetSymbols[i]}`)
+                .font({ size: 10 })
+                .fill('#A9A9A9');
+
+            // Position the text along the textPath
+            text.path(textPaths[i]);
+        }
+    };
 
     const createPlanetCircleTextPaths = (draw: Svg, centerX: number, centerY: number, radius: number, percentageSign) => {
         const textPaths: Path[] = [];
@@ -200,7 +236,7 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
         for (let i = 0; i < textPaths.length; i++) {
             const text = draw.text(`${planetSymbols[i]}`)
                 .font({ size: 18 })
-                .fill('#000000');
+                .fill('#4682B4');
 
             // Position the text along the textPath
             text.path(textPaths[i]);
@@ -218,6 +254,7 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
         createCircle(drawRef, percentages);
         createSignTextsonPath(drawRef, createSignCircleTextPaths(drawRef, centerX, centerY, radius, percentages));
         planetLines(drawRef);
+        createAntisciaPlanetTextsonPath(drawRef, createAntisciaPlanetCircleTextPaths(drawRef, centerX, centerY, radius, percentageSign));
         createPlanetTextsonPath(drawRef, createPlanetCircleTextPaths(drawRef, centerX, centerY, radius, percentageSign));
     }
 
