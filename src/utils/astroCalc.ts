@@ -24,16 +24,17 @@ export const Signs = [
 //   { name: "oposition", angle: 180, unicode: "u260D" },
 // ];
 
-export const signOver = (dec: number) => {
-  const cycle = dec % 360;
-  return cycle;
+const calculateModulo360becauseJSisStupid = (value: number) => {
+  const result = value % 360;
+  return result >= 0 ? result : result + 360;
 };
+
 
 export const signFromDec = (long: number) => {
   let mySign = { sign: "Pisces", angle: 330 };
   let stop = false;
   Signs.forEach((sign, idx) => {
-    if (signOver(long) < sign.angle && stop === false) {
+    if (calculateModulo360becauseJSisStupid(long) < sign.angle && stop === false) {
       mySign = Signs[idx - 1]!;
       stop = true;
     }
@@ -56,11 +57,6 @@ export const houseFromDec = (houses: house[], element: number) => {
   })
   return myHouse.name.split(" ").pop();
 
-};
-
-const calculateModulo360becauseJSisStupid = (value: number) => {
-  const result = value % 360;
-  return result >= 0 ? result : result + 360;
 };
 
 export const ascPos = (houses: house[]) => {
@@ -96,11 +92,11 @@ export const dayOrNight = (planets: planet[]) => {
   return dayOrNight;
 };
 
-export const antiscia = (long: number) => {
+export const antisciaPosition = (long: number) => {
   return calculateModulo360becauseJSisStupid(90 - (long - 90));
 };
 
-export const contraAntiscia = (antiscia: number) => {
+export const contraAntisciaPosition = (antiscia: number) => {
   return calculateModulo360becauseJSisStupid(antiscia + 180);
 };
 export const signPositions = (houses: house[]) => {  
@@ -114,12 +110,12 @@ export const planetPositions = (planets: planet[], houses: house[]) => {
 };
 
 export const planetAntiscia = (planets: planet[], houses: house[]) => {
-  const drawAntisciaPositions = planets.map((planet) => calculateModulo360becauseJSisStupid(antiscia(planet.position) - ascPos(houses)));
+  const drawAntisciaPositions = planets.map((planet) => calculateModulo360becauseJSisStupid(antisciaPosition(planet.position) - ascPos(houses)));
   return drawAntisciaPositions;
 };
 
 export const planetContraAntiscia = (planets: planet[], houses: house[]) => {
-  const drawContraAntisciaPositions = planets.map((planet) => calculateModulo360becauseJSisStupid(contraAntiscia(planet.position) - ascPos(houses)));
+  const drawContraAntisciaPositions = planets.map((planet) => calculateModulo360becauseJSisStupid(contraAntisciaPosition(planet.position) - ascPos(houses)));
   return drawContraAntisciaPositions;
 };
 
