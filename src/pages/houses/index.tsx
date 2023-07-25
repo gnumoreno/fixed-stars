@@ -27,7 +27,7 @@ const HousesForm: React.FC = () => {
 
   const [housesData, setHousesData] = useState<house[] | null>(null);
   const [inputType, setInputType] = useState<"decimal" | "dms">("decimal");
-  const [decimalValues, setDecimalValues] = useState<{ long: number | undefined; lat: number | undefined }>({ long: undefined, lat: undefined });
+  const [decimalValues, setDecimalValues] = useState<{ long: number; lat: number }>({ long: undefined, lat: undefined });
   const [longitude, setLongitude] = useState<{ degrees: number; minutes: number; seconds: number }>({ degrees: 0, minutes: 0, seconds: 0 });
   const [latitude, setLatitude] = useState<{ degrees: number; minutes: number; seconds: number }>({ degrees: 0, minutes: 0, seconds: 0 });
 

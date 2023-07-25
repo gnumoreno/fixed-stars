@@ -6,6 +6,8 @@ import { Calendar } from 'react-date-range'
 import useTarget from '~/hooks/useTarget'
 import { TimePicker } from 'react-time-picker-typescript'
 import "react-time-picker-typescript/dist/style.css";
+import 'react-date-range/dist/styles.css'; // main css file
+import 'react-date-range/dist/theme/default.css'; // theme css file
 
 type DateSelectionProps = {
     date: Date
@@ -106,8 +108,9 @@ export const DateSelection: React.FC<DateSelectionProps> = ({
                     type="text"
                     className={Style.textInputDay}
                     value={day}
+                    onClick={(e) => e.currentTarget.select()}
                     onFocus={(e) => e.currentTarget.select()}
-                    onBlur={(e) => setDay(padWithLeadingZeros(parseInt(e.currentTarget.value), 2))}
+                    onBlur={(e) => e.currentTarget.value.length < 2 ? setDay(padWithLeadingZeros(parseInt(e.currentTarget.value), 2)) : null}
                     onChange={handleDayChange}
                     maxLength={2}
                     ref={dayRef}
@@ -119,8 +122,9 @@ export const DateSelection: React.FC<DateSelectionProps> = ({
                     type="text"
                     className={Style.textInput}
                     value={month}
+                    onClick={(e) => e.currentTarget.select()}
                     onFocus={(e) => e.currentTarget.select()}
-                    onBlur={(e) => setMonth(padWithLeadingZeros(parseInt(e.currentTarget.value), 2))}
+                    onBlur={(e) => e.currentTarget.value.length < 2 ? setMonth(padWithLeadingZeros(parseInt(e.currentTarget.value), 2)) : null}
                     onChange={handleMonthChange}
                     maxLength={2}
                     ref={monthRef}
@@ -134,8 +138,9 @@ export const DateSelection: React.FC<DateSelectionProps> = ({
                     className={Style.textInputYear}
                     value={year}
                     max={4}
+                    onClick={(e) => e.currentTarget.select()}
                     onFocus={(e) => e.currentTarget.select()}
-                    onBlur={(e) => setYear(padWithLeadingZeros(parseInt(e.currentTarget.value), 4))}
+                    onBlur={(e) => e.currentTarget.value.length < 4 ? setYear(padWithLeadingZeros(parseInt(e.currentTarget.value), 4)) : null}
                     onChange={handleYearChange}
                     maxLength={4}
                     ref={yearRef}
@@ -189,8 +194,9 @@ export const TimeSelection: React.FC<TimeSelectionProps> = ({
 
         if (!isNumeric(e.target.value)) return
         if (e.target.value.length === 2) {
-            if (parseInt(e.target.value) > 59) {
-                setHours('59')
+            if (parseInt(e.target.value) > 23) {
+                setHours('23')
+                hoursRef.current?.blur()
                 minutesRef.current?.focus()
                 return
             } else {
@@ -213,6 +219,7 @@ export const TimeSelection: React.FC<TimeSelectionProps> = ({
         if (e.target.value.length === 2) {
             if (parseInt(e.target.value) > 59) {
                 setMinutes('59')
+
                 nextInputRef?.current?.focus()
                 return
             } else {
@@ -268,8 +275,9 @@ export const TimeSelection: React.FC<TimeSelectionProps> = ({
                     type="text"
                     className={Style.timeInputDay}
                     value={hours}
+                    onClick={(e) => e.currentTarget.select()}
                     onFocus={(e) => e.currentTarget.select()}
-                    onBlur={(e) => setHours(padWithLeadingZeros(parseInt(e.currentTarget.value), 2))}
+                    onBlur={(e) => { e.currentTarget.value.length === 1 ? setHours(padWithLeadingZeros(parseInt(e.currentTarget.value), 2)) : null }}
                     onChange={handleHoursChange}
                     maxLength={2}
                     ref={hoursRef}
@@ -281,8 +289,9 @@ export const TimeSelection: React.FC<TimeSelectionProps> = ({
                     type="text"
                     className={Style.timeInput}
                     value={minutes}
+                    onClick={(e) => e.currentTarget.select()}
                     onFocus={(e) => e.currentTarget.select()}
-                    onBlur={(e) => setMinutes(padWithLeadingZeros(parseInt(e.currentTarget.value), 2))}
+                    onBlur={(e) => e.currentTarget.value.length === 1 ? setMinutes(padWithLeadingZeros(parseInt(e.currentTarget.value), 2)) : null}
                     onChange={handleMinutesChange}
                     maxLength={2}
                     ref={minutesRef}
@@ -314,6 +323,379 @@ export const TimeSelection: React.FC<TimeSelectionProps> = ({
 
                 />
             }
+        </div>
+    )
+}
+
+
+
+
+type CoordinatesSelectionProps = {
+    decimalCord: { long: string; lat: string }
+    setDecimalCord: React.Dispatch<React.SetStateAction<{ long: string; lat: string }>>
+    latitude: { degrees: string; minutes: string; seconds: string }
+    setLatitude: React.Dispatch<React.SetStateAction<{ degrees: string; minutes: string; seconds: string }>>
+    longitude: { degrees: string; minutes: string; seconds: string }
+    setLongitude: React.Dispatch<React.SetStateAction<{ degrees: string; minutes: string; seconds: string }>>
+    nextInputRef?: React.RefObject<HTMLInputElement>
+}
+
+export const CoordinatesSelection: React.FC<CoordinatesSelectionProps> = ({
+    decimalCord,
+    setDecimalCord,
+    latitude,
+    setLatitude,
+    longitude,
+    setLongitude,
+    nextInputRef
+}) => {
+
+    const [isDMS, setIsDMS] = useState<boolean>(true);
+
+    const handleLongitudeDecChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.currentTarget.value === "-") {
+            setDecimalCord((prevValues) => ({ ...prevValues, long: "-" }));
+            return
+        }
+        if (e.currentTarget.value === "") {
+            setDecimalCord((prevValues) => ({ ...prevValues, long: "" }));
+            return
+        }
+        if (!isNumeric(e.currentTarget.value) || e.currentTarget.value === ' ' || e.currentTarget.value.includes('.') || e.currentTarget.value.includes(',') || e.currentTarget.value.includes(' ')) {
+            setDecimalCord((prevValues) => ({ ...prevValues, long: "0" }));
+            return
+        }
+
+        const degreesValue = parseFloat(e.currentTarget.value);
+
+        if (degreesValue > 180) {
+            setDecimalCord((prevValues) => ({ ...prevValues, long: "180" }));
+            return
+        }
+        if (degreesValue < -180) {
+            setDecimalCord((prevValues) => ({ ...prevValues, long: "-180" }));
+            return
+        }
+        setDecimalCord((prevValues) => ({ ...prevValues, long: degreesValue.toString() }));
+
+    };
+
+    const handleLatitudeDecChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.currentTarget.value === "-") {
+            setDecimalCord((prevValues) => ({ ...prevValues, lat: "-" }));
+            return
+        }
+        if (e.currentTarget.value === "") {
+            setDecimalCord((prevValues) => ({ ...prevValues, lat: "" }));
+            return
+        }
+        if (!isNumeric(e.currentTarget.value) || e.currentTarget.value === ' ' || e.currentTarget.value.includes('.') || e.currentTarget.value.includes(',') || e.currentTarget.value.includes(' ')) {
+            setDecimalCord((prevValues) => ({ ...prevValues, lat: "0" }));
+            return
+        }
+
+        const degreesValue = parseFloat(e.currentTarget.value);
+
+        if (degreesValue > 180) {
+            setDecimalCord((prevValues) => ({ ...prevValues, lat: "180" }));
+            return
+        }
+        if (degreesValue < -180) {
+            setDecimalCord((prevValues) => ({ ...prevValues, lat: "-180" }));
+            return
+        }
+        setDecimalCord((prevValues) => ({ ...prevValues, lat: degreesValue.toString() }));
+    };
+
+
+
+
+    const handleLongitudeDegreesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.currentTarget.value === "-") {
+            setLongitude((prevValues) => ({ ...prevValues, degrees: "-" }));
+            return
+        }
+        if (e.currentTarget.value === "") {
+            setLongitude((prevValues) => ({ ...prevValues, degrees: "" }));
+            return
+        }
+        if (!isNumeric(e.currentTarget.value) || e.currentTarget.value === ' ' || e.currentTarget.value.includes('.') || e.currentTarget.value.includes(',') || e.currentTarget.value.includes(' ')) {
+            setLongitude((prevValues) => ({ ...prevValues, degrees: "0" }));
+            return
+        }
+
+        const degreesValue = parseFloat(e.currentTarget.value);
+
+        if (degreesValue > 180) {
+            setLongitude((prevValues) => ({ ...prevValues, degrees: "180" }));
+            return
+        }
+        if (degreesValue < -180) {
+            setLongitude((prevValues) => ({ ...prevValues, degrees: "-180" }));
+            return
+        }
+        setLongitude((prevValues) => ({ ...prevValues, degrees: degreesValue.toString() }));
+    };
+
+    const handleLongitudeMinutesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.currentTarget.value === "") {
+            setLongitude((prevValues) => ({ ...prevValues, minutes: "" }));
+            return
+        }
+        if (!isNumeric(e.currentTarget.value) || e.currentTarget.value === ' ' || e.currentTarget.value.includes('.') || e.currentTarget.value.includes(',') || e.currentTarget.value.includes(' ')) {
+            setLongitude((prevValues) => ({ ...prevValues, minutes: "0" }));
+            return
+        }
+
+        const minutesValue = parseFloat(e.currentTarget.value);
+
+        if (minutesValue > 59) {
+            setLongitude((prevValues) => ({ ...prevValues, minutes: "59" }));
+            return
+        }
+        setLongitude((prevValues) => ({ ...prevValues, minutes: minutesValue.toString() }));
+    };
+
+    const handleLongitudeSecondsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.currentTarget.value === "-") {
+            setLongitude((prevValues) => ({ ...prevValues, seconds: "-" }));
+            return
+        }
+        if (e.currentTarget.value === "") {
+            setLongitude((prevValues) => ({ ...prevValues, seconds: "" }));
+            return
+        }
+        if (!isNumeric(e.currentTarget.value) || e.currentTarget.value === ' ' || e.currentTarget.value.includes('.') || e.currentTarget.value.includes(',') || e.currentTarget.value.includes(' ')) {
+            setLongitude((prevValues) => ({ ...prevValues, seconds: "0" }));
+            return
+        }
+
+        const secondsValue = parseFloat(e.currentTarget.value);
+
+        if (secondsValue > 59) {
+            setLongitude((prevValues) => ({ ...prevValues, seconds: "59" }));
+            return
+        }
+        setLongitude((prevValues) => ({ ...prevValues, seconds: secondsValue.toString() }));
+    };
+
+    const handleLatitudeDegreesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.currentTarget.value === "-") {
+            setLatitude((prevValues) => ({ ...prevValues, degrees: "-" }));
+            return
+        }
+        if (e.currentTarget.value === "") {
+            setLatitude((prevValues) => ({ ...prevValues, degrees: "" }));
+            return
+        }
+        if (!isNumeric(e.currentTarget.value) || e.currentTarget.value === ' ' || e.currentTarget.value.includes('.') || e.currentTarget.value.includes(',') || e.currentTarget.value.includes(' ')) {
+            setLatitude((prevValues) => ({ ...prevValues, degrees: "0" }));
+            return
+        }
+
+        const degreesValue = parseFloat(e.currentTarget.value);
+
+        if (degreesValue > 180) {
+            setLatitude((prevValues) => ({ ...prevValues, degrees: "180" }));
+            return
+        }
+        if (degreesValue < -180) {
+            setLatitude((prevValues) => ({ ...prevValues, degrees: "-180" }));
+            return
+        }
+        setLatitude((prevValues) => ({ ...prevValues, degrees: degreesValue.toString() }));
+    };
+
+    const handleLatitudeMinutesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.currentTarget.value === "") {
+            setLatitude((prevValues) => ({ ...prevValues, minutes: "" }));
+            return
+        }
+        if (!isNumeric(e.currentTarget.value) || e.currentTarget.value === ' ' || e.currentTarget.value.includes('.') || e.currentTarget.value.includes(',') || e.currentTarget.value.includes(' ')) {
+            setLatitude((prevValues) => ({ ...prevValues, minutes: "0" }));
+            return
+        }
+
+        const minutesValue = parseFloat(e.currentTarget.value);
+
+        if (minutesValue > 59) {
+            setLatitude((prevValues) => ({ ...prevValues, minutes: "59" }));
+            return
+        }
+        setLatitude((prevValues) => ({ ...prevValues, minutes: minutesValue.toString() }));
+    };
+
+    const handleLatitudeSecondsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.currentTarget.value === "") {
+            setLatitude((prevValues) => ({ ...prevValues, seconds: "" }));
+            return
+        }
+        if (!isNumeric(e.currentTarget.value) || e.currentTarget.value === ' ' || e.currentTarget.value.includes('.') || e.currentTarget.value.includes(',') || e.currentTarget.value.includes(' ')) {
+            setLatitude((prevValues) => ({ ...prevValues, seconds: "0" }));
+            return
+        }
+
+        const secondsValue = parseFloat(e.currentTarget.value);
+
+        if (secondsValue > 59) {
+            setLatitude((prevValues) => ({ ...prevValues, seconds: "59" }));
+            return
+        }
+        setLatitude((prevValues) => ({ ...prevValues, seconds: secondsValue.toString() }));
+    };
+
+    const handleInputTypeChange = (dms: boolean) => {
+
+        if (dms) {
+            setLongitude({ degrees: "0", minutes: "0", seconds: "0" });
+            setLatitude({ degrees: "0", minutes: "0", seconds: "0" });
+            setIsDMS(true);
+        } else {
+            setDecimalCord({ long: "0", lat: "0" });
+            setIsDMS(false);
+        }
+    };
+
+    return (
+        <div className={Style.coordContainer}>
+            <label htmlFor="longitude">Longitude:</label>
+            {!isDMS ? (
+                <div className={Style.decInputBox}>
+                    <input
+                        name="longitude"
+                        type="text"
+                        value={decimalCord.long}
+                        onClick={(e) => e.currentTarget.select()}
+                        onFocus={(e) => e.currentTarget.select()}
+                        onChange={handleLongitudeDecChange}
+                        className={Style.decInput}
+                    // placeholder='0'
+                    />
+                </div>
+            ) : (
+                <div className={Style.dmsInputContainer}>
+                    <div className={Style.dmsInputBox}>
+                        <input
+                            name="degrees"
+                            type="text"
+                            value={longitude.degrees}
+                            onClick={(e) => e.currentTarget.select()}
+                            onFocus={(e) => e.currentTarget.select()}
+                            onBlur={(e) => e.currentTarget.value === "" ? setLongitude((prevValues) => ({ ...prevValues, degrees: "0" })) : null}
+                            onChange={handleLongitudeDegreesChange}
+                            className={Style.dmsInput}
+                        />
+                    </div>
+                    <div className={Style.dmsInputBox}>
+                        <input
+                            name="minutes"
+                            type="text"
+                            value={longitude.minutes}
+                            min={0}
+                            max={59}
+                            onClick={(e) => e.currentTarget.select()}
+                            onFocus={(e) => e.currentTarget.select()}
+                            onChange={handleLongitudeMinutesChange}
+                            placeholder="'"
+                            className={Style.dmsInput}
+                        />
+                    </div>
+                    <div className={Style.dmsInputBox}>
+                        <input
+                            name="seconds"
+                            type="text"
+                            value={longitude.seconds}
+                            min={0}
+                            max={59}
+                            onClick={(e) => e.currentTarget.select()}
+                            onFocus={(e) => e.currentTarget.select()}
+                            onChange={handleLongitudeSecondsChange}
+                            placeholder='"'
+                            className={Style.dmsInput}
+                        />
+                    </div>
+                </div>
+            )}
+            <label htmlFor="latitude">Latitude:</label>
+            {!isDMS ? (
+                <div className={Style.decInputBox}>
+                    <input
+                        name="latitude"
+                        type="text"
+                        value={decimalCord.lat}
+                        min={-90}
+                        max={90}
+                        onClick={(e) => e.currentTarget.select()}
+                        onFocus={(e) => e.currentTarget.select()}
+                        onChange={handleLatitudeDecChange}
+                        className={Style.decInput}
+
+                    />
+                </div>
+            ) : (
+                <div className={Style.dmsInputContainer}>
+                    <div className={Style.dmsInputBox}>
+                        <input
+                            name="degrees"
+                            type="text"
+                            value={latitude.degrees}
+                            min={-90}
+                            max={90}
+                            onClick={(e) => e.currentTarget.select()}
+                            onFocus={(e) => e.currentTarget.select()}
+                            onChange={handleLatitudeDegreesChange}
+                            className={Style.dmsInput}
+                            placeholder="°"
+                        />
+                    </div>
+                    <div className={Style.dmsInputBox}>
+                        <input
+                            name="minutes"
+                            type="text"
+                            value={latitude.minutes}
+                            min={0}
+                            max={59}
+                            onClick={(e) => e.currentTarget.select()}
+                            onFocus={(e) => e.currentTarget.select()}
+                            onChange={handleLatitudeMinutesChange}
+                            className={Style.dmsInput}
+                            placeholder="'"
+                        />
+                    </div>
+                    <div className={Style.dmsInputBox}>
+                        <input
+                            name="seconds"
+                            type="text"
+                            value={latitude.seconds}
+                            min={0}
+                            max={59}
+                            onClick={(e) => e.currentTarget.select()}
+                            onFocus={(e) => e.currentTarget.select()}
+                            onChange={handleLatitudeSecondsChange}
+                            className={Style.dmsInput}
+                            placeholder='"'
+                        />
+                    </div>
+                </div>
+            )}
+            <div className={Style.coordType}>
+                <div className={Style.coordTypeOptions}>
+                    <div className={Style.coordTypeButton + ' ' + `${!isDMS ? Style.coordTypeButtonActive : ''}`}
+                        onClick={() => handleInputTypeChange(false)}
+                    ></div>
+                    <p className={Style.coordTypeText}>
+                        Decimal
+                    </p>
+                </div>
+                <div className={Style.coordTypeOptions}>
+                    <div className={Style.coordTypeButton + ' ' + `${isDMS ? Style.coordTypeButtonActive : ''}`}
+                        onClick={() => handleInputTypeChange(true)}
+                    ></div>
+                    <p className={Style.coordTypeText}>
+                        Degrees, Minutes, Seconds (DMS)
+                    </p>
+                </div>
+            </div>
         </div>
     )
 }
