@@ -1,0 +1,96 @@
+.inputWrapper {
+    width: 100%;
+    position: relative;
+}
+
+.textInputContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    height: 30px;
+    gap: 2px;
+    font-family: 'Roboto Condensed';
+    border: 1px solid var(--GRAY1);
+    width: 130px;
+    border-radius: 4px;
+}
+
+.textInputDay {
+    width: 3ch;
+    border: none;
+    height: 20px;
+    margin: 0;
+    text-align: center;
+    font-size: 16px;
+    font-family: 'Roboto Condensed';
+
+}
+
+.textInputDay:focus, .textInput:focus, .textInputYear:focus {
+    outline: none;
+    border: none;
+}
+
+.textInput {
+    width: 3ch;
+    border: none;
+    height: 20px;
+    margin: 0;
+    text-align: center;
+    font-size: 16px;
+    font-family: 'Roboto Condensed';
+
+}
+
+
+.textInputYear {
+    width: 5ch;
+    border: none;
+    height: 20px;
+    margin: 0;
+    text-align: center;
+    font-size: 16px;
+    font-family: 'Roboto Condensed';
+
+}
+
+
+.textInputDivider {
+    height: 20px;
+    line-height: 20px;
+    margin: 0;
+    text-align: center;
+    font-size: 14px;
+    margin-left: -2px;
+    margin-right: -2px;
+    font-family: 'Roboto Condensed';
+}
+
+.inputIcon {
+    margin: auto;
+    margin-left: 6px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+
+}
+
+.calendarContainer {
+    position: absolute;
+    left: 0;
+    top: 30px;
+    box-shadow: var(--SHADOW-MD);
+    border-top-right-radius: 12px;
+    border-bottom-right-radius: 12px;
+    border-bottom-left-radius: 12px;
+    overflow: hidden;
+    /* width: 100%; */
+    height: 291px;
+    border: 1px solid var(--GRAY1);
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+}

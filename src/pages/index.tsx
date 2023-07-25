@@ -12,6 +12,13 @@ import { HousesTable } from "./houses";
 import { Loading } from "~/components/utils/Loading";
 import { ChartSVG } from "~/components/astroChart/DrawChart";
 
+// Calendar stuff
+import { Calendar } from 'react-date-range';
+import 'react-date-range/dist/styles.css'; // main css file
+import 'react-date-range/dist/theme/default.css'; // theme css file
+import { DateSelection } from "~/components/input/DateSelection";
+
+
 const Testpage: NextPage = () => {
   return (
     <div className={Style.pageContainer2}>
@@ -139,16 +146,9 @@ const NavButtons: React.FC = () => {
         <form onSubmit={(e) => { handleFormSubmit(e) }} className={Style.form}>
           <h1 className={Style.title}>BirthData</h1>
           <label htmlFor="date">Date:</label>
-          <input
-            name="date"
-            type="date"
-            value={date.toLocaleDateString("en-ca")}
-            onChange={(e) => {
-              const changeDate = new Date(e.currentTarget.value)
-              changeDate.setHours(changeDate.getHours() + 3)
-              // console.log(changeDate.toLocaleString('en-ca'))
-              setDate(changeDate)
-            }}
+          <DateSelection
+            date={date}
+            setDate={setDate}
           />
           <label htmlFor="time">Time (UTC):</label>
           <input
