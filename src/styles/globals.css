@@ -101,5 +101,8 @@ body {
     
   }
   
-
+.react-ios-time-picker {
+  margin-top: 30vh !important;
+  margin-bottom: auto !important;
+}
 

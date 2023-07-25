@@ -11,12 +11,7 @@ import { PlanetsTable } from "./planets";
 import { HousesTable } from "./houses";
 import { Loading } from "~/components/utils/Loading";
 import { ChartSVG } from "~/components/astroChart/DrawChart";
-
-// Calendar stuff
-import { Calendar } from 'react-date-range';
-import 'react-date-range/dist/styles.css'; // main css file
-import 'react-date-range/dist/theme/default.css'; // theme css file
-import { DateSelection } from "~/components/input/DateSelection";
+import { DateSelection, TimeSelection } from "~/components/input/CustomInputs";
 
 
 const Testpage: NextPage = () => {
@@ -150,12 +145,11 @@ const NavButtons: React.FC = () => {
             date={date}
             setDate={setDate}
           />
-          <label htmlFor="time">Time (UTC):</label>
-          <input
-            name="time"
-            type="time"
-            value={time}
-            onChange={(e) => setTime(e.currentTarget.value)}
+            <label htmlFor="time">Time (UTC):</label>
+          <TimeSelection
+            time={time}
+            setTime={setTime}
+
           />
           <label htmlFor="longitude">Longitude:</label>
           {inputType === "decimal" ? (

@@ -25,7 +25,9 @@
 
 }
 
-.textInputDay:focus, .textInput:focus, .textInputYear:focus {
+.textInputDay:focus,
+.textInput:focus,
+.textInputYear:focus {
     outline: none;
     border: none;
 }
@@ -83,9 +85,85 @@
     border-bottom-left-radius: 12px;
     overflow: hidden;
     /* width: 100%; */
-    height: 291px;
+    height: 320px;
     border: 1px solid var(--GRAY1);
     display: flex;
     align-items: flex-start;
     justify-content: flex-start;
+    z-index: 999;
+    background-color: var(--WHITE1);
+}
+
+/* Time Picker CSS */
+
+
+.timeInputContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    height: 30px;
+    gap: 2px;
+    border: 1px solid var(--GRAY1);
+    width: 86px;
+    border-radius: 4px;
+}
+
+.timeInputDay {
+    width: 3ch;
+    border: none;
+    height: 20px;
+    margin: 0;
+    text-align: center;
+    font-size: 14px;
+
+}
+
+.timeInput:focus {
+    outline: none;
+    border: none;
+}
+
+.timeInput {
+    width: 3ch;
+    border: none;
+    height: 20px;
+    margin: 0;
+    text-align: center;
+    font-size: 14px;
+
+}
+
+
+
+
+.timeInputDivider {
+    height: 20px;
+    line-height: 20px;
+    margin: 0;
+    text-align: center;
+    font-size: 14px;
+    margin-left: -2px;
+    margin-right: -2px;
+}
+
+.inputIcon {
+    margin: auto;
+    margin-left: 6px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+
+}
+
+
+
+.pickerInput {
+    display: none;
+}
+
+.pickerPopup {
+    background-color: var(--BLACK1-30);
 }
