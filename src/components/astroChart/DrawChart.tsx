@@ -1,7 +1,7 @@
 import {type Path, SVG,type Svg } from "@svgdotjs/svg.js";
 import { useEffect, useRef } from "react";
 import Style from './DrawChart.module.css'
-import { housePositions, signPositions, planetPositions, planetAntiscia } from "~/utils/astroCalc";
+import { housePositions, signPositions, planetPositions, planetAntiscia, getTriplicityArray } from "~/utils/astroCalc";
 import { type house } from "~/server/api/routers/houses";
 import { type planet } from "~/server/api/routers/planets";
 import { type majorStar } from "~/server/api/routers/stars";
@@ -35,7 +35,6 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
         // const draw = SVG(svgContainerRef.current);        
         // Customize the radius
         const strokeWidth = 2;
-
         for (let i = 0; i < percentages.length; i++) {
             const circleRadius = (percentages[i] / 100) * radius;
             const strokeColor = `hsl(${i * (360 / percentages.length)}, 100%, 50%)`; // Different stroke color for each circle
@@ -190,6 +189,45 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
             text.path(textPaths[i]);
         }
     };
+
+    const createTriplicityCircleTextPaths = (draw: Svg, centerX: number, centerY: number, radius: number, percentages: number[]) => {
+        const textPaths: Path[] = [];
+    
+        const circleRadius = (((percentages[4] - 3) / 100) * radius);
+        const angleStep = 360 / signAngles.length;
+    
+        for (let j = 0; j < signAngles.length; j++) {
+            const startAngle = (((signAngles[j] + angleStep / 2) + 180) * -1);
+            const startAngleRad = (startAngle) * (Math.PI / 180);
+    
+            // Calculate the starting and ending coordinates of the arc
+            const startX = centerX + Math.cos(startAngleRad) * circleRadius;
+            const startY = centerY + Math.sin(startAngleRad) * circleRadius;
+            const endX = centerX + Math.cos(startAngleRad + Math.PI) * circleRadius;
+            const endY = centerY + Math.sin(startAngleRad + Math.PI) * circleRadius;
+    
+            // Use sweep-flag 0 to reverse the arc direction
+            const textPath = draw.path(`M ${startX},${startY} A ${circleRadius},${circleRadius} 0 0,1 ${endX},${endY}`)
+                .attr({ fill: 'none', stroke: 'none' });
+    
+            textPaths.push(textPath);
+        }
+    
+        return textPaths;
+    };
+
+    const createTriplicityTextsonPath = (draw: Svg, textPaths: Path[]) => {
+        const triplicityArray = getTriplicityArray(planetsData, housesData);
+        for (let i = 0; i < textPaths.length; i++) {
+            const text = draw.text(`${triplicityArray[i]}`)
+                .font({ size: 10 })
+                .fill('#000000');
+
+            // Position the text along the textPath
+            text.path(textPaths[i]);
+        }
+    };
+
     const createAntisciaPlanetCircleTextPaths = (draw: Svg, centerX: number, centerY: number, radius: number, percentageSign) => {
         const textPaths: Path[] = [];
     
@@ -272,6 +310,7 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
         houseLines(drawRef);
         signLines(drawRef);
         createCircle(drawRef, percentages);
+        createTriplicityTextsonPath(drawRef, createTriplicityCircleTextPaths(drawRef, centerX, centerY, radius, percentages));
         createSignTextsonPath(drawRef, createSignCircleTextPaths(drawRef, centerX, centerY, radius, percentages));
         planetLines(drawRef);
         createAntisciaPlanetTextsonPath(drawRef, createAntisciaPlanetCircleTextPaths(drawRef, centerX, centerY, radius, percentageSign));
