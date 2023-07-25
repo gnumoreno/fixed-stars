@@ -10,7 +10,6 @@
     justify-content: flex-start;
     height: 30px;
     gap: 2px;
-    font-family: 'Roboto Condensed';
     border: 1px solid var(--GRAY1);
     width: 130px;
     border-radius: 4px;
@@ -22,8 +21,7 @@
     height: 20px;
     margin: 0;
     text-align: center;
-    font-size: 16px;
-    font-family: 'Roboto Condensed';
+    font-size: 14px;
 
 }
 
@@ -38,8 +36,7 @@
     height: 20px;
     margin: 0;
     text-align: center;
-    font-size: 16px;
-    font-family: 'Roboto Condensed';
+    font-size: 14px;
 
 }
 
@@ -50,8 +47,7 @@
     height: 20px;
     margin: 0;
     text-align: center;
-    font-size: 16px;
-    font-family: 'Roboto Condensed';
+    font-size: 14px;
 
 }
 
@@ -64,7 +60,6 @@
     font-size: 14px;
     margin-left: -2px;
     margin-right: -2px;
-    font-family: 'Roboto Condensed';
 }
 
 .inputIcon {
