@@ -74,23 +74,44 @@ export const housePositions = (houses: house[]) => {
 export const findHorizon = (houses: house[]) => {
   const ascendant = houses.find((house) => house.name === "house  1");
   const descendant = houses.find((house) => house.name === "house  7");
-  const ascendantPos = calculateModulo360becauseJSisStupid(ascendant ? ascendant.position : null);
-  const descendantPos = calculateModulo360becauseJSisStupid(descendant ? descendant.position : null);
+  const ascendantPos = (calculateModulo360becauseJSisStupid(ascendant ? ascendant.position : null) + 3);
+  const descendantPos = (calculateModulo360becauseJSisStupid(descendant ? descendant.position : null) - 3);
   const horizon = [ascendantPos, descendantPos];
   return horizon;
 };
 
-export const dayOrNight = (planets: planet[]) => {
+export const dayOrNight = (planets: planet[], houses: house[]) => {
   const sun = planets.find((planet) => planet.name === "Sun");
   const sunPos = sun ? sun.position : null;
+  const horizon = findHorizon(houses);
   let dayOrNight: string;
-  if (calculateModulo360becauseJSisStupid(sunPos) >= findHorizon[2] && calculateModulo360becauseJSisStupid(sunPos) <= findHorizon[0]) {
+  if (calculateModulo360becauseJSisStupid(sunPos) >= horizon[1] || calculateModulo360becauseJSisStupid(sunPos) <= horizon[0]) {
     dayOrNight = "day";
-  } else if (calculateModulo360becauseJSisStupid(sunPos) < findHorizon[2] && calculateModulo360becauseJSisStupid(sunPos) > findHorizon[0]) {
+  } else {
     dayOrNight = "night";
   }
   return dayOrNight;
 };
+
+export const getTriplicityArray = (planets: planet[] | null, houses: house[] | null) => {
+  if (!planets || !houses) {
+    // Return an empty array or handle the case where data is not available
+    return [];
+  }
+
+  const dayOrNightValue = dayOrNight(planets, houses);
+  const triplicityArray: string[] = []; // Create an empty array to hold unicode symbols
+
+  // Loop through the Signs array and find the corresponding triplicity planet for each sign
+  Signs.forEach((sign) => {
+    const planetName = dayOrNightValue === "day" ? sign.triplicity_day : sign.triplicity_night;
+    const planet = planets.find((p) => p.name === planetName);
+    triplicityArray.push(planet ? planet.unicode : "");
+  });
+
+  return triplicityArray; // Return the array of unicode symbols
+};
+
 
 export const antisciaPosition = (long: number) => {
   return calculateModulo360becauseJSisStupid(90 - (long - 90));
