@@ -1,7 +1,7 @@
 import {type Path, SVG,type Svg } from "@svgdotjs/svg.js";
 import { useEffect, useRef } from "react";
 import Style from './DrawChart.module.css'
-import { housePositions, signPositions, planetPositions, planetAntiscia, getTriplicityArray } from "~/utils/astroCalc";
+import { housePositions, signPositions, planetPositions, planetAntiscia, getTriplicityArray, getAllFaces } from "~/utils/astroCalc";
 import { type house } from "~/server/api/routers/houses";
 import { type planet } from "~/server/api/routers/planets";
 import { type majorStar } from "~/server/api/routers/stars";
@@ -22,6 +22,7 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
     const centerY = 400;
     const radius = 300;
     const percentages = [60, 80, 84, 88, 92, 100];
+    const circleColors = ['#D3D3D3','#808080', '#D3D3D3', '#D3D3D3', '#D3D3D3', '#808080'];
     const percentageSign = 71;
     // StartHouse, Planets, EndHouse, Term, Face, Triplicity, Sign
     const signSymbols: string[] = Signs.map((sign) => sign.unicode);
@@ -30,6 +31,7 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
     const planetAngles = planetPositions(planetsData.slice(0,8), housesData);
     const signAngles = signPositions(housesData);
     const antisciaAngles = planetAntiscia(planetsData.slice(0,7), housesData);
+    const facesArray = getAllFaces(planetsData);
 
     const createCircle = (draw: Svg, percentages: number[]) => {
         // const draw = SVG(svgContainerRef.current);        
@@ -37,7 +39,7 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
         const strokeWidth = 2;
         for (let i = 0; i < percentages.length; i++) {
             const circleRadius = (percentages[i] / 100) * radius;
-            const strokeColor = `hsl(${i * (360 / percentages.length)}, 100%, 50%)`; // Different stroke color for each circle
+            const strokeColor = circleColors[i];
 
             draw.circle(circleRadius * 2)
                 .center(centerX, centerY)
@@ -69,7 +71,7 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
 
             // Draw the line
             const line = draw.line(startX, startY, endX, endY)
-            line.stroke({ color: '#000000', width: 1 });
+            line.stroke({ color: '#D3D3D3', width: 1 });
         }
     };
 
@@ -90,7 +92,7 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
 
             // Draw the line
             const line = draw.line(startX, startY, endX, endY)
-            line.stroke({ color: '#808080', width: i % 3 === 0 ? 3 : 2 });
+            line.stroke({ color: '#D3D3D3', width: i % 3 === 0 ? 3 : 2 });
         }
     };
     const signLines = (draw: Svg) => {
@@ -101,6 +103,38 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
 
         for (let i = 0; i < angles.length; i++) {
             const angle = (angles[i] + 180) * -1; // Calculate the angle for each line
+
+            // Calculate the start and end point coordinates for each line
+            const startX = centerX + Math.cos(angle * Math.PI / 180) * startRadius;
+            const startY = centerY + Math.sin(angle * Math.PI / 180) * startRadius;
+            const endX = centerX + Math.cos(angle * Math.PI / 180) * endRadius;
+            const endY = centerY + Math.sin(angle * Math.PI / 180) * endRadius;
+
+            // Draw the line
+            draw.line(startX, startY, endX, endY)
+                .stroke({ color: '#808080', width: 2 });
+        }
+    };
+
+    const facesLines = (draw: Svg) => {
+        // const draw = SVG(svgContainerRef.current);
+        const startRadius = (percentages[2] / 100) * radius; // Radius of the second circle
+        const endRadius = (percentages[3] / 100) * radius; // Radius of the sixth circle
+        const stepSize = 10;
+        const faceAngles: number[] = [];
+
+        for (let i = 0; i < signAngles.length; i++) {
+            faceAngles.push(signAngles[i]); // Add the sign angle to the faceAngles array
+            let nextAngle = signAngles[i] + stepSize;
+            for (let j = 0; j < 2; j++) {
+                // Add +10 steps to the next three angles
+                faceAngles.push(nextAngle);
+                nextAngle += stepSize;
+            }
+        }
+
+        for (let i = 0; i < faceAngles.length; i++) {
+            const angle = (faceAngles[i] + 180) * -1; // Calculate the angle for each line
 
             // Calculate the start and end point coordinates for each line
             const startX = centerX + Math.cos(angle * Math.PI / 180) * startRadius;
@@ -220,8 +254,57 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
         const triplicityArray = getTriplicityArray(planetsData, housesData);
         for (let i = 0; i < textPaths.length; i++) {
             const text = draw.text(`${triplicityArray[i]}`)
-                .font({ size: 10 })
-                .fill('#000000');
+                .font({ size: 9 })
+                .fill('#800080');
+
+            // Position the text along the textPath
+            text.path(textPaths[i]);
+        }
+    };
+
+    const createFacesCircleTextPaths = (draw: Svg, centerX: number, centerY: number, radius: number, percentages: number[]) => {
+        const textPaths: Path[] = [];
+    
+        const circleRadius = (((percentages[3] - 3) / 100) * radius);
+        const angleStep = 360 / (facesArray.length);
+        const stepSize = 10;
+        const faceAngles: number[] = [];
+
+        for (let i = 0; i < signAngles.length; i++) {
+            faceAngles.push(signAngles[i]); // Add the sign angle to the faceAngles array
+            let nextAngle = signAngles[i] + stepSize;
+            for (let j = 0; j < 2; j++) {
+                // Add +10 steps to the next three angles
+                faceAngles.push(nextAngle);
+                nextAngle += stepSize;
+            }
+        }
+
+        for (let j = 0; j < (faceAngles.length); j++) {
+            const angle = (((faceAngles[j] + angleStep / 2) + 180) * -1);
+            const startAngleRad = (angle) * (Math.PI / 180);
+    
+            // Calculate the starting and ending coordinates of the arc
+            const startX = centerX + Math.cos(startAngleRad) * circleRadius;
+            const startY = centerY + Math.sin(startAngleRad) * circleRadius;
+            const endX = centerX + Math.cos(startAngleRad + Math.PI) * circleRadius;
+            const endY = centerY + Math.sin(startAngleRad + Math.PI) * circleRadius;
+    
+            // Use sweep-flag 0 to reverse the arc direction
+            const textPath = draw.path(`M ${startX},${startY} A ${circleRadius},${circleRadius} 0 0,1 ${endX},${endY}`)
+                .attr({ fill: 'none', stroke: 'none' });
+    
+            textPaths.push(textPath);
+        }
+    
+        return textPaths;
+    };
+
+    const createFacesTextsonPath = (draw: Svg, textPaths: Path[], planets: string[]) => {
+        for (let i = 0; i < planets.length; i++) {
+            const text = draw.text(`${planets[i]}`)
+                .font({ size: 9 })
+                .fill('#800080');
 
             // Position the text along the textPath
             text.path(textPaths[i]);
@@ -308,8 +391,10 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
         antisciaLines(drawRef);
         degreeLines(drawRef);
         houseLines(drawRef);
-        signLines(drawRef);
         createCircle(drawRef, percentages);
+        facesLines(drawRef);
+        signLines(drawRef);
+        createFacesTextsonPath(drawRef, createFacesCircleTextPaths(drawRef, centerX, centerY, radius, percentages), facesArray);
         createTriplicityTextsonPath(drawRef, createTriplicityCircleTextPaths(drawRef, centerX, centerY, radius, percentages));
         createSignTextsonPath(drawRef, createSignCircleTextPaths(drawRef, centerX, centerY, radius, percentages));
         planetLines(drawRef);
