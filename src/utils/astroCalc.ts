@@ -1,19 +1,19 @@
 import { type house } from "~/server/api/routers/houses";
-import { type planet } from "~/server/api/routers/planets"
+import { type planet } from "~/server/api/routers/planets";
 
 export const Signs = [
-  { sign: "Aries", unicode: '\u2648', angle: 0, domicile: "Mars", exaltation: "Sun", triplicity_day: "Sun", triplicity_night: "Jupiter", detriment: "Venus", fall: "Saturn", terms: [], faces: [] },
-  { sign: "Taurus", unicode: '\u2649', angle: 30, domicile: "Venus", exaltation: "Moon", triplicity_day: "Venus", triplicity_night: "Moon", detriment: "Mars", fall: "none", terms: [], faces: [] },
-  { sign: "Gemini", unicode: '\u264A', angle: 60, domicile: "Mercury", exaltation: "none", triplicity_day: "Saturn", triplicity_night: "Mercury", detriment: "Jupiter", fall: "none", terms: [], faces: [] },
-  { sign: "Cancer", unicode: '\u264B', angle: 90, domicile: "Moon", exaltation: "Jupiter", triplicity_day: "Mars", triplicity_night: "Mars", detriment: "Saturn", fall: "Mars", terms: [], faces: [] },
-  { sign: "Leo", unicode: '\u264C', angle: 120, domicile: "Sun", exaltation: "none", triplicity_day: "Sun", triplicity_night: "Jupiter", detriment: "Saturn", fall: "none", terms: [], faces: [] },
-  { sign: "Virgo", unicode: '\u264D', angle: 150, domicile: "Mercury", exaltation: "Mercury", triplicity_day: "Venus", triplicity_night: "Moon", detriment: "Jupiter", fall: "Venus", terms: [], faces: [] },
-  { sign: "Libra", unicode: '\u264E', angle: 180, domicile: "Venus", exaltation: "Saturn", triplicity_day: "Saturn", triplicity_night: "Mercury", detriment: "Mars", fall: "Sun", terms: [], faces: [] },
-  { sign: "Scorpio", unicode: '\u264F', angle: 210, domicile: "Mars", exaltation: "none", triplicity_day: "Mars", triplicity_night: "Mars", detriment: "Venus", fall: "Moon", terms: [], faces: [] },
-  { sign: "Sagittarius", unicode: '\u2650', angle: 240, domicile: "Jupiter", exaltation: "none", triplicity_day: "Sun", triplicity_night: "Jupiter", detriment: "Mercury", fall: "none", terms: [], faces: [] },
-  { sign: "Capricorn", unicode: '\u2651', angle: 270, domicile: "Saturn", exaltation: "Mars", triplicity_day: "Venus", triplicity_night: "Moon", detriment: "Moon", fall: "Jupiter", terms: [], faces: [] },
-  { sign: "Aquarius", unicode: '\u2652', angle: 300, domicile: "Saturn", exaltation: "none", triplicity_day: "Saturn", triplicity_night: "Mercury", detriment: "Sun", fall: "none", terms: [], faces: [] },
-  { sign: "Pisces", unicode: '\u2653', angle: 330, domicile: "Jupiter", exaltation: "Venus", triplicity_day: "Mars", triplicity_night: "Mars", detriment: "Mercury", fall: "Mercury", terms: [], faces: [] },
+  { sign: "Aries", unicode: '\u2648', angle: 0, domicile: "Mars", exaltation: "Sun", triplicity_day: "Sun", triplicity_night: "Jupiter", detriment: "Venus", fall: "Saturn", terms: [], faces: ["Mars", "Sun", "Venus"] },
+  { sign: "Taurus", unicode: '\u2649', angle: 30, domicile: "Venus", exaltation: "Moon", triplicity_day: "Venus", triplicity_night: "Moon", detriment: "Mars", fall: "none", terms: [], faces: ["Mercury", "Moon", "Saturn"] },
+  { sign: "Gemini", unicode: '\u264A', angle: 60, domicile: "Mercury", exaltation: "none", triplicity_day: "Saturn", triplicity_night: "Mercury", detriment: "Jupiter", fall: "none", terms: [], faces: ["Jupiter", "Mars", "Sun"] },
+  { sign: "Cancer", unicode: '\u264B', angle: 90, domicile: "Moon", exaltation: "Jupiter", triplicity_day: "Mars", triplicity_night: "Mars", detriment: "Saturn", fall: "Mars", terms: [], faces: ["Venus", "Mercury", "Moon"] },
+  { sign: "Leo", unicode: '\u264C', angle: 120, domicile: "Sun", exaltation: "none", triplicity_day: "Sun", triplicity_night: "Jupiter", detriment: "Saturn", fall: "none", terms: [], faces: ["Sun", "Venus", "Mercury"] },
+  { sign: "Virgo", unicode: '\u264D', angle: 150, domicile: "Mercury", exaltation: "Mercury", triplicity_day: "Venus", triplicity_night: "Moon", detriment: "Jupiter", fall: "Venus", terms: [], faces: ["Sun", "Venus", "Mercury"] },
+  { sign: "Libra", unicode: '\u264E', angle: 180, domicile: "Venus", exaltation: "Saturn", triplicity_day: "Saturn", triplicity_night: "Mercury", detriment: "Mars", fall: "Sun", terms: [], faces: ["Moon", "Saturn", "Jupiter"] },
+  { sign: "Scorpio", unicode: '\u264F', angle: 210, domicile: "Mars", exaltation: "none", triplicity_day: "Mars", triplicity_night: "Mars", detriment: "Venus", fall: "Moon", terms: [], faces: ["Mars", "Sun", "Venus"] },
+  { sign: "Sagittarius", unicode: '\u2650', angle: 240, domicile: "Jupiter", exaltation: "none", triplicity_day: "Sun", triplicity_night: "Jupiter", detriment: "Mercury", fall: "none", terms: [], faces: ["Mercury", "Moon", "Saturn"] },
+  { sign: "Capricorn", unicode: '\u2651', angle: 270, domicile: "Saturn", exaltation: "Mars", triplicity_day: "Venus", triplicity_night: "Moon", detriment: "Moon", fall: "Jupiter", terms: [], faces: ["Jupiter", "Mars", "Sun"] },
+  { sign: "Aquarius", unicode: '\u2652', angle: 300, domicile: "Saturn", exaltation: "none", triplicity_day: "Saturn", triplicity_night: "Mercury", detriment: "Sun", fall: "none", terms: [], faces: ["Venus", "Mercury", "Moon"] },
+  { sign: "Pisces", unicode: '\u2653', angle: 330, domicile: "Jupiter", exaltation: "Venus", triplicity_day: "Mars", triplicity_night: "Mars", detriment: "Mercury", fall: "Mercury", terms: [], faces: ["Saturn", "Jupiter", "Mars"] },
 ];
 
 // const aspectType = [
@@ -112,6 +112,24 @@ export const getTriplicityArray = (planets: planet[] | null, houses: house[] | n
   return triplicityArray; // Return the array of unicode symbols
 };
 
+export const getAllFaces = (planets: planet[]) => {
+  const allFaces: string[] = [];
+
+  // Loop through each sign in the Signs array
+  Signs.forEach((sign) => {
+    // Loop through each face name in the sign's faces array
+    sign.faces.forEach((faceName) => {
+      // Find the corresponding PlanetProperties object based on the face name
+      const planet = planets.find((planet) => planet.name === faceName);
+      // If a matching planet is found, add its unicode to the allFaces array
+      if (planet) {
+        allFaces.push(planet.unicode);
+      }
+    });
+  });
+
+  return allFaces; // Return the array of unicode symbols
+};
 
 export const antisciaPosition = (long: number) => {
   return calculateModulo360becauseJSisStupid(90 - (long - 90));
