@@ -11,6 +11,8 @@ import { PlanetsTable } from "./planets";
 import { HousesTable } from "./houses";
 import { Loading } from "~/components/utils/Loading";
 import { ChartSVG } from "~/components/astroChart/DrawChart";
+import { CoordinatesSelection, DateSelection, TimeSelection } from "~/components/input/CustomInputs";
+
 
 const Testpage: NextPage = () => {
   return (
@@ -36,9 +38,9 @@ const NavButtons: React.FC = () => {
   const [planetsData, setPlanetsData] = useState<planet[] | null>(null);
   const [starsData, setStarsData] = useState<majorStar[] | null>(null);
   const [inputType, setInputType] = useState<"decimal" | "dms">("dms");
-  const [decimalValues, setDecimalValues] = useState<{ long: number | undefined; lat: number | undefined }>({ long: undefined, lat: undefined });
-  const [longitude, setLongitude] = useState<{ degrees: number; minutes: number; seconds: number }>({ degrees: 0, minutes: 0, seconds: 0 });
-  const [latitude, setLatitude] = useState<{ degrees: number; minutes: number; seconds: number }>({ degrees: 0, minutes: 0, seconds: 0 });
+  const [decimalValues, setDecimalValues] = useState<{ long: string; lat: string }>({ long: "0", lat: "0" });
+  const [longitude, setLongitude] = useState<{ degrees: string; minutes: string; seconds: string }>({ degrees: "0", minutes: "0", seconds: "0" });
+  const [latitude, setLatitude] = useState<{ degrees: string; minutes: string; seconds: string }>({ degrees: "0", minutes: "0", seconds: "0" });
 
 
 
@@ -48,17 +50,17 @@ const NavButtons: React.FC = () => {
       {
         date: date,
         time: time,
-        long: decimalValues.long || 0,
-        lat: decimalValues.lat || 0,
+        long: Number(decimalValues.long),
+        lat: Number(decimalValues.lat),
         dmsLong: {
-          degrees: longitude.degrees,
-          minutes: longitude.minutes,
-          seconds: longitude.seconds,
+          degrees: Number(longitude.degrees),
+          minutes: Number(longitude.minutes),
+          seconds: Number(longitude.seconds),
         },
         dmsLat: {
-          degrees: latitude.degrees,
-          minutes: latitude.minutes,
-          seconds: latitude.seconds,
+          degrees: Number(latitude.degrees),
+          minutes: Number(latitude.minutes),
+          seconds: Number(latitude.seconds),
         },
         inputType: inputType,
       },
@@ -76,202 +78,53 @@ const NavButtons: React.FC = () => {
     );
     return;
   }
-  const handleLongitudeDecChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const longitudeValue = parseFloat(e.currentTarget.value);
-    setDecimalValues((prevValues) => ({ ...prevValues, long: isNaN(longitudeValue) ? undefined : longitudeValue }));
-  };
-
-  const handleLatitudeDecChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const latitudeValue = parseFloat(e.currentTarget.value);
-    setDecimalValues((prevValues) => ({ ...prevValues, lat: isNaN(latitudeValue) ? undefined : latitudeValue }));
-  };
-
-  const handleLongitudeDegreesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const degreesValue = parseFloat(e.currentTarget.value);
-    setLongitude((prevValues) => ({ ...prevValues, degrees: isNaN(degreesValue) ? 0 : degreesValue }));
-  };
-
-  const handleLongitudeMinutesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const minutesValue = parseFloat(e.currentTarget.value);
-    setLongitude((prevValues) => ({ ...prevValues, minutes: isNaN(minutesValue) ? 0 : minutesValue }));
-  };
-
-  const handleLongitudeSecondsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const secondsValue = parseFloat(e.currentTarget.value);
-    setLongitude((prevValues) => ({ ...prevValues, seconds: isNaN(secondsValue) ? 0 : secondsValue }));
-  };
-
-  const handleLatitudeDegreesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const degreesValue = parseFloat(e.currentTarget.value);
-    setLatitude((prevValues) => ({ ...prevValues, degrees: isNaN(degreesValue) ? 0 : degreesValue }));
-  };
-
-  const handleLatitudeMinutesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const minutesValue = parseFloat(e.currentTarget.value);
-    setLatitude((prevValues) => ({ ...prevValues, minutes: isNaN(minutesValue) ? 0 : minutesValue }));
-  };
-
-  const handleLatitudeSecondsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const secondsValue = parseFloat(e.currentTarget.value);
-    setLatitude((prevValues) => ({ ...prevValues, seconds: isNaN(secondsValue) ? 0 : secondsValue }));
-  };
-
-  const handleInputTypeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const inputType = e.target.value as "decimal" | "dms";
-    setInputType(inputType);
-
-    if (inputType === "decimal") {
-      setLongitude({ degrees: 0, minutes: 0, seconds: 0 });
-      setLatitude({ degrees: 0, minutes: 0, seconds: 0 });
-    } else {
-      setDecimalValues({ long: undefined, lat: undefined });
-    }
-  };
-
 
 
   const [selectedCalc, setSelectedCalc] = useState<"houses" | "planets" | "stars">("houses");
+  const timeSelectionRef = React.useRef<HTMLInputElement>(null);
+  const coordinatesSelectionRef = React.useRef<HTMLInputElement>(null);
 
 
   return (
     <div className={Style.pageContainer}>
       <div className={Style.formContainer}>
         <form onSubmit={(e) => { handleFormSubmit(e) }} className={Style.form}>
-          <h1 className={Style.title}>BirthData</h1>
+          <h1 className={Style.title} onClick={() => console.log(time, longitude)}>BirthData</h1>
           <label htmlFor="date">Date:</label>
-          <input
-            name="date"
-            type="date"
-            value={date.toLocaleDateString("en-ca")}
-            onChange={(e) => {
-              const changeDate = new Date(e.currentTarget.value)
-              changeDate.setHours(changeDate.getHours() + 3)
-              // console.log(changeDate.toLocaleString('en-ca'))
-              setDate(changeDate)
-            }}
+          <DateSelection
+            date={date}
+            setDate={setDate}
+            nextInputRef={timeSelectionRef}
           />
           <label htmlFor="time">Time (UTC):</label>
-          <input
-            name="time"
-            type="time"
-            value={time}
-            onChange={(e) => setTime(e.currentTarget.value)}
+          <TimeSelection
+            time={time}
+            setTime={setTime}
+            nextInputRef={coordinatesSelectionRef}
+            startRef={timeSelectionRef}
           />
-          <label htmlFor="longitude">Longitude:</label>
-          {inputType === "decimal" ? (
-            <input
-              name="longitude"
-              type="number"
-              step="any"
-              value={decimalValues.long ?? ""}
-              min={-180}
-              max={180}
-              onChange={handleLongitudeDecChange}
-            />
-          ) : (
-            <div>
-              <input
-                name="degrees"
-                type="number"
-                value={longitude.degrees}
-                min={-180}
-                max={180}
-                onChange={handleLongitudeDegreesChange}
-                placeholder="°"
-                style={{ width: "50px" }}
-              />
-              <input
-                name="minutes"
-                type="number"
-                value={longitude.minutes}
-                min={0}
-                max={59}
-                onChange={handleLongitudeMinutesChange}
-                placeholder="'"
-                style={{ width: "50px" }}
-              />
-              <input
-                name="seconds"
-                type="number"
-                value={longitude.seconds}
-                min={0}
-                max={59}
-                onChange={handleLongitudeSecondsChange}
-                placeholder='"'
-                style={{ width: "50px" }}
-              />
-            </div>
-          )}
-          <label htmlFor="latitude">Latitude:</label>
-          {inputType === "decimal" ? (
-            <input
-              name="latitude"
-              type="number"
-              step="any"
-              value={decimalValues.lat ?? ""}
-              min={-90}
-              max={90}
-              onChange={handleLatitudeDecChange}
-            />
-          ) : (
-            <div>
-              <input
-                name="degrees"
-                type="number"
-                value={latitude.degrees}
-                min={-90}
-                max={90}
-                onChange={handleLatitudeDegreesChange}
-                placeholder="°"
-                style={{ width: "50px" }}
-              />
-              <input
-                name="minutes"
-                type="number"
-                value={latitude.minutes}
-                min={0}
-                max={59}
-                onChange={handleLatitudeMinutesChange}
-                placeholder="'"
-                style={{ width: "50px" }}
-              />
-              <input
-                name="seconds"
-                type="number"
-                value={latitude.seconds}
-                min={0}
-                max={59}
-                onChange={handleLatitudeSecondsChange}
-                placeholder='"'
-                style={{ width: "50px" }}
-              />
-            </div>
-          )}
-          <div>
-            <label>
-              <input
-                type="radio"
-                name="inputType"
-                value="decimal"
-                checked={inputType === "decimal"}
-                onChange={handleInputTypeChange}
-              />
-              Decimal
-            </label>
-            <label>
-              <input
-                type="radio"
-                name="inputType"
-                value="dms"
-                checked={inputType === "dms"}
-                onChange={handleInputTypeChange}
-              />
-              Degrees, Minutes, Seconds (DMS)
-            </label>
-          </div>
-          <button type="submit">Calculate</button>
+          <CoordinatesSelection
+
+            decimalCord={decimalValues}
+            setDecimalCord={setDecimalValues}
+            latitude={latitude}
+            setLatitude={setLatitude}
+            longitude={longitude}
+            setLongitude={setLongitude}
+            setInputType={setInputType}
+            startRef={coordinatesSelectionRef}
+          />
           {
-            !testCommand.data && <p>You haven&apos;t submit any data</p>
+            testCommand.isLoading
+              ?
+              <div className={Style.loadingContainer}>
+                <Loading width={30} />
+              </div>
+              :
+              <button type="submit" className={Style.submitButton}>Calculate</button>
+          }
+          {
+            !testCommand.data && !testCommand.isLoading && <p>You haven&apos;t submit any data</p>
           }
         </form>
         {testCommand.data && <ChartSVG
@@ -317,23 +170,19 @@ const NavButtons: React.FC = () => {
         {selectedCalc === "stars" && starsData && <FixedStarsTable starsArray={starsData} />} */}
 
         {
-          testCommand.isLoading
+          selectedCalc === "houses" && housesData
             ?
-            <Loading />
+            <HousesTable housesArray={housesData} />
             :
-            selectedCalc === "houses" && housesData
+            selectedCalc === "planets" && planetsData
               ?
-              <HousesTable housesArray={housesData} />
+              <PlanetsTable planetsArray={planetsData} />
               :
-              selectedCalc === "planets" && planetsData
+              selectedCalc === "stars" && starsData
                 ?
-                <PlanetsTable planetsArray={planetsData} />
+                <FixedStarsTable starsArray={starsData} />
                 :
-                selectedCalc === "stars" && starsData
-                  ?
-                  <FixedStarsTable starsArray={starsData} />
-                  :
-                  null
+                null
         }
 
       </div>

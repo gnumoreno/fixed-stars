@@ -1,0 +1,313 @@
+.inputWrapper {
+    width: 100%;
+    position: relative;
+}
+
+.textInputContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    height: 30px;
+    gap: 2px;
+    border: 1px solid var(--GRAY1);
+    width: 130px;
+    border-radius: 4px;
+}
+
+.textInputDay {
+    width: 3ch;
+    border: none;
+    height: 20px;
+    margin: 0;
+    text-align: center;
+    font-size: 14px;
+
+}
+
+.textInputDay:focus,
+.textInput:focus,
+.textInputYear:focus {
+    outline: none;
+    border: none;
+}
+
+.textInput {
+    width: 3ch;
+    border: none;
+    height: 20px;
+    margin: 0;
+    text-align: center;
+    font-size: 14px;
+
+}
+
+
+.textInputYear {
+    width: 5ch;
+    border: none;
+    height: 20px;
+    margin: 0;
+    text-align: center;
+    font-size: 14px;
+
+}
+
+
+.textInputDivider {
+    height: 20px;
+    line-height: 20px;
+    margin: 0;
+    text-align: center;
+    font-size: 14px;
+    margin-left: -2px;
+    margin-right: -2px;
+}
+
+.inputIcon {
+    margin: auto;
+    margin-left: 6px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+
+}
+
+.calendarContainer {
+    position: absolute;
+    left: 0;
+    top: 30px;
+    box-shadow: var(--SHADOW-MD);
+    border-top-right-radius: 12px;
+    border-bottom-right-radius: 12px;
+    border-bottom-left-radius: 12px;
+    overflow: hidden;
+    /* width: 100%; */
+    height: 320px;
+    border: 1px solid var(--GRAY1);
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    z-index: 999;
+    background-color: var(--WHITE1);
+}
+
+/* Time Picker CSS */
+
+
+.timeInputContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    height: 30px;
+    gap: 2px;
+    border: 1px solid var(--GRAY1);
+    width: 86px;
+    border-radius: 4px;
+}
+
+.timeInputDay {
+    width: 3ch;
+    border: none;
+    height: 20px;
+    margin: 0;
+    text-align: center;
+    font-size: 14px;
+
+}
+
+.timeInput:focus {
+    outline: none;
+    border: none;
+}
+
+.timeInput {
+    width: 3ch;
+    border: none;
+    height: 20px;
+    margin: 0;
+    text-align: center;
+    font-size: 14px;
+
+}
+
+
+
+
+.timeInputDivider {
+    height: 20px;
+    line-height: 20px;
+    margin: 0;
+    text-align: center;
+    font-size: 14px;
+    margin-left: -2px;
+    margin-right: -2px;
+}
+
+.inputIcon {
+    margin: auto;
+    margin-left: 6px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+
+}
+
+
+
+.pickerInput {
+    display: none;
+}
+
+.pickerPopup {
+    background-color: var(--BLACK1-30);
+}
+
+/* Coordinates Selection */
+
+.coordContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+
+.coordContainer>label {
+    font-size: 20px;
+    font-weight: 700;
+    margin-top: 8px;
+    margin-bottom: 2px;
+}
+
+.decInput {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    height: 30px;
+    gap: 2px;
+    border: 1px solid var(--GRAY1);
+    width: 8cm;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.decInputBox {
+    position: relative;
+}
+
+.decInputBox::after {
+    content: "°";
+    position: absolute;
+    right: 0px;
+    top: 1px;
+    bottom: 0;
+    margin: auto;
+    padding-right: 6px;
+    font-size: 14px;
+    /* background-color: red; */
+}
+
+.dmsInputContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    height: 30px;
+    gap: 2px;
+    border: 1px solid var(--GRAY1);
+    width: 110px;
+    border-radius: 4px;
+}
+
+.dmsInput {
+    border: none;
+    width: 32px;
+    text-align: center;
+}
+
+.dmsInput:focus {
+    outline: none;
+    border: none;
+}
+
+.dmsInputBox {
+    position: relative;
+}
+
+.dmsInputBox:nth-of-type(1)::after {
+    content: "°";
+    position: absolute;
+    right: -8px;
+    top: 1px;
+    bottom: 0;
+    margin: auto;
+    padding-right: 6px;
+    font-size: 14px;
+    /* background-color: red; */
+}
+
+.dmsInputBox:nth-of-type(2)::after {
+    content: "\'";
+    position: absolute;
+    right: -8px;
+    top: 1px;
+    bottom: 0;
+    margin: auto;
+    padding-right: 6px;
+    font-size: 14px;
+    /* background-color: red; */
+}
+
+.dmsInputBox:nth-of-type(3)::after {
+    content: "\"";
+    position: absolute;
+    right: -8px;
+    top: 1px;
+    bottom: 0;
+    margin: auto;
+    padding-right: 6px;
+    font-size: 14px;
+    /* background-color: red; */
+}
+
+.coordType {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    margin-top: 10px;
+}
+
+.coordTypeOptions {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.coordTypeText {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.coordTypeButton {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 1px solid var(--GRAY1);
+    cursor: pointer;
+    /* padding: 2px; */
+    
+}
+
+.coordTypeButtonActive {
+    background-color: var(--BLUE1);
+    border: none;
+}

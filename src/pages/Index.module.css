@@ -67,6 +67,31 @@
   margin-top: 30px;
 }
 
+.submitButton {
+  width: 100px;
+  height: 30px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  background-color: var(--GREEN4);
+  transition: filter 0.1s ease-in-out;
+  margin-top: 0;
+  margin-bottom: 6px;
+}
+
+.submitButton:hover {
+  filter: brightness(1.1);
+}
+
+.loadingContainer {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
 @media screen and (max-width: 600px) {
   .form {
     width: 350px;
