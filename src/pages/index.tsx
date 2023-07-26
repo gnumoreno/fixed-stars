@@ -128,7 +128,7 @@ const NavButtons: React.FC = () => {
 
       </div>
           {
-            !testCommand.data && !testCommand.isLoading && <p>You haven&apos;t submit any data</p>
+            !testCommand.data && !testCommand.isLoading && <p className={Style.noData}>You haven&apos;t submit any data</p>
           }
         {testCommand.data && <ChartSVG
           housesData={housesData}

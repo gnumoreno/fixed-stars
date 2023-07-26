@@ -97,6 +97,30 @@
     background-color: var(--WHITE1);
 }
 
+@media screen and (max-width:1260px) {
+
+    .textInputContainer {
+        width: 90px;
+    }
+
+    .textInput, .textInputDay, .textInputDivider, .textInputYear {
+        font-size: 10px;
+    }
+
+
+    .inputIcon {
+        margin-left: 0 !important;
+        margin-right: 0;
+    }
+
+    .inputIcon > svg {
+        width: 14px;
+        height: 14px;
+    }
+
+
+}
+
 /* Time Picker CSS */
 
 
@@ -139,9 +163,6 @@
 
 }
 
-
-
-
 .timeInputDivider {
     height: 20px;
     line-height: 20px;
@@ -163,14 +184,25 @@
 
 }
 
-
-
 .pickerInput {
     display: none;
 }
 
 .pickerPopup {
     background-color: var(--BLACK1-30);
+}
+
+@media screen and (max-width:1260px) {
+    
+        .timeInputContainer {
+            width: 60px;
+        }
+    
+        .timeInput, .timeInputDay, .timeInputDivider {
+            font-size: 10px;
+        }
+
+
 }
 
 /* Coordinates Selection */
@@ -323,7 +355,85 @@
 }
 
 @media screen and (max-width:1260px) {
-    .coordContainer > label {
-        font-size: 14px;
+
+    .coordContainer {
+        flex-wrap: wrap;
     }
+
+    .coordContainer > label {
+        font-size: 12px;
+    }
+
+    .decInput {
+        font-size: 10px;
+    }
+
+    .dmsInput {
+        font-size: 10px;
+
+    }
+
+    .dmsInputContainer {
+        width: 96px;
+        padding-left: 2px;
+    }
+
+    .dmsInput:nth-of-type(1) {
+        width: 22px;
+    }
+
+    .dmsInputBox:nth-of-type(1)::after {
+        content: "°";
+        position: absolute;
+        right: -10px;
+        top: 1px;
+        bottom: 0;
+        margin: auto;
+        padding-right: 6px;
+        font-size: 14px;
+        /* background-color: red; */
+    }
+    
+    .dmsInputBox:nth-of-type(2)::after {
+        content: "\'";
+        position: absolute;
+        right: -10px;
+        top: 1px;
+        bottom: 0;
+        margin: auto;
+        padding-right: 6px;
+        font-size: 14px;
+        /* background-color: red; */
+    }
+    
+    .dmsInputBox:nth-of-type(3)::after {
+        content: "\"";
+        position: absolute;
+        right: -10px;
+        top: 1px;
+        bottom: 0;
+        margin: auto;
+        padding-right: 6px;
+        font-size: 14px;
+        /* background-color: red; */
+    }
+
+    .coordType {
+        flex-direction: row;
+        gap: 14px;
+        order: 1;
+    }
+
+    .coordTypeOptions {
+        gap: 2px;
+    }
+    
+    .coordTypeText {
+        font-size: 8px;
+        margin-left: 0;
+    }
+
+    
+
+
 }
