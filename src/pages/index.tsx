@@ -81,31 +81,38 @@ const NavButtons: React.FC = () => {
 
 
   const [selectedCalc, setSelectedCalc] = useState<"houses" | "planets" | "stars">("houses");
+  const timeSelectionRef = React.useRef<HTMLInputElement>(null);
+  const coordinatesSelectionRef = React.useRef<HTMLInputElement>(null);
 
 
   return (
     <div className={Style.pageContainer}>
       <div className={Style.formContainer}>
         <form onSubmit={(e) => { handleFormSubmit(e) }} className={Style.form}>
-          <h1 className={Style.title}>BirthData</h1>
+          <h1 className={Style.title} onClick={() => console.log(time, longitude)}>BirthData</h1>
           <label htmlFor="date">Date:</label>
           <DateSelection
             date={date}
             setDate={setDate}
+            nextInputRef={timeSelectionRef}
           />
           <label htmlFor="time">Time (UTC):</label>
           <TimeSelection
             time={time}
             setTime={setTime}
-
+            nextInputRef={coordinatesSelectionRef}
+            startRef={timeSelectionRef}
           />
           <CoordinatesSelection
+
             decimalCord={decimalValues}
             setDecimalCord={setDecimalValues}
             latitude={latitude}
             setLatitude={setLatitude}
             longitude={longitude}
             setLongitude={setLongitude}
+            setInputType={setInputType}
+            startRef={coordinatesSelectionRef}
           />
           {
             testCommand.isLoading

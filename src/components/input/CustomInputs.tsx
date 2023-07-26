@@ -176,12 +176,14 @@ type TimeSelectionProps = {
     time: string
     setTime: React.Dispatch<React.SetStateAction<string>>
     nextInputRef?: React.RefObject<HTMLInputElement>
+    startRef?: React.RefObject<HTMLInputElement>
 }
 
 export const TimeSelection: React.FC<TimeSelectionProps> = ({
     time,
     setTime,
-    nextInputRef
+    nextInputRef,
+    startRef
 }) => {
 
     const [showPicker, setShowPicker] = useState(false)
@@ -189,47 +191,65 @@ export const TimeSelection: React.FC<TimeSelectionProps> = ({
 
 
     const [hours, setHours] = useState<string>("00")
-    const hoursRef = useRef<HTMLInputElement>(null)
     const handleHoursChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-
+        if (e.currentTarget.value === '') {
+            setHours('00')
+            concatAndSetTime('00', minutes)
+            return
+        }
         if (!isNumeric(e.target.value)) return
         if (e.target.value.length === 2) {
             if (parseInt(e.target.value) > 23) {
                 setHours('23')
-                hoursRef.current?.blur()
+                concatAndSetTime('23', minutes)
+                startRef.current?.blur()
                 minutesRef.current?.focus()
                 return
             } else {
                 setHours(e.target.value)
+                concatAndSetTime(e.target.value, minutes)
                 minutesRef.current?.focus()
                 return
             }
         }
 
         setHours((e.target.value))
+        concatAndSetTime(e.target.value, minutes)
         return
     }
 
     const [minutes, setMinutes] = useState<string>("00")
     const minutesRef = useRef<HTMLInputElement>(null)
     const handleMinutesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-
+        if (e.currentTarget.value === '') {
+            setMinutes('00')
+            concatAndSetTime(hours, '00')
+            return
+        }
+        console.log('handling time change')
         if (!isNumeric(e.target.value)) return
-
+        console.log('is numeric')
         if (e.target.value.length === 2) {
             if (parseInt(e.target.value) > 59) {
                 setMinutes('59')
-
+                concatAndSetTime(hours, '59')
                 nextInputRef?.current?.focus()
                 return
             } else {
                 setMinutes(e.target.value)
+                concatAndSetTime(hours, e.target.value)
                 nextInputRef?.current?.focus()
                 return
             }
         }
         setMinutes(e.target.value)
+        concatAndSetTime(hours, e.target.value)
+        return
 
+    }
+
+    const concatAndSetTime = (hours: string, minutes: string) => {
+        setTime(`${hours}:${minutes}`)
     }
 
     const directlySetTime = (time: string) => {
@@ -277,10 +297,10 @@ export const TimeSelection: React.FC<TimeSelectionProps> = ({
                     value={hours}
                     onClick={(e) => e.currentTarget.select()}
                     onFocus={(e) => e.currentTarget.select()}
-                    onBlur={(e) => { e.currentTarget.value.length === 1 ? setHours(padWithLeadingZeros(parseInt(e.currentTarget.value), 2)) : null }}
+                    onBlur={(e) => { e.currentTarget.value.length < 2 ? setHours(padWithLeadingZeros(parseInt(e.currentTarget.value), 2)) : null }}
                     onChange={handleHoursChange}
                     maxLength={2}
-                    ref={hoursRef}
+                    ref={startRef}
                 />
                 <p className={Style.timeInputDivider}>
                     :
@@ -337,7 +357,9 @@ type CoordinatesSelectionProps = {
     setLatitude: React.Dispatch<React.SetStateAction<{ degrees: string; minutes: string; seconds: string }>>
     longitude: { degrees: string; minutes: string; seconds: string }
     setLongitude: React.Dispatch<React.SetStateAction<{ degrees: string; minutes: string; seconds: string }>>
+    setInputType: React.Dispatch<React.SetStateAction<"decimal" | "dms">>
     nextInputRef?: React.RefObject<HTMLInputElement>
+    startRef?: React.RefObject<HTMLInputElement>
 }
 
 export const CoordinatesSelection: React.FC<CoordinatesSelectionProps> = ({
@@ -347,12 +369,15 @@ export const CoordinatesSelection: React.FC<CoordinatesSelectionProps> = ({
     setLatitude,
     longitude,
     setLongitude,
-    nextInputRef
+    setInputType,
+    nextInputRef,
+    startRef
 }) => {
 
     const [isDMS, setIsDMS] = useState<boolean>(true);
 
     const handleLongitudeDecChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const current = e.currentTarget.value
         if (e.currentTarget.value === "-") {
             setDecimalCord((prevValues) => ({ ...prevValues, long: "-" }));
             return
@@ -361,12 +386,12 @@ export const CoordinatesSelection: React.FC<CoordinatesSelectionProps> = ({
             setDecimalCord((prevValues) => ({ ...prevValues, long: "" }));
             return
         }
-        if (!isNumeric(e.currentTarget.value) || e.currentTarget.value === ' ' || e.currentTarget.value.includes('.') || e.currentTarget.value.includes(',') || e.currentTarget.value.includes(' ')) {
+        if (!isNumeric(e.currentTarget.value) || e.currentTarget.value === ' ' || e.currentTarget.value.includes(',') || e.currentTarget.value.includes(' ')) {
             setDecimalCord((prevValues) => ({ ...prevValues, long: "0" }));
             return
         }
 
-        const degreesValue = parseFloat(e.currentTarget.value);
+        const degreesValue = parseFloat(current);
 
         if (degreesValue > 180) {
             setDecimalCord((prevValues) => ({ ...prevValues, long: "180" }));
@@ -376,11 +401,12 @@ export const CoordinatesSelection: React.FC<CoordinatesSelectionProps> = ({
             setDecimalCord((prevValues) => ({ ...prevValues, long: "-180" }));
             return
         }
-        setDecimalCord((prevValues) => ({ ...prevValues, long: degreesValue.toString() }));
+        setDecimalCord((prevValues) => ({ ...prevValues, long: current }));
 
     };
 
     const handleLatitudeDecChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const current = e.currentTarget.value
         if (e.currentTarget.value === "-") {
             setDecimalCord((prevValues) => ({ ...prevValues, lat: "-" }));
             return
@@ -389,12 +415,12 @@ export const CoordinatesSelection: React.FC<CoordinatesSelectionProps> = ({
             setDecimalCord((prevValues) => ({ ...prevValues, lat: "" }));
             return
         }
-        if (!isNumeric(e.currentTarget.value) || e.currentTarget.value === ' ' || e.currentTarget.value.includes('.') || e.currentTarget.value.includes(',') || e.currentTarget.value.includes(' ')) {
+        if (!isNumeric(e.currentTarget.value) || e.currentTarget.value === ' ' || e.currentTarget.value.includes(',') || e.currentTarget.value.includes(' ')) {
             setDecimalCord((prevValues) => ({ ...prevValues, lat: "0" }));
             return
         }
 
-        const degreesValue = parseFloat(e.currentTarget.value);
+        const degreesValue = parseFloat(current);
 
         if (degreesValue > 180) {
             setDecimalCord((prevValues) => ({ ...prevValues, lat: "180" }));
@@ -404,7 +430,7 @@ export const CoordinatesSelection: React.FC<CoordinatesSelectionProps> = ({
             setDecimalCord((prevValues) => ({ ...prevValues, lat: "-180" }));
             return
         }
-        setDecimalCord((prevValues) => ({ ...prevValues, lat: degreesValue.toString() }));
+        setDecimalCord((prevValues) => ({ ...prevValues, lat: current }));
     };
 
 
@@ -550,9 +576,12 @@ export const CoordinatesSelection: React.FC<CoordinatesSelectionProps> = ({
             setLongitude({ degrees: "0", minutes: "0", seconds: "0" });
             setLatitude({ degrees: "0", minutes: "0", seconds: "0" });
             setIsDMS(true);
+            setInputType("dms");
+
         } else {
             setDecimalCord({ long: "0", lat: "0" });
             setIsDMS(false);
+            setInputType("decimal");
         }
     };
 
@@ -569,6 +598,7 @@ export const CoordinatesSelection: React.FC<CoordinatesSelectionProps> = ({
                         onFocus={(e) => e.currentTarget.select()}
                         onChange={handleLongitudeDecChange}
                         className={Style.decInput}
+                        ref={!isDMS ? startRef : null}
                     // placeholder='0'
                     />
                 </div>
@@ -584,6 +614,7 @@ export const CoordinatesSelection: React.FC<CoordinatesSelectionProps> = ({
                             onBlur={(e) => e.currentTarget.value === "" ? setLongitude((prevValues) => ({ ...prevValues, degrees: "0" })) : null}
                             onChange={handleLongitudeDegreesChange}
                             className={Style.dmsInput}
+                            ref={isDMS ? startRef : null}
                         />
                     </div>
                     <div className={Style.dmsInputBox}>
