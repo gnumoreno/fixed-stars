@@ -385,11 +385,11 @@
     .dmsInputBox:nth-of-type(1)::after {
         content: "°";
         position: absolute;
-        right: -10px;
+        right: -11px;
         top: 1px;
         bottom: 0;
         margin: auto;
-        padding-right: 6px;
+        padding-right: 8px;
         font-size: 14px;
         /* background-color: red; */
     }
@@ -397,11 +397,11 @@
     .dmsInputBox:nth-of-type(2)::after {
         content: "\'";
         position: absolute;
-        right: -10px;
+        right: -11px;
         top: 1px;
         bottom: 0;
         margin: auto;
-        padding-right: 6px;
+        padding-right: 8px;
         font-size: 14px;
         /* background-color: red; */
     }
@@ -409,11 +409,11 @@
     .dmsInputBox:nth-of-type(3)::after {
         content: "\"";
         position: absolute;
-        right: -10px;
+        right: -11px;
         top: 1px;
         bottom: 0;
         margin: auto;
-        padding-right: 6px;
+        padding-right: 8px;
         font-size: 14px;
         /* background-color: red; */
     }
@@ -433,7 +433,7 @@
         margin-left: 0;
     }
 
-    
+
 
 
 }
