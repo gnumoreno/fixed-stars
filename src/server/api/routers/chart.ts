@@ -28,12 +28,10 @@ export const chartRouter = createTRPCRouter({
     })).mutation(async ({ input }) => {
 
         try {
-
             const day = input.date.getDate();
             const month = input.date.getMonth() + 1;
             const year = input.date.getFullYear();
             const formatedDate = `${day}.${month}.${year}`;
-
             const formatedTime = input.time;
             let longitude: number;
             let latitude: number;
@@ -232,6 +230,7 @@ const majorStars = [
     "Denebola",
     "Zosma",
     "Spica",
+    "Acrux",
     "Vindemiatrix",
     "Algorab",
     "Unukalhai",
