@@ -1,6 +1,6 @@
 import { type house } from "~/server/api/routers/houses";
 import { type planet } from "~/server/api/routers/planets";
-import math from 'mathjs';
+import { houseFromDec, decToDMS, type DMSObj } from "~/utils/astroCalc";
 
 export const ArabicPartProperties = [  
     { name: "Spirit", unicode: 'spi', formula: "Ascendant + (Sun - Moon)" },
@@ -65,11 +65,6 @@ function calculateSpirit(ascendant: number, sun: number, moon: number): number {
     return jupiter + (saturn - sun);
   }
   
-  // Function to calculate a single Arabic Part based on its formula
-  function calculateArabicPart(formula: string, ...args: number[]): number {
-    return math.evaluate(formula, { ...args });
-  }
-  
   // Function to calculate all Arabic Parts
   export function getArabicPartArray(
     housesData: house[] | null,
@@ -79,7 +74,7 @@ function calculateSpirit(ascendant: number, sun: number, moon: number): number {
       return [];
     }
   
-    const ascendant = housesData[12]?.ascendant || 0;
+    const ascendant = housesData[12]?.position || 0;
     const sun = planetsData.find(planet => planet.name === "Sun")?.position || 0;
     const moon = planetsData.find(planet => planet.name === "Moon")?.position || 0;
     const mars = planetsData.find(planet => planet.name === "Mars")?.position || 0;
@@ -89,7 +84,7 @@ function calculateSpirit(ascendant: number, sun: number, moon: number): number {
     const arabicParts: arabicPart[] = [];
   
     for (const part of ArabicPartProperties) {
-      let position;
+      let position = 0;
       switch (part.name) {
         case "Spirit":
           position = calculateSpirit(ascendant, sun, moon);
@@ -115,19 +110,26 @@ function calculateSpirit(ascendant: number, sun: number, moon: number): number {
         default:
           position = 0;
       }
-  
-      arabicParts.push({
-        name: part.name,
-        unicode: part.unicode,
-        formula: part.formula,
-        position,
-        sign: "", // You can calculate the sign based on the position if needed.
-        longDegree: 0, // You can calculate the degree based on the position if needed.
-        longMinute: 0, // You can calculate the minute based on the position if needed.
-        longSecond: 0, // You can calculate the second based on the position if needed.
-        house: "", // You can calculate the house based on the position if needed.
-      });
-    }
-  
-    return arabicParts;
+
+    // Calculate the sign, longDegree, longMinute, and longSecond values using decToDMS
+    const dmsObj: DMSObj = decToDMS(position);
+    const { sign, signDegree: degree, signMinute: minute, signSecond: second } = dmsObj;
+
+    // Calculate the house value using houseFromDec
+    const house = houseFromDec(housesData, position);
+
+    arabicParts.push({
+      name: part.name,
+      unicode: part.unicode,
+      formula: part.formula,
+      position,
+      sign,
+      longDegree: degree,
+      longMinute: minute,
+      longSecond: second,
+      house,
+    });
   }
+
+  return arabicParts;
+}
