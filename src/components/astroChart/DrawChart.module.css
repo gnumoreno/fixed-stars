@@ -18,9 +18,61 @@
     aspect-ratio: 1/1;
 }
 
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 800px) {
     .svgContainer {
-        width: 500px;
-        height: 500px;
+        width: 100vw;
+        height: 100vw;
+        margin-top: 70px;
+    }
+  
+}
+
+@media screen and (max-width: 420px) {
+
+    .svgContainer > svg {
+        margin-left: -250px;
+        margin-top: -370px;
+        transform: scale(0.6);
+        overflow: visible;
     }
 }
+
+ @media screen and (max-width: 500px) and (min-width:420px) {
+
+    .svgContainer > svg {
+        margin-left: -250px;
+        margin-top: -370px;
+        transform: scale(0.7);
+        overflow: visible;
+    }
+}
+
+@media screen and (max-width: 550px) and (min-width:500px) {
+
+    .svgContainer > svg {
+        margin-left: -250px;
+        margin-top: -370px;
+        transform: scale(0.8);
+        overflow: visible;
+    }
+} 
+
+@media screen and (max-width: 600px) and (min-width:550px) {
+
+    .svgContainer > svg {
+        margin-left: -220px;
+        margin-top: -370px;
+        transform: scale(0.9);
+        overflow: visible;
+    }
+} 
+
+@media screen and (max-width: 700px) and (min-width:600px) {
+
+    .svgContainer > svg {
+        margin-left: -190px;
+        margin-top: -300px;
+        transform: scale(1);
+        overflow: visible;
+    }
+} 
