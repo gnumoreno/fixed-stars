@@ -1,6 +1,6 @@
 import { type house } from "~/server/api/routers/houses";
 import { type planet } from "~/server/api/routers/planets";
-import { houseFromDec, decToDMS, type DMSObj } from "~/utils/astroCalc";
+import { calculateModulo360becauseJSisStupid, houseFromDec, decToDMS, type DMSObj } from "~/utils/astroCalc";
 
 export const ArabicPartProperties = [  
     { name: "Spirit", unicode: '\u24E2', formula: "Ascendant + (Sun - Moon)" },
@@ -9,7 +9,7 @@ export const ArabicPartProperties = [
     { name: "Love", unicode: '\u24C1', formula: "Ascendant + (Spirit - Fortuna)" },
     { name: "Valor", unicode: '\u24E5', formula: "Ascendant + (Fortuna - Mars)" },
     { name: "Victory", unicode: '\u24CB', formula: "Ascendant + (Jupiter - Spirit)" },
-    { name: "Captivity", unicode: '\u24D2', formula: "Jupiter + (Saturn - Sun)" },
+    { name: "Captivity", unicode: '\u24D2', formula: "Ascendant + (Fortuna - Saturn)" },
   ];
 
   export type arabicPart = {
@@ -61,8 +61,9 @@ function calculateSpirit(ascendant: number, sun: number, moon: number): number {
   }
   
   // Function to calculate Captivity Arabic Part
-  function calculateCaptivity(jupiter: number, sun: number, saturn: number): number {
-    return jupiter + (saturn - sun);
+  function calculateCaptivity(ascendant: number, sun: number, mars: number, saturn: number): number {
+    const fortuna = calculateFortuna(ascendant, sun, mars);
+    return ascendant + (fortuna - saturn);
   }
   
   // Function to calculate all Arabic Parts
@@ -87,32 +88,32 @@ function calculateSpirit(ascendant: number, sun: number, moon: number): number {
       let position = 0;
       switch (part.name) {
         case "Spirit":
-          position = calculateSpirit(ascendant, sun, moon);
+          position = calculateModulo360becauseJSisStupid(calculateSpirit(ascendant, sun, moon) - ascendant);
           break;
         case "Fortuna":
-          position = calculateFortuna(ascendant, sun, moon);
+          position = calculateModulo360becauseJSisStupid(calculateFortuna(ascendant, sun, moon) - ascendant);
           break;
         case "Necessity":
-          position = calculateNecessity(ascendant, sun, moon);
+          position = calculateModulo360becauseJSisStupid(calculateNecessity(ascendant, sun, moon)- ascendant);
           break;
         case "Love":
-          position = calculateLove(ascendant, sun, moon);
+          position = calculateModulo360becauseJSisStupid(calculateLove(ascendant, sun, moon) - ascendant);
           break;
         case "Valor":
-          position = calculateValor(ascendant, sun, mars);
+          position = calculateModulo360becauseJSisStupid(calculateValor(ascendant, sun, mars) - ascendant);
           break;
         case "Victory":
-          position = calculateVictory(ascendant, sun, moon, jupiter);
+          position = calculateModulo360becauseJSisStupid(calculateVictory(ascendant, sun, moon, jupiter) - ascendant);
           break;
         case "Captivity":
-          position = calculateCaptivity(jupiter, sun, saturn);
+          position = calculateModulo360becauseJSisStupid(calculateCaptivity(ascendant, sun, mars, saturn) - ascendant);
           break;
         default:
           position = 0;
       }
 
     // Calculate the sign, longDegree, longMinute, and longSecond values using decToDMS
-    const dmsObj: DMSObj = decToDMS(position);
+    const dmsObj: DMSObj = decToDMS(calculateModulo360becauseJSisStupid(position + ascendant));
     const { sign, signDegree: degree, signMinute: minute, signSecond: second } = dmsObj;
 
     // Calculate the house value using houseFromDec

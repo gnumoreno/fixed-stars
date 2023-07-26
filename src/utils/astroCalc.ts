@@ -24,7 +24,7 @@ export const Signs = [
 //   { name: "oposition", angle: 180, unicode: "u260D" },
 // ];
 
-const calculateModulo360becauseJSisStupid = (value: number) => {
+export const calculateModulo360becauseJSisStupid = (value: number) => {
   const result = value % 360;
   return result >= 0 ? result : result + 360;
 };

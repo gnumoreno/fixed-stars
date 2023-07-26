@@ -377,7 +377,7 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
         const circleRadius = (((percentageSign - 8) / 100) * radius);
     
         for (let j = 0; j < arabicPartPositions.length; j++) {
-            const startAngle = ((arabicPartPositions[j] + 181) * -1);
+            const startAngle = ((arabicPartPositions[j] + 180) * -1);
             const startAngleRad = (startAngle) * (Math.PI / 180);
     
             // Calculate the starting and ending coordinates of the arc
