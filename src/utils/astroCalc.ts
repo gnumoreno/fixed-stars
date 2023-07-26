@@ -171,6 +171,14 @@ export const decToDMS = (long: number) => {
   };
 };
 
+export type DMSObj = {
+  sign: string;
+  signDegree: number;
+  signMinute: number;
+  signSecond: number;
+  angle: number;
+};
+
 export const dmsToDec = (degrees: number, minutes: number, seconds: number): number => {
   const sign = degrees < 0 ? -1 : 1; // Determine the sign of the degrees
   const positiveDegrees = Math.abs(degrees); // Convert degrees to positive value for calculation
