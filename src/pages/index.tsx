@@ -90,6 +90,7 @@ const NavButtons: React.FC = () => {
       <div className={Style.formContainer}>
         <form onSubmit={(e) => { handleFormSubmit(e) }} className={Style.form}>
           <h1 className={Style.title} onClick={() => console.log(time, longitude)}>BirthData</h1>
+          <div className={Style.logoDivider}></div>
           <label htmlFor="date">Date:</label>
           <DateSelection
             date={date}
@@ -123,18 +124,17 @@ const NavButtons: React.FC = () => {
               :
               <button type="submit" className={Style.submitButton}>Calculate</button>
           }
+            </form>
+
+      </div>
           {
             !testCommand.data && !testCommand.isLoading && <p>You haven&apos;t submit any data</p>
           }
-        </form>
         {testCommand.data && <ChartSVG
           housesData={housesData}
           planetsData={planetsData}
           starsData={starsData}
         />}
-
-
-      </div>
 
       <div className={Style.buttonsContainer}>
 
