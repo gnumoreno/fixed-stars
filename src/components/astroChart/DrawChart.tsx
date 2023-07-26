@@ -5,6 +5,7 @@ import { housePositions, signPositions, planetPositions, planetAntiscia, getTrip
 import { type house } from "~/server/api/routers/houses";
 import { type planet } from "~/server/api/routers/planets";
 import { type majorStar } from "~/server/api/routers/stars";
+import { getArabicPartArray } from "~/utils/arabic";
 import { Signs } from "~/utils/astroCalc";
 
 
@@ -21,7 +22,7 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
     const centerX = 400;
     const centerY = 400;
     const radius = 300;
-    const percentages = [60, 80, 84, 88, 92, 100];
+    const percentages = [55, 80, 84, 88, 92, 100];
     const circleColors = ['#D3D3D3','#808080', '#D3D3D3', '#D3D3D3', '#D3D3D3', '#808080'];
     const percentageSign = 71;
     // StartHouse, Planets, EndHouse, Term, Face, Triplicity, Sign
@@ -32,6 +33,9 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
     const signAngles = signPositions(housesData);
     const antisciaAngles = planetAntiscia(planetsData.slice(0,7), housesData);
     const facesArray = getAllFaces(planetsData);
+    const arabicArray = getArabicPartArray(housesData, planetsData);
+    const arabicPartPositions = arabicArray.map(arabicPart => arabicPart.position);
+    const arabicPartSymbols = arabicArray.map(arabicPart => arabicPart.unicode);
 
     const createCircle = (draw: Svg, percentages: number[]) => {
         // const draw = SVG(svgContainerRef.current);        
@@ -173,6 +177,26 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
         const angles = antisciaAngles;
         const endRadius = (percentages[1] / 100) * radius; // Radius of the second circle
         const startRadius = ((percentages[1] - 10) / 100) * radius;
+
+        for (let i = 0; i < angles.length; i++) {
+            const angle = (angles[i] + 180) * -1 ; // Calculate the angle for each line
+            // const angle = (angles[i] - signAngles[0]) * -1; // Calculate the angle for each line
+            const startX = centerX + Math.cos(angle * Math.PI / 180) * startRadius;
+            const startY = centerY + Math.sin(angle * Math.PI / 180) * startRadius;
+            const endX = centerX + Math.cos(angle * Math.PI / 180) * endRadius;
+            const endY = centerY + Math.sin(angle * Math.PI / 180) * endRadius;
+
+            // Draw the line
+            const line = draw.line(startX, startY, endX, endY)
+            line.stroke({ color: '#D3D3D3', width: 1 });
+        }
+    };
+
+    const arabicLines = (draw: Svg) => {
+        // Draw degree marks
+        const angles = arabicPartPositions;
+        const endRadius = (percentages[1] / 100) * radius; // Radius of the second circle
+        const startRadius = ((percentages[1] - 14) / 100) * radius;
 
         for (let i = 0; i < angles.length; i++) {
             const angle = (angles[i] + 180) * -1 ; // Calculate the angle for each line
@@ -347,6 +371,42 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
         }
     };
 
+    const createArabicPartCircleTextPaths = (draw: Svg, centerX: number, centerY: number, radius: number, percentageSign) => {
+        const textPaths: Path[] = [];
+    
+        const circleRadius = (((percentageSign - 8) / 100) * radius);
+    
+        for (let j = 0; j < arabicPartPositions.length; j++) {
+            const startAngle = ((arabicPartPositions[j] + 181) * -1);
+            const startAngleRad = (startAngle) * (Math.PI / 180);
+    
+            // Calculate the starting and ending coordinates of the arc
+            const startX = centerX + Math.cos(startAngleRad) * circleRadius;
+            const startY = centerY + Math.sin(startAngleRad) * circleRadius;
+            const endX = centerX + Math.cos(startAngleRad + Math.PI) * circleRadius;
+            const endY = centerY + Math.sin(startAngleRad + Math.PI) * circleRadius;
+    
+            // Use sweep-flag 0 to reverse the arc direction
+            const textPath = draw.path(`M ${startX},${startY} A ${circleRadius},${circleRadius} 0 0,1 ${endX},${endY}`)
+                .attr({ fill: 'none', stroke: 'none' });
+    
+            textPaths.push(textPath);
+        }
+    
+        return textPaths;
+    };
+
+    const createArabicPartTextsonPath = (draw: Svg, textPaths: Path[]) => {
+        for (let i = 0; i < textPaths.length; i++) {
+            const text = draw.text(`${arabicPartSymbols[i]}`)
+                .font({ size: 9 })
+                .fill('#A9A9A9');
+
+            // Position the text along the textPath
+            text.path(textPaths[i]);
+        }
+    };
+
     const createPlanetCircleTextPaths = (draw: Svg, centerX: number, centerY: number, radius: number, percentageSign) => {
         const textPaths: Path[] = [];
     
@@ -394,6 +454,8 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
         createCircle(drawRef, percentages);
         facesLines(drawRef);
         signLines(drawRef);
+        arabicLines(drawRef);
+        createArabicPartTextsonPath(drawRef, createArabicPartCircleTextPaths(drawRef, centerX, centerY, radius, percentageSign));
         createFacesTextsonPath(drawRef, createFacesCircleTextPaths(drawRef, centerX, centerY, radius, percentages), facesArray);
         createTriplicityTextsonPath(drawRef, createTriplicityCircleTextPaths(drawRef, centerX, centerY, radius, percentages));
         createSignTextsonPath(drawRef, createSignCircleTextPaths(drawRef, centerX, centerY, radius, percentages));
