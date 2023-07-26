@@ -3,13 +3,13 @@ import { type planet } from "~/server/api/routers/planets";
 import { houseFromDec, decToDMS, type DMSObj } from "~/utils/astroCalc";
 
 export const ArabicPartProperties = [  
-    { name: "Spirit", unicode: 'spi', formula: "Ascendant + (Sun - Moon)" },
-    { name: "Fortuna", unicode: 'for', formula: "Ascendant + (Moon - Sun)" },
-    { name: "Necessity", unicode: 'nec', formula: "Ascendant + (Fortuna - Spirit)" },
-    { name: "Love", unicode: 'lov', formula: "Ascendant + (Spirit - Fortuna)" },
-    { name: "Valor", unicode: 'val', formula: "Ascendant + (Fortuna - Mars)" },
-    { name: "Victory", unicode: 'vic', formula: "Ascendant + (Jupiter - Spirit)" },
-    { name: "Captivity", unicode: 'cap', formula: "Jupiter + (Saturn - Sun)" },
+    { name: "Spirit", unicode: '\u24E2', formula: "Ascendant + (Sun - Moon)" },
+    { name: "Fortuna", unicode: '\u2297', formula: "Ascendant + (Moon - Sun)" },
+    { name: "Necessity", unicode: '\u24DD', formula: "Ascendant + (Fortuna - Spirit)" },
+    { name: "Love", unicode: '\u24C1', formula: "Ascendant + (Spirit - Fortuna)" },
+    { name: "Valor", unicode: '\u24E5', formula: "Ascendant + (Fortuna - Mars)" },
+    { name: "Victory", unicode: '\u24CB', formula: "Ascendant + (Jupiter - Spirit)" },
+    { name: "Captivity", unicode: '\u24D2', formula: "Jupiter + (Saturn - Sun)" },
   ];
 
   export type arabicPart = {
