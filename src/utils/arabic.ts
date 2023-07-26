@@ -7,8 +7,8 @@ export const ArabicPartProperties = [
     { name: "Fortuna", unicode: '\u2297', formula: "Ascendant + (Moon - Sun)" },
     { name: "Necessity", unicode: '\u24DD', formula: "Ascendant + (Fortuna - Spirit)" },
     { name: "Love", unicode: '\u24C1', formula: "Ascendant + (Spirit - Fortuna)" },
-    { name: "Valor", unicode: '\u24E5', formula: "Ascendant + (Fortuna - Mars)" },
-    { name: "Victory", unicode: '\u24CB', formula: "Ascendant + (Jupiter - Spirit)" },
+    { name: "Valor", unicode: 'Va', formula: "Ascendant + (Fortuna - Mars)" },
+    { name: "Victory", unicode: 'Vi', formula: "Ascendant + (Jupiter - Spirit)" },
     { name: "Captivity", unicode: '\u24D2', formula: "Ascendant + (Fortuna - Saturn)" },
   ];
 
@@ -49,8 +49,8 @@ function calculateSpirit(ascendant: number, sun: number, moon: number): number {
   }
   
   // Function to calculate Valor Arabic Part
-  function calculateValor(ascendant: number, sun: number, mars: number): number {
-    const fortuna = calculateFortuna(ascendant, sun, mars);
+  function calculateValor(ascendant: number, sun: number, moon: number, mars: number): number {
+    const fortuna = calculateFortuna(ascendant, sun, moon);
     return ascendant + (fortuna - mars);
   }
   
@@ -61,8 +61,8 @@ function calculateSpirit(ascendant: number, sun: number, moon: number): number {
   }
   
   // Function to calculate Captivity Arabic Part
-  function calculateCaptivity(ascendant: number, sun: number, mars: number, saturn: number): number {
-    const fortuna = calculateFortuna(ascendant, sun, mars);
+  function calculateCaptivity(ascendant: number, sun: number, moon: number, saturn: number): number {
+    const fortuna = calculateFortuna(ascendant, sun, moon);
     return ascendant + (fortuna - saturn);
   }
   
@@ -100,13 +100,13 @@ function calculateSpirit(ascendant: number, sun: number, moon: number): number {
           position = calculateModulo360becauseJSisStupid(calculateLove(ascendant, sun, moon) - ascendant);
           break;
         case "Valor":
-          position = calculateModulo360becauseJSisStupid(calculateValor(ascendant, sun, mars) - ascendant);
+          position = calculateModulo360becauseJSisStupid(calculateValor(ascendant, sun, moon, mars) - ascendant);
           break;
         case "Victory":
           position = calculateModulo360becauseJSisStupid(calculateVictory(ascendant, sun, moon, jupiter) - ascendant);
           break;
         case "Captivity":
-          position = calculateModulo360becauseJSisStupid(calculateCaptivity(ascendant, sun, mars, saturn) - ascendant);
+          position = calculateModulo360becauseJSisStupid(calculateCaptivity(ascendant, sun, moon, saturn) - ascendant);
           break;
         default:
           position = 0;
