@@ -1,0 +1,23 @@
+   // Not sure this is needed but I have a feeling it will be.
+      //   const houses = [
+      //     "house  1"
+      //     "house  2"
+      //     "house  3"
+      //     "house  4"
+      //     "house  5"
+      //     "house  6"
+      //     "house  7"
+      //     "house  8"
+      //     "house  9"
+      //     "house 10"
+      //     "house 11"
+      //     "house 12"
+      //     "Ascendant"
+      //     "MC"
+      //     "ARMC"
+      //     "Vertex"
+      //     "equat. Asc."
+      //     "co-Asc. W.Koch"
+      //     "co-Asc Munkasey"
+      //     "Polar Asc."
+      // ];
