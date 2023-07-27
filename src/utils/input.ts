@@ -1,4 +1,7 @@
 export const padWithLeadingZeros = (num: number | string, totalLength: number) => {
+    if(String(num).includes("NaN")) {
+        return "".padStart(totalLength, '0');
+    }
     return String(num).padStart(totalLength, '0');
 }
 

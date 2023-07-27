@@ -41,7 +41,6 @@ export const DateSelection: React.FC<DateSelectionProps> = ({
                 return
             }
         }
-
         setDay((e.target.value))
         return
     }
@@ -61,7 +60,7 @@ export const DateSelection: React.FC<DateSelectionProps> = ({
                 return
             }
         }
-        setMonth(e.target.value)
+        setMonth((e.target.value))
 
     }
 
@@ -70,34 +69,36 @@ export const DateSelection: React.FC<DateSelectionProps> = ({
     const handleYearChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!isNumeric(e.target.value)) return
         if (e.target.value.length === 4) {
-            setYear(e.target.value)
             const date = concatDate(day, month, e.target.value)
             if (isValid(date)) {
-                directlySetDate(date)
+                setYear(e.target.value)
                 yearRef.current?.blur()
+                nextInputRef?.current?.focus()
                 return
             } else {
-                setDay(padWithLeadingZeros(date.getDate(), 2))
-                setMonth(padWithLeadingZeros((date.getMonth() + 1), 2))
-                setYear(padWithLeadingZeros(date.getFullYear(), 4))
+                directlySetDate(new Date())
                 dayRef.current?.focus()
                 return
             }
         }
-        setYear(e.target.value)
+        setYear((e.target.value))
         return
     }
 
     const concatDate = (day: string, month: string, year: string) => {
-        return new Date(`${year}-${month}-${day}T12:00:00.000Z`)
+        return new Date(`${padWithLeadingZeros(year, 4)}-${padWithLeadingZeros(month, 2)}-${padWithLeadingZeros(day,2)}T12:00:00.000Z`)
     }
 
     const directlySetDate = (date: Date) => {
+        console.log(date)
+        if(!isValid(date)) {
+            directlySetDate(new Date())
+            return
+        }
         setDay(padWithLeadingZeros(date.getDate(), 2))
         setMonth(padWithLeadingZeros((date.getMonth() + 1), 2))
         setYear(padWithLeadingZeros(date.getFullYear(), 4))
         setDate(date)
-        nextInputRef?.current?.focus()
     }
 
 
@@ -110,7 +111,7 @@ export const DateSelection: React.FC<DateSelectionProps> = ({
                     value={day}
                     onClick={(e) => e.currentTarget.select()}
                     onFocus={(e) => e.currentTarget.select()}
-                    onBlur={(e) => e.currentTarget.value.length < 2 ? setDay(padWithLeadingZeros(parseInt(e.currentTarget.value), 2)) : null}
+                    onBlur={(e) => directlySetDate(concatDate(e.currentTarget.value, month, year))}
                     onChange={handleDayChange}
                     maxLength={2}
                     ref={dayRef}
@@ -124,7 +125,7 @@ export const DateSelection: React.FC<DateSelectionProps> = ({
                     value={month}
                     onClick={(e) => e.currentTarget.select()}
                     onFocus={(e) => e.currentTarget.select()}
-                    onBlur={(e) => e.currentTarget.value.length < 2 ? setMonth(padWithLeadingZeros(parseInt(e.currentTarget.value), 2)) : null}
+                    onBlur={(e) => directlySetDate(concatDate(day, e.currentTarget.value, year))}
                     onChange={handleMonthChange}
                     maxLength={2}
                     ref={monthRef}
@@ -140,7 +141,7 @@ export const DateSelection: React.FC<DateSelectionProps> = ({
                     max={4}
                     onClick={(e) => e.currentTarget.select()}
                     onFocus={(e) => e.currentTarget.select()}
-                    onBlur={(e) => e.currentTarget.value.length < 4 ? setYear(padWithLeadingZeros(parseInt(e.currentTarget.value), 4)) : null}
+                    onBlur={(e) => directlySetDate(concatDate(day, month, e.currentTarget.value))}
                     onChange={handleYearChange}
                     maxLength={4}
                     ref={yearRef}
@@ -226,9 +227,7 @@ export const TimeSelection: React.FC<TimeSelectionProps> = ({
             concatAndSetTime(hours, '00')
             return
         }
-        console.log('handling time change')
         if (!isNumeric(e.target.value)) return
-        console.log('is numeric')
         if (e.target.value.length === 2) {
             if (parseInt(e.target.value) > 59) {
                 setMinutes('59')
@@ -339,7 +338,6 @@ export const TimeSelection: React.FC<TimeSelectionProps> = ({
                     controllers={false}
                     inputClassName={Style.pickerInput}
                     popupClassName={Style.pickerPopup}
-                    onCancel={() => console.log('cancel')}
 
                 />
             }
