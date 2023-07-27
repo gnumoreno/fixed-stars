@@ -17,15 +17,7 @@ export const Signs = [
   { sign: "Pisces", unicode: '\u2653', angle: 330, domicile: "Jupiter", exaltation: "Venus", triplicity_day: "Mars", triplicity_night: "Mars", detriment: "Mercury", fall: "Mercury", terms: [], faces: ["Saturn", "Jupiter", "Mars"] },
 ];
 
-// const aspectType = [
-//   { name: "conjunction", angle: 0, unicode: "u260C" },
-//   { name: "sextile", angle: 60, unicode: "u26B9" },
-//   { name: "square", angle: 90, unicode: "u25A1" },
-//   { name: "trine", angle: 120, unicode: "u25B3" },
-//   { name: "oposition", angle: 180, unicode: "u260D" },
-// ];
-
-export const calculateModulo360becauseJSisStupid = (value: number) => {
+export const mod360 = (value: number) => {
   const result = value % 360;
   return result >= 0 ? result : result + 360;
 };
@@ -35,7 +27,7 @@ export const signFromDec = (long: number) => {
   let mySign = { sign: "Pisces", angle: 330 };
   let stop = false;
   Signs.forEach((sign, idx) => {
-    if (calculateModulo360becauseJSisStupid(long) < sign.angle && stop === false) {
+    if (mod360(long) < sign.angle && stop === false) {
       mySign = Signs[idx - 1]!;
       stop = true;
     }
@@ -68,15 +60,15 @@ export const ascPos = (houses: house[]) => {
 
 export const housePositions = (houses: house[]) => {  
   const onlyHouses = houses.filter(house => house.name.includes("house"));
-  const drawHousePositions = onlyHouses.map((house) => calculateModulo360becauseJSisStupid(house.position - ascPos(houses))).sort((a, b) => a - b);
+  const drawHousePositions = onlyHouses.map((house) => mod360(house.position - ascPos(houses))).sort((a, b) => a - b);
   return drawHousePositions;
 };
 
 export const findHorizon = (houses: house[]) => {
   const ascendant = houses.find((house) => house.name === "house  1");
   const descendant = houses.find((house) => house.name === "house  7");
-  const ascendantPos = (calculateModulo360becauseJSisStupid(ascendant ? ascendant.position : null) + 3);
-  const descendantPos = (calculateModulo360becauseJSisStupid(descendant ? descendant.position : null) - 3);
+  const ascendantPos = (mod360(ascendant ? ascendant.position : null) + 3);
+  const descendantPos = (mod360(descendant ? descendant.position : null) - 3);
   const horizon = [ascendantPos, descendantPos];
   return horizon;
 };
@@ -86,7 +78,7 @@ export const dayOrNight = (planets: planet[], houses: house[]) => {
   const sunPos = sun ? sun.position : null;
   const horizon = findHorizon(houses);
   let dayOrNight: string;
-  if (calculateModulo360becauseJSisStupid(sunPos) >= horizon[1] || calculateModulo360becauseJSisStupid(sunPos) <= horizon[0]) {
+  if (mod360(sunPos) >= horizon[1] || mod360(sunPos) <= horizon[0]) {
     dayOrNight = "day";
   } else {
     dayOrNight = "night";
@@ -133,29 +125,29 @@ export const getAllFaces = (planets: planet[]) => {
 };
 
 export const antisciaPosition = (long: number) => {
-  return calculateModulo360becauseJSisStupid(90 - (long - 90));
+  return mod360(90 - (long - 90));
 };
 
 export const contraAntisciaPosition = (antiscia: number) => {
-  return calculateModulo360becauseJSisStupid(antiscia + 180);
+  return mod360(antiscia + 180);
 };
 export const signPositions = (houses: house[]) => {  
-  const drawSignPositions = Signs.map((sign) => calculateModulo360becauseJSisStupid(sign.angle - ascPos(houses)));
+  const drawSignPositions = Signs.map((sign) => mod360(sign.angle - ascPos(houses)));
   return drawSignPositions;
 };
 
 export const planetPositions = (planets: planet[], houses: house[]) => {  
-  const drawSignPositions = planets.map((planet) => calculateModulo360becauseJSisStupid(planet.position - ascPos(houses)));
+  const drawSignPositions = planets.map((planet) => mod360(planet.position - ascPos(houses)));
   return drawSignPositions;
 };
 
 export const planetAntiscia = (planets: planet[], houses: house[]) => {
-  const drawAntisciaPositions = planets.map((planet) => calculateModulo360becauseJSisStupid(antisciaPosition(planet.position) - ascPos(houses)));
+  const drawAntisciaPositions = planets.map((planet) => mod360(antisciaPosition(planet.position) - ascPos(houses)));
   return drawAntisciaPositions;
 };
 
 export const planetContraAntiscia = (planets: planet[], houses: house[]) => {
-  const drawContraAntisciaPositions = planets.map((planet) => calculateModulo360becauseJSisStupid(contraAntisciaPosition(planet.position) - ascPos(houses)));
+  const drawContraAntisciaPositions = planets.map((planet) => mod360(contraAntisciaPosition(planet.position) - ascPos(houses)));
   return drawContraAntisciaPositions;
 };
 

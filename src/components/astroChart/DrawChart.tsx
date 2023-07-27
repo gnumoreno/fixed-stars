@@ -336,13 +336,14 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
     };
 
     const createAntisciaPlanetCircleTextPaths = (draw: Svg, centerX: number, centerY: number, radius: number, percentageSign) => {
-        const textPaths: Path[] = [];
+        const textPaths: [Path, number][] = [];
     
         const circleRadius = (((percentageSign - 4) / 100) * radius);
     
         for (let j = 0; j < antisciaAngles.length; j++) {
             const startAngle = ((antisciaAngles[j] + 181) * -1);
             const startAngleRad = (startAngle) * (Math.PI / 180);
+            const rotate = (antisciaAngles[j] + 90);
     
             // Calculate the starting and ending coordinates of the arc
             const startX = centerX + Math.cos(startAngleRad) * circleRadius;
@@ -354,31 +355,35 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
             const textPath = draw.path(`M ${startX},${startY} A ${circleRadius},${circleRadius} 0 0,1 ${endX},${endY}`)
                 .attr({ fill: 'none', stroke: 'none' });
     
-            textPaths.push(textPath);
+            textPaths.push([textPath, rotate]);
+
         }
     
         return textPaths;
     };
 
-    const createAntisciaPlanetTextsonPath = (draw: Svg, textPaths: Path[]) => {
+    const createAntisciaPlanetTextsonPath = (draw: Svg, textPaths: [Path, number][]) => {
         for (let i = 0; i < textPaths.length; i++) {
             const text = draw.text(`${planetSymbols[i]}`)
                 .font({ size: 10 })
                 .fill('#A9A9A9');
 
             // Position the text along the textPath
-            text.path(textPaths[i]);
+            text.path(textPaths[i][0]); 
+            // @ts-ignore
+            text.animate(1).rotate(textPaths[i][1], text.cx(), text.cy()); // eslint-disable-line 
         }
     };
 
     const createArabicPartCircleTextPaths = (draw: Svg, centerX: number, centerY: number, radius: number, percentageSign) => {
-        const textPaths: Path[] = [];
+        const textPaths: [Path, number][] = [];
     
         const circleRadius = (((percentageSign - 8) / 100) * radius);
     
         for (let j = 0; j < arabicPartPositions.length; j++) {
-            const startAngle = ((arabicPartPositions[j] + 180) * -1);
+            const startAngle = ((arabicPartPositions[j] + 181) * -1);
             const startAngleRad = (startAngle) * (Math.PI / 180);
+            const rotate = (arabicPartPositions[j] + 90);
     
             // Calculate the starting and ending coordinates of the arc
             const startX = centerX + Math.cos(startAngleRad) * circleRadius;
@@ -390,30 +395,34 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
             const textPath = draw.path(`M ${startX},${startY} A ${circleRadius},${circleRadius} 0 0,1 ${endX},${endY}`)
                 .attr({ fill: 'none', stroke: 'none' });
     
-            textPaths.push(textPath);
+            textPaths.push([textPath, rotate]);
         }
     
         return textPaths;
     };
 
-    const createArabicPartTextsonPath = (draw: Svg, textPaths: Path[]) => {
+    const createArabicPartTextsonPath = (draw: Svg, textPaths: [Path, number][]) => {
         for (let i = 0; i < textPaths.length; i++) {
             const text = draw.text(`${arabicPartSymbols[i]}`)
                 .font({ size: 9 })
                 .fill('#A9A9A9');
 
             // Position the text along the textPath
-            text.path(textPaths[i]);
+            text.path(textPaths[i][0]);
+            // @ts-ignore
+            text.animate(1).rotate(textPaths[i][1], text.cx(), text.cy()); // eslint-disable-line 
+
         }
     };
 
     const createPlanetCircleTextPaths = (draw: Svg, centerX: number, centerY: number, radius: number, percentageSign) => {
-        const textPaths: Path[] = [];
+        const textPaths: [Path, number][] = [];
     
-        const circleRadius = ((percentageSign / 100) * radius);
+        const circleRadius = (((percentageSign -1 ) / 100) * radius);
     
         for (let j = 0; j < planetAngles.length; j++) {
             const startAngle = ((planetAngles[j] + 181) * -1);
+            const rotate = (planetAngles[j] + 90);
             const startAngleRad = (startAngle) * (Math.PI / 180);
     
             // Calculate the starting and ending coordinates of the arc
@@ -426,20 +435,22 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
             const textPath = draw.path(`M ${startX},${startY} A ${circleRadius},${circleRadius} 0 0,1 ${endX},${endY}`)
                 .attr({ fill: 'none', stroke: 'none' });
     
-            textPaths.push(textPath);
+            textPaths.push([textPath, rotate]);
         }
     
         return textPaths;
     };
 
-    const createPlanetTextsonPath = (draw: Svg, textPaths: Path[]) => {
+    const createPlanetTextsonPath = (draw: Svg, textPaths: [Path, number][]) => {
         for (let i = 0; i < textPaths.length; i++) {
             const text = draw.text(`${planetSymbols[i]}`)
-                .font({ size: 18 })
+                .font({ size: 20 })
                 .fill('#4682B4');
 
             // Position the text along the textPath
-            text.path(textPaths[i]);
+            text.path(textPaths[i][0]);
+            // @ts-ignore
+            text.animate(1).rotate(textPaths[i][1], text.cx(), text.cy()); // eslint-disable-line 
         }
     };
 

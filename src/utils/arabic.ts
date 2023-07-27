@@ -1,4 +1,4 @@
-import { calculateModulo360becauseJSisStupid, houseFromDec, decToDMS, type DMSObj } from "~/utils/astroCalc";
+import { mod360, houseFromDec, decToDMS, type DMSObj } from "~/utils/astroCalc";
 import type { house } from "./external/houses/types";
 import type { planet } from "./external/planets/types";
 
@@ -88,32 +88,32 @@ function calculateSpirit(ascendant: number, sun: number, moon: number): number {
       let position = 0;
       switch (part.name) {
         case "Spirit":
-          position = calculateModulo360becauseJSisStupid(calculateSpirit(ascendant, sun, moon) - ascendant);
+          position = mod360(calculateSpirit(ascendant, sun, moon) - ascendant);
           break;
         case "Fortuna":
-          position = calculateModulo360becauseJSisStupid(calculateFortuna(ascendant, sun, moon) - ascendant);
+          position = mod360(calculateFortuna(ascendant, sun, moon) - ascendant);
           break;
         case "Necessity":
-          position = calculateModulo360becauseJSisStupid(calculateNecessity(ascendant, sun, moon)- ascendant);
+          position = mod360(calculateNecessity(ascendant, sun, moon)- ascendant);
           break;
         case "Love":
-          position = calculateModulo360becauseJSisStupid(calculateLove(ascendant, sun, moon) - ascendant);
+          position = mod360(calculateLove(ascendant, sun, moon) - ascendant);
           break;
         case "Valor":
-          position = calculateModulo360becauseJSisStupid(calculateValor(ascendant, sun, moon, mars) - ascendant);
+          position = mod360(calculateValor(ascendant, sun, moon, mars) - ascendant);
           break;
         case "Victory":
-          position = calculateModulo360becauseJSisStupid(calculateVictory(ascendant, sun, moon, jupiter) - ascendant);
+          position = mod360(calculateVictory(ascendant, sun, moon, jupiter) - ascendant);
           break;
         case "Captivity":
-          position = calculateModulo360becauseJSisStupid(calculateCaptivity(ascendant, sun, moon, saturn) - ascendant);
+          position = mod360(calculateCaptivity(ascendant, sun, moon, saturn) - ascendant);
           break;
         default:
           position = 0;
       }
 
     // Calculate the sign, longDegree, longMinute, and longSecond values using decToDMS
-    const dmsObj: DMSObj = decToDMS(calculateModulo360becauseJSisStupid(position + ascendant));
+    const dmsObj: DMSObj = decToDMS(mod360(position + ascendant));
     const { sign, signDegree: degree, signMinute: minute, signSecond: second } = dmsObj;
 
     // Calculate the house value using houseFromDec
