@@ -1,5 +1,5 @@
-import { house } from "./external/houses/types";
-import { planet } from "./external/planets/types";
+import type { house } from "./external/houses/types";
+import type { planet } from "./external/planets/types";
 
 
 export const Signs = [

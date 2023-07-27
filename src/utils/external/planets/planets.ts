@@ -53,5 +53,4 @@ export const getPlanetsData = async (
         } as planet;
         return result
     })
-
 }

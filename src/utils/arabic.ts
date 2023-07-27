@@ -1,6 +1,6 @@
 import { calculateModulo360becauseJSisStupid, houseFromDec, decToDMS, type DMSObj } from "~/utils/astroCalc";
-import { house } from "./external/houses/types";
-import { planet } from "./external/planets/types";
+import type { house } from "./external/houses/types";
+import type { planet } from "./external/planets/types";
 
 export const ArabicPartProperties = [  
     { name: "Spirit", unicode: '\u24E2', formula: "Ascendant + (Sun - Moon)" },
