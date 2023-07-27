@@ -28,7 +28,6 @@
     "react-ios-time-picker": "^0.2.2",
     "react-time-picker-typescript": "^1.2.3",
     "superjson": "1.12.4",
-    "svg.js": "^2.7.1",
     "zod": "^3.21.4"
   },
   "devDependencies": {
