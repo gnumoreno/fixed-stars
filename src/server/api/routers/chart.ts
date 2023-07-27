@@ -1,11 +1,10 @@
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { getErrorMessage } from "~/utils/error";
-import { type majorStar, type majorStarResponse } from "./stars";
-import { decToDMS, dmsToDec, houseFromDec } from "~/utils/astroCalc";
-import { type planet, type planetAPI, type PlanetProperties } from "./planets";
-import { type house, type houseAPI } from "./houses";
-import { planets } from "~/server/api/routers/planets";
+import { dmsToDec } from "~/utils/astroCalc";
+import { getStarsData } from "~/utils/external/stars/stars";
+import { getHousesData } from "~/utils/external/houses/houses";
+import { getPlanetsData } from "~/utils/external/planets/planets";
 export const GO_API_ENDPOINT = "http://18.231.181.140:8000"
 export const chartRouter = createTRPCRouter({
 
@@ -45,131 +44,23 @@ export const chartRouter = createTRPCRouter({
             } else {
                 // Raise an error however the fuck we do this here
             }
+
             const alt = 0
             const houseSystem = "P"
 
-            // houses
-            const housesURL = `${GO_API_ENDPOINT}/run-houses?birthdate=${formatedDate}&utctime=${formatedTime}&latitude=${latitude}&longitude=${longitude}&altitude=${alt}&housesystem=${houseSystem}`
-            const housesArrayResponse = await fetch(housesURL, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            })
-
-            const housesArray = await housesArrayResponse.json() as houseAPI[]
-
-                const myhouses = housesArray.map((house) => {
-                    const long = parseFloat(house.longitude);
-                    const tmp = decToDMS(long);
-                    const result = {
-                        name: house.name,
-                        position: long,
-                        sign: tmp.sign,
-                        longDegree: tmp.signDegree,
-                        longMinute: tmp.signMinute,
-                        longSecond: tmp.signSecond,
-                    } as house;
-                    return result
-                })
-
-
-            // get Stars
-
-
-            const starsURL = `${GO_API_ENDPOINT}/run-star?birthdate=${formatedDate}&utctime=${input.time}&stars=${majorStars.join(',')}`
-
-            const starsArrayResponse = await fetch(starsURL, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            })
-
-            const starsArray = await starsArrayResponse.json() as majorStarResponse[];
-
-            const starsOutput = starsArray.map(star => {
-                const tmp = decToDMS(parseFloat(star.longitude));
-                // const long = parseFloat(star.longitude);
-                const longitude = parseFloat(star.longitude);
-                const starHouse = houseFromDec(myhouses, longitude);
-                const result: majorStar = {
-                    star: star.starName,
-                    constellation: star.altName,
-                    position: longitude,
-                    distance: parseFloat(star.distance),
-                    house: Number(starHouse),
-                    lat: parseFloat(star.latitude),
-                    magnitude: parseFloat(star.magnitude),
-                    speed: parseFloat(star.speed),
-                    sign: tmp.sign,
-                    longDegree: tmp.signDegree,
-                    longMinute: tmp.signMinute,
-                    longSecond: tmp.signSecond,
-
-                }
-
-                return result
-            })
-            // end Stars
-
-
-            // get Planets
-            const planetsURL = `${GO_API_ENDPOINT}/run-planets?birthdate=${formatedDate}&utctime=${formatedTime}&latitude=${latitude}&longitude=${longitude}&altitude=${alt}&housesystem=${houseSystem}`
-
-            const planetsArrayResponse = await fetch(planetsURL, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            })
-
-            const planetsArray = await planetsArrayResponse.json() as planetAPI[]
-
-            const myPlanets = planetsArray.map((planet) => {
-                const long = parseFloat(planet.longitude);
-                const tmp = decToDMS(long);
-                const house = houseFromDec(myhouses, long)
-                const planetProps = planets.find((p) => p.name === planet.name) || {
-                    unicode: "",
-                    temperature: "",
-                    humidity: "",
-                    element: "",
-                  } as PlanetProperties;
-
-                const result = {
-                    name: planet.name,
-                    position: long,
-                    sign: tmp.sign,
-                    longDegree: tmp.signDegree,
-                    longMinute: tmp.signMinute,
-                    longSecond: tmp.signSecond,
-                    house: house,
-                    lat: parseFloat(planet.latitude),
-                    speed: parseFloat(planet.dailySpeed),
-                    unicode: planetProps.unicode,
-                    temperature: planetProps.temperature,
-                    humidity: planetProps.humidity,
-                    element: planetProps.element,
-                } as planet;
-                return result
-            })
-            // end Planets
-
-
+            const housesData = await getHousesData(formatedDate, formatedTime, latitude, longitude, alt, houseSystem)
+            const starsData = await getStarsData(formatedDate, formatedTime, housesData);
+            const planetsData = await getPlanetsData(formatedDate, formatedTime, latitude, longitude, alt, houseSystem, housesData)
 
             return {
                 status: 200,
                 elements: {
-                    houses: myhouses,
-                    stars: starsOutput,
-                    planets: myPlanets,
+                    houses: housesData,
+                    stars: starsData,
+                    planets: planetsData,
                 },
                 error: undefined as undefined
             }
-
-
-
 
         } catch (error) {
             return {
@@ -192,60 +83,3 @@ export const chartRouter = createTRPCRouter({
 
 
 });
-
-const majorStars = [
-    "Menkar",
-    "BatenKaitos",
-    "DenebKaitos",
-    "Difda",
-    "Scheat",
-    "Markab",
-    "Algenib",
-    "Enif",
-    "Hamal",
-    "Sheratan",
-    "Aldebaran",
-    "ElNath",
-    "AlHecka",
-    "Alcyone",
-    "Pollux",
-    "Castor",
-    "Sirius",
-    "Procyon",
-    "Praesepe",
-    "AsellusAustralis",
-    "AsellusBorealis",
-    "Betelgeuse",
-    "Bellatrix",
-    "Rigel",
-    "Saiph",
-    "Alpheratz",
-    "Almach",
-    "Mirach",
-    "Algol",
-    "Mirfak",
-    "Capella",
-    "Menkalinan",
-    "Regulus",
-    "Denebola",
-    "Zosma",
-    "Spica",
-    "Acrux",
-    "Vindemiatrix",
-    "Algorab",
-    "Unukalhai",
-    "Toliman",
-    "Agena",
-    "Zubenelgenubi",
-    "Zubeneshamali",
-    "Antares",
-    "Shaula",
-    "Aculeus",
-    "Acumen",
-    "Alphard",
-    "Rasalgethi",
-    "Ascella",
-    "Facies",
-    "Nunki",
-    "Vega",
-];

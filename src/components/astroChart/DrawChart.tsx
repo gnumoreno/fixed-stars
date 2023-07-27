@@ -2,11 +2,11 @@ import {type Path, SVG,type Svg } from "@svgdotjs/svg.js";
 import { useEffect, useRef } from "react";
 import Style from './DrawChart.module.css'
 import { housePositions, signPositions, planetPositions, planetAntiscia, getTriplicityArray, getAllFaces } from "~/utils/astroCalc";
-import { type house } from "~/server/api/routers/houses";
-import { type planet } from "~/server/api/routers/planets";
-import { type majorStar } from "~/server/api/routers/stars";
 import { getArabicPartArray } from "~/utils/arabic";
 import { Signs } from "~/utils/astroCalc";
+import type { house } from "~/utils/external/houses/types";
+import type { planet } from "~/utils/external/planets/types";
+import type { majorStar } from "~/utils/external/stars/types";
 
 
 type ChartSVGProps = {

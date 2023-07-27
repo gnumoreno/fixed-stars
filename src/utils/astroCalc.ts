@@ -1,5 +1,6 @@
-import { type house } from "~/server/api/routers/houses";
-import { type planet } from "~/server/api/routers/planets";
+import { house } from "./external/houses/types";
+import { planet } from "./external/planets/types";
+
 
 export const Signs = [
   { sign: "Aries", unicode: '\u2648', angle: 0, domicile: "Mars", exaltation: "Sun", triplicity_day: "Sun", triplicity_night: "Jupiter", detriment: "Venus", fall: "Saturn", terms: [], faces: ["Mars", "Sun", "Venus"] },

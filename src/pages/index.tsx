@@ -3,15 +3,13 @@ import React, { useState } from "react";
 import { api } from "~/utils/api";
 import Style from "./Index.module.css";
 import Head from "next/head";
-import { type majorStar } from "~/server/api/routers/stars";
-import { type house } from "~/server/api/routers/houses";
-import { type planet } from "~/server/api/routers/planets";
-import { FixedStarsTable } from "./stars";
-import { PlanetsTable } from "./planets";
-import { HousesTable } from "./houses";
 import { Loading } from "~/components/utils/Loading";
 import { ChartSVG } from "~/components/astroChart/DrawChart";
 import { CoordinatesSelection, DateSelection, TimeSelection } from "~/components/input/CustomInputs";
+import type { house } from "~/utils/external/houses/types";
+import type { planet } from "~/utils/external/planets/types";
+import type{ majorStar } from "~/utils/external/stars/types";
+import { FixedStarsTable, HousesTable, PlanetsTable } from "~/components/tables/Tables";
 
 
 const Testpage: NextPage = () => {
@@ -190,3 +188,4 @@ const NavButtons: React.FC = () => {
     </div>
   )
 }
+
