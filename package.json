@@ -32,7 +32,6 @@
     "zod": "^3.21.4"
   },
   "devDependencies": {
-    "@types/date-fns": "^2.6.0",
     "@types/eslint": "^8.44.0",
     "@types/node": "^20.4.1",
     "@types/react": "^18.2.14",
