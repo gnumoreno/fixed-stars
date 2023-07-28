@@ -24,6 +24,8 @@ export type planetAPI = {
 export type planet = {
     name: string;
     position: number;
+    angle: number;
+    orb: number;
     sign: string;
     longDegree: number;
     longMinute: number;

@@ -1,4 +1,4 @@
-import { mod360, houseFromDec, decToDMS, type DMSObj } from "~/utils/astroCalc";
+import { mod360, houseFromDec, decToDMS, type DMSObj, getAngle } from "~/utils/astroCalc";
 import type { house } from "./external/houses/types";
 import type { planet } from "./external/planets/types";
 
@@ -17,6 +17,8 @@ export const ArabicPartProperties = [
     unicode: string;
     formula: string;
     position: number;
+    angle: number;
+    orb: number;
     sign: string;
     longDegree: number;
     longMinute: number;
@@ -75,7 +77,7 @@ function calculateSpirit(ascendant: number, sun: number, moon: number): number {
       return [];
     }
   
-    const ascendant = housesData[12]?.position || 0;
+    const ascendant = housesData[0]?.position || 0;
     const sun = planetsData.find(planet => planet.name === "Sun")?.position || 0;
     const moon = planetsData.find(planet => planet.name === "Moon")?.position || 0;
     const mars = planetsData.find(planet => planet.name === "Mars")?.position || 0;
@@ -88,25 +90,25 @@ function calculateSpirit(ascendant: number, sun: number, moon: number): number {
       let position = 0;
       switch (part.name) {
         case "Spirit":
-          position = mod360(calculateSpirit(ascendant, sun, moon) - ascendant);
+          position = mod360(calculateSpirit(ascendant, sun, moon));
           break;
         case "Fortuna":
-          position = mod360(calculateFortuna(ascendant, sun, moon) - ascendant);
+          position = mod360(calculateFortuna(ascendant, sun, moon));
           break;
         case "Necessity":
-          position = mod360(calculateNecessity(ascendant, sun, moon)- ascendant);
+          position = mod360(calculateNecessity(ascendant, sun, moon));
           break;
         case "Love":
-          position = mod360(calculateLove(ascendant, sun, moon) - ascendant);
+          position = mod360(calculateLove(ascendant, sun, moon));
           break;
         case "Valor":
-          position = mod360(calculateValor(ascendant, sun, moon, mars) - ascendant);
+          position = mod360(calculateValor(ascendant, sun, moon, mars));
           break;
         case "Victory":
-          position = mod360(calculateVictory(ascendant, sun, moon, jupiter) - ascendant);
+          position = mod360(calculateVictory(ascendant, sun, moon, jupiter));
           break;
         case "Captivity":
-          position = mod360(calculateCaptivity(ascendant, sun, moon, saturn) - ascendant);
+          position = mod360(calculateCaptivity(ascendant, sun, moon, saturn));
           break;
         default:
           position = 0;
@@ -123,12 +125,14 @@ function calculateSpirit(ascendant: number, sun: number, moon: number): number {
       name: part.name,
       unicode: part.unicode,
       formula: part.formula,
-      position,
-      sign,
+      position: position,
+      angle: getAngle(position, ascendant),
+      orb: 3,
+      sign: sign,
       longDegree: degree,
       longMinute: minute,
       longSecond: second,
-      house,
+      house: house,
     });
   }
 

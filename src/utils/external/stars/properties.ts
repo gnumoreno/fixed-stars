@@ -1,4 +1,4 @@
-export const majorStars = [
+export const starProperties = [
     "Menkar",
     "BatenKaitos",
     "DenebKaitos",
