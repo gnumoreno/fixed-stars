@@ -19,11 +19,13 @@ export const Signs = [
 
 export const mod360 = (value: number) => {
   const result = value % 360;
+  if(result === -0){
+    return 0;
+  }
   return result >= 0 ? result : result + 360;
 };
 
-
-export const signFromDec = (long: number) => {
+export const signFromPos = (long: number) => {
   let mySign = { sign: "Pisces", angle: 330 };
   let stop = false;
   Signs.forEach((sign, idx) => {
@@ -152,7 +154,7 @@ export const planetContraAntiscia = (planets: planet[], houses: house[]) => {
 };
 
 export const decToDMS = (long: number) => {
-  const mySign = signFromDec(long);
+  const mySign = signFromPos(long);
   const signDegree = long - mySign.angle;
   const signMinute = (signDegree - Math.floor(signDegree)) * 60;
   const signSecond = (signMinute - Math.floor(signMinute)) * 60;
@@ -178,3 +180,8 @@ export const dmsToDec = (degrees: number, minutes: number, seconds: number): num
   const decimal = positiveDegrees + (minutes / 60) + (seconds / 3600);
   return decimal * sign; // Apply the sign to the calculated decimal value
 };
+
+export const getAngle = (position:number, ascendant: number) => {
+
+  return mod360(((position - ascendant) + 180) * -1);
+}

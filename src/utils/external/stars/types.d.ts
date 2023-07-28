@@ -1,4 +1,4 @@
-export type majorStarResponse = {
+export type starAPI = {
     starName: string;
     longitude: string;
     latitude: string;
@@ -9,10 +9,11 @@ export type majorStarResponse = {
     altName: string;
 }
 
-export type majorStar = {
-    star: string;
+export type star = {
+    name: string;
     constellation: string;
     position: number;
+    angle: number;
     sign: string;
     longDegree: number;
     longMinute: number;
@@ -22,4 +23,5 @@ export type majorStar = {
     house: number;
     distance: number;
     magnitude: number;
+    orb: 1;
   }

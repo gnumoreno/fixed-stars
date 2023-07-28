@@ -6,13 +6,13 @@ import { getArabicPartArray } from "~/utils/arabic";
 import { Signs } from "~/utils/astroCalc";
 import type { house } from "~/utils/external/houses/types";
 import type { planet } from "~/utils/external/planets/types";
-import type { majorStar } from "~/utils/external/stars/types";
+import type { star } from "~/utils/external/stars/types";
 
 
 type ChartSVGProps = {
     housesData: house[] | null;
     planetsData: planet[] | null;
-    starsData: majorStar[] | null;
+    starsData: star[] | null;
 }
 
 export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, starsData }) => {
@@ -27,14 +27,14 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
     const percentageSign = 71;
     // StartHouse, Planets, EndHouse, Term, Face, Triplicity, Sign
     const signSymbols: string[] = Signs.map((sign) => sign.unicode);
-    const planetSymbols = planetsData.map((planet) => planet.unicode);
     const houseAngles = housePositions(housesData);
-    const planetAngles = planetPositions(planetsData.slice(0,8), housesData);
     const signAngles = signPositions(housesData);
+    const planetSymbols = planetsData.map((planet) => planet.unicode);
+    const planetAngles = planetPositions(planetsData, housesData);
     const antisciaAngles = planetAntiscia(planetsData.slice(0,7), housesData);
     const facesArray = getAllFaces(planetsData);
     const arabicArray = getArabicPartArray(housesData, planetsData);
-    const arabicPartPositions = arabicArray.map(arabicPart => arabicPart.position);
+    const arabicPartPositions = arabicArray.map(arabicPart => arabicPart.angle);
     const arabicPartSymbols = arabicArray.map(arabicPart => arabicPart.unicode);
 
     const createCircle = (draw: Svg, percentages: number[]) => {
@@ -199,7 +199,7 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
         const startRadius = ((percentages[1] - 14) / 100) * radius;
 
         for (let i = 0; i < angles.length; i++) {
-            const angle = (angles[i] + 180) * -1 ; // Calculate the angle for each line
+            const angle = angles[i]; // Calculate the angle for each line
             // const angle = (angles[i] - signAngles[0]) * -1; // Calculate the angle for each line
             const startX = centerX + Math.cos(angle * Math.PI / 180) * startRadius;
             const startY = centerY + Math.sin(angle * Math.PI / 180) * startRadius;
@@ -335,7 +335,7 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
         }
     };
 
-    const createAntisciaPlanetCircleTextPaths = (draw: Svg, centerX: number, centerY: number, radius: number, percentageSign) => {
+    const createAntisciaPlanetCircleTextPaths = (draw: Svg, centerX: number, centerY: number, radius: number, percentageSign: number) => {
         const textPaths: [Path, number][] = [];
     
         const circleRadius = (((percentageSign - 4) / 100) * radius);
@@ -379,11 +379,11 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
         const textPaths: [Path, number][] = [];
     
         const circleRadius = (((percentageSign - 8) / 100) * radius);
-    
+        const ascendantPosition = houseAngles[0];
         for (let j = 0; j < arabicPartPositions.length; j++) {
-            const startAngle = ((arabicPartPositions[j] + 181) * -1);
+            const startAngle = arabicPartPositions[j] - 1;
             const startAngleRad = (startAngle) * (Math.PI / 180);
-            const rotate = (arabicPartPositions[j] + 90);
+            const rotate = (arabicPartPositions[j] + ascendantPosition + 90) * -1;
     
             // Calculate the starting and ending coordinates of the arc
             const startX = centerX + Math.cos(startAngleRad) * circleRadius;

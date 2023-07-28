@@ -8,7 +8,7 @@ import { ChartSVG } from "~/components/astroChart/DrawChart";
 import { CoordinatesSelection, DateSelection, TimeSelection } from "~/components/input/CustomInputs";
 import type { house } from "~/utils/external/houses/types";
 import type { planet } from "~/utils/external/planets/types";
-import type{ majorStar } from "~/utils/external/stars/types";
+import type{ star } from "~/utils/external/stars/types";
 import { FixedStarsTable, HousesTable, PlanetsTable } from "~/components/tables/Tables";
 
 
@@ -34,7 +34,7 @@ const NavButtons: React.FC = () => {
 
   const [housesData, setHousesData] = useState<house[] | null>(null);
   const [planetsData, setPlanetsData] = useState<planet[] | null>(null);
-  const [starsData, setStarsData] = useState<majorStar[] | null>(null);
+  const [starsData, setStarsData] = useState<star[] | null>(null);
   const [inputType, setInputType] = useState<"decimal" | "dms">("dms");
   const [decimalValues, setDecimalValues] = useState<{ long: string; lat: string }>({ long: "0", lat: "0" });
   const [longitude, setLongitude] = useState<{ degrees: string; minutes: string; seconds: string }>({ degrees: "0", minutes: "0", seconds: "0" });

@@ -1,7 +1,7 @@
 import { env } from "~/env.mjs";
 import type { house } from "../houses/types";
 import type { PlanetProperties, planet, planetAPI } from "./types";
-import { decToDMS, houseFromDec } from "~/utils/astroCalc";
+import { decToDMS, getAngle, houseFromDec } from "~/utils/astroCalc";
 import { planets } from "./properties";
 
 export const getPlanetsData = async (
@@ -12,6 +12,7 @@ export const getPlanetsData = async (
     altitude: number,
     houseSystem: string,
     housesData: house[],
+    ascendantPos: number,
 ) => {
     const planetsURL = `${env.GO_API_ENDPOINT}/run-planets?birthdate=${date}&utctime=${time}&latitude=${latitude}&longitude=${longitude}&altitude=${altitude}&housesystem=${houseSystem}`
 
@@ -39,6 +40,8 @@ export const getPlanetsData = async (
         const result = {
             name: planet.name,
             position: long,
+            angle: getAngle(long, ascendantPos),
+            orb: 3,
             sign: tmp.sign,
             longDegree: tmp.signDegree,
             longMinute: tmp.signMinute,
@@ -52,5 +55,5 @@ export const getPlanetsData = async (
             element: planetProps.element,
         } as planet;
         return result
-    })
+    }).slice(0, 8)
 }

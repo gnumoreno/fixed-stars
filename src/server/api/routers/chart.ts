@@ -5,6 +5,8 @@ import { dmsToDec } from "~/utils/astroCalc";
 import { getStarsData } from "~/utils/external/stars/stars";
 import { getHousesData } from "~/utils/external/houses/houses";
 import { getPlanetsData } from "~/utils/external/planets/planets";
+import { getAspects, getAstroTable } from "~/utils/external/aspects/aspects";
+import { getArabicPartArray } from "~/utils/arabic";
 export const GO_API_ENDPOINT = "http://18.231.181.140:8000"
 export const chartRouter = createTRPCRouter({
 
@@ -49,8 +51,12 @@ export const chartRouter = createTRPCRouter({
             const houseSystem = "P"
 
             const housesData = await getHousesData(formatedDate, formatedTime, latitude, longitude, alt, houseSystem)
-            const starsData = await getStarsData(formatedDate, formatedTime, housesData);
-            const planetsData = await getPlanetsData(formatedDate, formatedTime, latitude, longitude, alt, houseSystem, housesData)
+            const ascendantPos = housesData[0].position || 0;
+            const starsData = await getStarsData(formatedDate, formatedTime, housesData, ascendantPos);
+            const planetsData = await getPlanetsData(formatedDate, formatedTime, latitude, longitude, alt, houseSystem, housesData, ascendantPos)
+            const arabicPartsData = getArabicPartArray(housesData, planetsData)
+            const astroTable = getAstroTable(planetsData, housesData, starsData, arabicPartsData)
+            const aspectsData = getAspects(astroTable)
 
             return {
                 status: 200,
@@ -58,6 +64,8 @@ export const chartRouter = createTRPCRouter({
                     houses: housesData,
                     stars: starsData,
                     planets: planetsData,
+                    arabicParts: arabicPartsData,
+                    aspects: aspectsData
                 },
                 error: undefined as undefined
             }

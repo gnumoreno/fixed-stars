@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Style from "./Index.module.css";
-import type { majorStar } from "~/utils/external/stars/types";
+import type { star } from "~/utils/external/stars/types";
 import type { house } from "~/utils/external/houses/types";
 import type { planet } from "~/utils/external/planets/types";
 
@@ -131,7 +131,7 @@ export const PlanetsTable: React.FC<PlanetsTableProps> = ({ planetsArray }) => {
 };
 
 type FixedStarsTableProps = {
-    starsArray: majorStar[];
+    starsArray: star[];
 };
 
 export const FixedStarsTable: React.FC<FixedStarsTableProps> = ({ starsArray }) => {
@@ -148,7 +148,7 @@ export const FixedStarsTable: React.FC<FixedStarsTableProps> = ({ starsArray }) 
 
     const [sort, setSort] = useState<sortOptions>("position");
 
-    const sortedArray = (starsArray: majorStar[]) => {
+    const sortedArray = (starsArray: star[]) => {
         const output = starsArray;
         return output
             .sort((a, b) => {
@@ -159,7 +159,7 @@ export const FixedStarsTable: React.FC<FixedStarsTableProps> = ({ starsArray }) 
             })
             .map((star, index) => (
                 <tr className={Style.tr} key={index}>
-                    <td className={Style.td} style={{ minWidth: "150px", maxWidth: "150px" }} title={star.star}>{limitCharacters(star.star)}</td>
+                    <td className={Style.td} style={{ minWidth: "150px", maxWidth: "150px" }} title={star.name}>{limitCharacters(star.name)}</td>
                     <td className={Style.td}>{star.constellation}</td>
                     <td className={Style.td}>{star.position}</td>
                     <td className={Style.td}>{star.sign}</td>
