@@ -18,3 +18,11 @@ export type aspect = {
     positionB: number, // we will call position the position in the ecliptic
     angleB: number, // we will call angle the angle in the map drawing
 };
+
+export type aspectedTo = {
+    aspect: string,
+    astrotype: string,
+    astroname: string,
+    position: number,
+    angle: number,
+}

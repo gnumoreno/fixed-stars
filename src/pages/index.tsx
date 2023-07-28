@@ -10,6 +10,7 @@ import type { house } from "~/utils/external/houses/types";
 import type { planet } from "~/utils/external/planets/types";
 import type{ star } from "~/utils/external/stars/types";
 import { FixedStarsTable, HousesTable, PlanetsTable } from "~/components/tables/Tables";
+import { type aspect } from "~/utils/external/aspects/types";
 
 
 const Testpage: NextPage = () => {
@@ -35,6 +36,7 @@ const NavButtons: React.FC = () => {
   const [housesData, setHousesData] = useState<house[] | null>(null);
   const [planetsData, setPlanetsData] = useState<planet[] | null>(null);
   const [starsData, setStarsData] = useState<star[] | null>(null);
+  const [aspectsData, setAspectsData] = useState<aspect[] | null>(null);
   const [inputType, setInputType] = useState<"decimal" | "dms">("dms");
   const [decimalValues, setDecimalValues] = useState<{ long: string; lat: string }>({ long: "0", lat: "0" });
   const [longitude, setLongitude] = useState<{ degrees: string; minutes: string; seconds: string }>({ degrees: "0", minutes: "0", seconds: "0" });
@@ -69,6 +71,7 @@ const NavButtons: React.FC = () => {
             setHousesData(data.elements.houses);
             setPlanetsData(data.elements.planets);
             setStarsData(data.elements.stars);
+            setAspectsData(data.elements.aspects);
           }
 
         },
@@ -170,15 +173,15 @@ const NavButtons: React.FC = () => {
         {
           selectedCalc === "houses" && housesData
             ?
-            <HousesTable housesArray={housesData} />
+            <HousesTable housesArray={housesData} aspects={aspectsData} />
             :
             selectedCalc === "planets" && planetsData
               ?
-              <PlanetsTable planetsArray={planetsData} />
+              <PlanetsTable planetsArray={planetsData} aspects={aspectsData}/>
               :
               selectedCalc === "stars" && starsData
                 ?
-                <FixedStarsTable starsArray={starsData} />
+                <FixedStarsTable starsArray={starsData} aspects={aspectsData}/>
                 :
                 null
         }
