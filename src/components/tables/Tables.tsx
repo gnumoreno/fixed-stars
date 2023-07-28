@@ -176,9 +176,9 @@ export const FixedStarsTable: React.FC<FixedStarsTableProps> = ({ starsArray, as
                     <td className={Style.td}>{star.sign}</td>
                     <td className={Style.td} style={{ minWidth: "130px" }}>{star.longDegree}° {star.longMinute}&lsquo; {star.longSecond}&quot;</td>
                     <td className={Style.td}>{star.house}</td>
-                    <td className={Style.td}>{parseFloat(star.lat).toFixed(2)}</td>
+                    <td className={Style.td}>{star.lat.toFixed(2)}</td>
                     <td className={Style.td}>{star.speed}</td>
-                    <td className={Style.td}>{parseFloat(star.distance).toFixed(2)}</td>
+                    <td className={Style.td}>{star.distance.toFixed(2)}</td>
                     <td className={Style.td}>{star.magnitude}</td>
                 </tr>
             ));
