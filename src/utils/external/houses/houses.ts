@@ -36,5 +36,5 @@ export const getHousesData = async (
             longSecond: tmp.signSecond,
         } as house;
         return result
-    }).slice(0, 11)
+    }).slice(0, 12)
 }

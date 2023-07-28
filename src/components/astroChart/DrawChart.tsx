@@ -93,7 +93,7 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
             const startY = centerY + Math.sin(angle * Math.PI / 180) * startRadius;
             const endX = centerX + Math.cos(angle * Math.PI / 180) * endRadius;
             const endY = centerY + Math.sin(angle * Math.PI / 180) * endRadius;
-
+            // const getCenters = funço() --startX
             // Draw the line
             const line = draw.line(startX, startY, endX, endY)
             line.stroke({ color: '#D3D3D3', width: i % 3 === 0 ? 3 : 2 });

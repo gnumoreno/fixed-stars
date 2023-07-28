@@ -1,12 +1,12 @@
 import {  signFromPos, Signs } from "~/utils/astroCalc";
 import { type planet } from "../planets/types";
-import type { astro, aspect } from "./types";
+import type { astro, aspect, aspectedTo } from "./types";
 import type { arabicPart } from "~/utils/arabic";
 import type { house } from "../houses/types";
 import type { star } from "../stars/types";
 
 
-function isCorrectSign(typeOfAspect: string, astroSign1: string, astroSign2: string) {
+function isCorrectSign(typeOfAspect: makesAspectResponse, astroSign1: string, astroSign2: string) {
     let aspectJump: number;
     switch (typeOfAspect) {
         case 'conjunction':
@@ -42,8 +42,8 @@ function isCorrectSign(typeOfAspect: string, astroSign1: string, astroSign2: str
     const signArray = [nextSign.sign, previousSign.sign];
     return signArray.includes(astroSign2);
 }
-
-function makesAspect(posA: number, posB: number, orb: number): string | undefined {
+type makesAspectResponse = 'conjunction' | 'sextile' | 'square' | 'trine' | 'opposition' | undefined;
+function makesAspect(posA: number, posB: number, orb: number): makesAspectResponse {
     const angle = Math.abs(posA - posB);
         if (angle >= (0 - orb) && angle < (0 + orb)) {
             return 'conjunction';

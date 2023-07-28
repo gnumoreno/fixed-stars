@@ -1,5 +1,6 @@
 import type { house } from "./external/houses/types";
 import type { planet } from "./external/planets/types";
+import type { aspect, aspectedTo } from "./external/aspects/types";
 
 
 export const Signs = [
@@ -182,6 +183,50 @@ export const dmsToDec = (degrees: number, minutes: number, seconds: number): num
 };
 
 export const getAngle = (position:number, ascendant: number) => {
-
   return mod360(((position - ascendant) + 180) * -1);
+}
+
+export function getOtherEntities(aspects: aspect[], astroType: string, astroName: string) {
+  const otherEntities = aspects.flatMap((aspect) => {
+    if (aspect.astrotypeA === astroType && aspect.astronameA === astroName) {
+      return {
+        aspect: aspect.typeOfAspect,
+        astrotype: aspect.astrotypeB,
+        astroname: aspect.astronameB,
+        position: aspect.positionB,
+        angle: aspect.angleB,
+      };
+    }
+    if (aspect.astrotypeB === astroType && aspect.astronameB === astroName) {
+      return {
+        aspect: aspect.typeOfAspect,
+        astrotype: aspect.astrotypeA,
+        astroname: aspect.astronameA,
+        position: aspect.positionA,
+        angle: aspect.angleA,
+      };
+    }
+    return [];
+  });
+
+  return otherEntities as aspectedTo[];
+}
+
+export function aspectedToTableString(aspects: aspectedTo[]) {
+  if(aspects.length === 0) {
+    return "None";
+  }
+
+  const aspectString:string[] = [];
+  for(let i = 0; i < aspects.length; i++) {
+    const aspect = aspects[i];
+    aspectString.push(`${aspect.aspect} - ${aspect.astroname}(${aspect.astrotype})`);
+  }
+  return aspectString.join("\n");
+}
+
+export function getAspectString(aspects: aspect[], astroType: string, astroName: string) {
+  const otherEntities = getOtherEntities(aspects, astroType, astroName);
+  console.log(aspectedToTableString(otherEntities))
+  return aspectedToTableString(otherEntities);
 }
