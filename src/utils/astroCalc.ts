@@ -1,6 +1,7 @@
 import type { house } from "./external/houses/types";
 import type { planet } from "./external/planets/types";
 import type { aspect, aspectedTo } from "./external/aspects/types";
+import { aspectProperties } from "./external/aspects/properties";
 
 
 export const Signs = [
@@ -220,13 +221,18 @@ export function aspectedToTableString(aspects: aspectedTo[]) {
   const aspectString:string[] = [];
   for(let i = 0; i < aspects.length; i++) {
     const aspect = aspects[i];
-    aspectString.push(`${aspect.aspect} - ${aspect.astroname}(${aspect.astrotype})`);
+    aspectString.push(`${getAspectUnicode(aspect.aspect)} ${aspect.astroname}(${aspect.astrotype})`);
   }
   return aspectString.join("\n");
 }
 
 export function getAspectString(aspects: aspect[], astroType: string, astroName: string) {
   const otherEntities = getOtherEntities(aspects, astroType, astroName);
-  console.log(aspectedToTableString(otherEntities))
   return aspectedToTableString(otherEntities);
 }
+
+export function getAspectUnicode(aspectType: string) {
+  const matchedAspect = aspectProperties.find((aspect) => aspect.type === aspectType);
+  return matchedAspect ? matchedAspect.unicode : '';
+}
+
