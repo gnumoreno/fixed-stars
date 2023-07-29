@@ -135,7 +135,7 @@ export const antisciaPosition = (long: number) => {
 export const contraAntisciaPosition = (antiscia: number) => {
   return mod360(antiscia + 180);
 };
-export const signPositions = (houses: house[]) => {  
+export const signAngles = (houses: house[]) => {  
   const drawSignPositions = Signs.map((sign) => mod360(sign.angle - ascPos(houses)));
   return drawSignPositions;
 };
