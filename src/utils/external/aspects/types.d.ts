@@ -6,6 +6,11 @@ export type astro = {
     orb: number
 };
 
+export type aspectProperty = {
+    type: string,
+    angle: number,
+    unicode: string,
+};
 
 export type aspect = {
     astrotypeA: string,
