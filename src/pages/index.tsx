@@ -11,6 +11,7 @@ import type { planet } from "~/utils/external/planets/types";
 import type{ star } from "~/utils/external/stars/types";
 import { FixedStarsTable, HousesTable, PlanetsTable } from "~/components/tables/Tables";
 import { type aspect } from "~/utils/external/aspects/types";
+import { type arabicPart } from "~/utils/external/arabicParts/types";
 
 
 const Testpage: NextPage = () => {
@@ -37,6 +38,7 @@ const NavButtons: React.FC = () => {
   const [planetsData, setPlanetsData] = useState<planet[] | null>(null);
   const [starsData, setStarsData] = useState<star[] | null>(null);
   const [aspectsData, setAspectsData] = useState<aspect[] | null>(null);
+  const [arabicPartsData, setArabicPartsData] = useState<arabicPart[] | null>(null);
   const [inputType, setInputType] = useState<"decimal" | "dms">("dms");
   const [decimalValues, setDecimalValues] = useState<{ long: string; lat: string }>({ long: "0", lat: "0" });
   const [longitude, setLongitude] = useState<{ degrees: string; minutes: string; seconds: string }>({ degrees: "0", minutes: "0", seconds: "0" });
@@ -72,6 +74,7 @@ const NavButtons: React.FC = () => {
             setPlanetsData(data.elements.planets);
             setStarsData(data.elements.stars);
             setAspectsData(data.elements.aspects);
+            setArabicPartsData(data.elements.arabicParts);
           }
 
         },
@@ -135,6 +138,7 @@ const NavButtons: React.FC = () => {
           housesData={housesData}
           planetsData={planetsData}
           starsData={starsData}
+          arabicPartsData={arabicPartsData}
         />}
 
       <div className={Style.buttonsContainer}>

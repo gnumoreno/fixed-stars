@@ -1,30 +1,9 @@
 import { mod360, houseFromDec, decToDMS, type DMSObj, getAngle } from "~/utils/astroCalc";
-import type { house } from "./external/houses/types";
-import type { planet } from "./external/planets/types";
-
-export const ArabicPartProperties = [  
-    { name: "Spirit", unicode: '\u24E2', formula: "Ascendant + (Sun - Moon)" },
-    { name: "Fortuna", unicode: '\u2297', formula: "Ascendant + (Moon - Sun)" },
-    { name: "Necessity", unicode: '\u24DD', formula: "Ascendant + (Fortuna - Spirit)" },
-    { name: "Love", unicode: '\u24C1', formula: "Ascendant + (Spirit - Fortuna)" },
-    { name: "Valor", unicode: 'Va', formula: "Ascendant + (Fortuna - Mars)" },
-    { name: "Victory", unicode: 'Vi', formula: "Ascendant + (Jupiter - Spirit)" },
-    { name: "Captivity", unicode: '\u24D2', formula: "Ascendant + (Fortuna - Saturn)" },
-  ];
-
-  export type arabicPart = {
-    name: string;
-    unicode: string;
-    formula: string;
-    position: number;
-    angle: number;
-    orb: number;
-    sign: string;
-    longDegree: number;
-    longMinute: number;
-    longSecond: number;
-    house: string;
-  };
+import type { house } from "../houses/types";
+import type { planet } from "../planets/types";
+import type { arabicPart } from "./types";
+import { ArabicPartProperties } from "./properties";
+// Individual functions to calculate each Arabic Part
 
 // Function to calculate Spirit Arabic Part
 function calculateSpirit(ascendant: number, sun: number, moon: number): number {
