@@ -6,7 +6,7 @@ import { getStarsData } from "~/utils/external/stars/stars";
 import { getHousesData } from "~/utils/external/houses/houses";
 import { getPlanetsData } from "~/utils/external/planets/planets";
 import { getAspects, getAstroTable } from "~/utils/external/aspects/aspects";
-import { getArabicPartArray } from "~/utils/arabic";
+import { getArabicPartArray } from "~/utils/external/arabicParts/arabic";
 export const GO_API_ENDPOINT = "http://18.231.181.140:8000"
 export const chartRouter = createTRPCRouter({
 

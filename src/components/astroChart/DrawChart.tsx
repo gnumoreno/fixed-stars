@@ -2,19 +2,20 @@ import {type Path, SVG,type Svg } from "@svgdotjs/svg.js";
 import { useEffect, useRef } from "react";
 import Style from './DrawChart.module.css'
 import { signAngles, planetAntiscia, getTriplicityArray, getAllFaces } from "~/utils/astroCalc";
-import { getArabicPartArray } from "~/utils/arabic";
 import { Signs } from "~/utils/astroCalc";
 import type { house } from "~/utils/external/houses/types";
 import type { planet } from "~/utils/external/planets/types";
 import type { star } from "~/utils/external/stars/types";
+import type { arabicPart } from "~/utils/external/arabicParts/types";
 
 type ChartSVGProps = {
     housesData: house[] | null;
     planetsData: planet[] | null;
     starsData: star[] | null;
+    arabicPartsData: arabicPart[] | null;
 }
 
-export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, starsData }) => {
+export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, starsData, arabicPartsData }) => {
 
     const svgContainerRef = useRef<SVGSVGElement>(null);
     // Basic variables for the chart
@@ -35,7 +36,7 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
     const planetAngles = planetsData.map((planet) => planet.angle);
     const planetSymbols = planetsData.map((planet) => planet.unicode);
     const antisciaAngles = planetAntiscia(planetsData.slice(0,7), housesData);
-    const arabicArray = getArabicPartArray(housesData, planetsData);
+    const arabicArray = arabicPartsData;
     const arabicPartAng = arabicArray.map(arabicPart => arabicPart.angle);
     const arabicPartSymbols = arabicArray.map(arabicPart => arabicPart.unicode);
 
