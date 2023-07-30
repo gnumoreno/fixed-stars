@@ -1,7 +1,7 @@
 import {  signFromPos, Signs } from "~/utils/astroCalc";
 import { type planet } from "../planets/types";
 import type { astro, aspect } from "./types";
-import type { arabicPart } from "~/utils/external/arabicParts/arabic";
+import type { arabicPart } from "../arabicParts/types";
 import type { house } from "../houses/types";
 import type { star } from "../stars/types";
 
