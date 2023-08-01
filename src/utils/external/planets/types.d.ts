@@ -12,14 +12,19 @@ export type PlanetData = {
     temperature: string;
     humidity: string;
     element: string;
-}
+};
 
 export type planetAPI = {
     name: string;
     latitude: string;
     longitude: string;
     dailySpeed: string;
-}
+};
+
+export type terms = {
+    planet: string;
+    degree: number;
+};
 
 export type planet = {
     name: string;

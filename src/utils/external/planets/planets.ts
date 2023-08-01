@@ -1,7 +1,7 @@
 import { env } from "~/env.mjs";
 import type { house } from "../houses/types";
 import type { PlanetProperties, planet, planetAPI } from "./types";
-import { decToDMS, getAngle, houseFromDec } from "~/utils/astroCalc";
+import { decToDMS, getAngle, houseFromDec, getOposition } from "~/utils/astroCalc";
 import { planets } from "./properties";
 
 export const getPlanetsData = async (
@@ -25,6 +25,18 @@ export const getPlanetsData = async (
     })
 
     const planetsArray = await planetsArrayResponse.json() as planetAPI[]
+
+    // There must be a better way to do this
+    const trueNode = planetsArray.find(planet => planet.name === "true Node");
+    const trueNodePosition = trueNode ? parseFloat(trueNode.longitude) : 0;
+    const southNodePosition = getOposition(trueNodePosition);
+    const southNodeObject: planetAPI = {
+        name: "south Node",
+        latitude: "0",
+        longitude: southNodePosition.toString(),
+        dailySpeed: "0",
+    };
+    planetsArray.splice(8, 0, southNodeObject);
 
     return planetsArray.map((planet) => {
         const long = parseFloat(planet.longitude);
@@ -55,5 +67,5 @@ export const getPlanetsData = async (
             element: planetProps.element,
         } as planet;
         return result
-    }).slice(0, 8)
+    }).slice(0, 9)
 }
