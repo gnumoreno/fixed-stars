@@ -1,7 +1,7 @@
 import {type Path, SVG,type Svg } from "@svgdotjs/svg.js";
 import { useEffect, useRef } from "react";
 import Style from './DrawChart.module.css'
-import { signAngles, planetAntiscia, getTriplicityArray, getAllFaces } from "~/utils/astroCalc";
+import { signAngles, planetAntiscia, getTriplicityArray, getAllFaces, getAllTermSymbols, getAllTermAngles } from "~/utils/astroCalc";
 import { Signs } from "~/utils/astroCalc";
 import type { house } from "~/utils/external/houses/types";
 import type { planet } from "~/utils/external/planets/types";
@@ -31,6 +31,8 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
     const signAnglesArray: number[] = signAngles(housesData);
     const signSymbols: string[] = Signs.map((sign) => sign.unicode);
     const facesArray = getAllFaces(planetsData);
+    const termAngles: number[] = getAllTermAngles(signAnglesArray);
+    const termSymbols = getAllTermSymbols(planetsData);
     // Houses Wheel
     const houseAngles = housesData.map((house) => house.angle);
     const planetAngles = planetsData.map((planet) => planet.angle);
@@ -103,6 +105,19 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
                 .stroke({ color: '#808080', width: 2 });
         }
     };
+
+    const termLines = (draw: Svg) => {
+        // const draw = SVG(svgContainerRef.current);
+        const startRadius = (percentages[1] / 100) * radius; // Radius of the second circle
+        const endRadius = (percentages[2] / 100) * radius; // Radius of the sixth circle
+      
+        for (let i = 0; i < termAngles.length; i++) {
+          const angle = (termAngles[i] + 180) * -1; // Calculate the angle for each line
+          draw.line(lineXYCircle(centerX, centerY, startRadius, endRadius, angle))
+            .stroke({ color: '#D3D3D3', width: 2 });
+        }
+      };
+      
 
     const facesLines = (draw: Svg) => {
         // const draw = SVG(svgContainerRef.current);
@@ -254,6 +269,33 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
         }
     };
 
+    const createTermsCircleTextPaths = (draw: Svg, centerX: number, centerY: number, radius: number, percentages: number[]) => {
+        const textPaths: Path[] = [];
+        const circleRadius = (((percentages[2] - 3) / 100) * radius);
+
+        for (let j = 0; j < termAngles.length; j++) {
+            const startAngle = ((termAngles[j] + 179) * -1);
+            // const startAngle = (termAngles[j] - ((termAngles[j] - termAngles[j-1]) / 2) * -1);
+            const c = circlePaths(centerX, centerY, startAngle, circleRadius);
+            // Use sweep-flag 0 to reverse the arc direction
+            const textPath = draw.path(`M ${c[0]},${c[1]} A ${circleRadius},${circleRadius} 0 0,1 ${c[2]},${c[3]}`)
+                .attr({ fill: 'none', stroke: 'none' });
+            textPaths.push(textPath);
+        }
+        return textPaths;
+    };
+
+    const createTermsTextsonPath = (draw: Svg, textPaths: Path[]) => {
+
+        for (let i = 0; i < textPaths.length; i++) {
+            const text = draw.text(`${termSymbols[i]}`)
+                .font({ size: 8 })
+                .fill('#800080');
+            // Position the text along the textPath
+            text.path(textPaths[i]);
+        }
+    };
+
     const createFacesCircleTextPaths = (draw: Svg, centerX: number, centerY: number, radius: number, percentages: number[]) => {
         const textPaths: Path[] = [];
         const circleRadius = (((percentages[3] - 3) / 100) * radius);
@@ -377,11 +419,13 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
         }
         antisciaLines(drawRef);
         degreeLines(drawRef);
+        termLines(drawRef);
         houseLines(drawRef);
         createCircle(drawRef, percentages);
         facesLines(drawRef);
         signLines(drawRef);
         arabicLines(drawRef);
+        createTermsTextsonPath(drawRef, createTermsCircleTextPaths(drawRef, centerX, centerY, radius, percentages));
         createArabicPartTextsonPath(drawRef, createArabicPartCircleTextPaths(drawRef, centerX, centerY, radius, percentageSign));
         createFacesTextsonPath(drawRef, createFacesCircleTextPaths(drawRef, centerX, centerY, radius, percentages), facesArray);
         createTriplicityTextsonPath(drawRef, createTriplicityCircleTextPaths(drawRef, centerX, centerY, radius, percentages));

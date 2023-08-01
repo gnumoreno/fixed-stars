@@ -12,4 +12,5 @@ export const planets: PlanetProperties[] = [
     { name: "Neptune", unicode: '\u2646', temperature: "", humidity: "", element: "" },
     { name: "Pluto", unicode: '\u2647', temperature: "", humidity: "", element: "" },
     { name: "true Node", unicode: '\u260A', temperature: "", humidity: "", element: "" },
+    { name: "south Node", unicode: '\u260B', temperature: "", humidity: "", element: "" },
   ];
