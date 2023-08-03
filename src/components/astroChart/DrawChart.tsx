@@ -1,21 +1,23 @@
 import {type Path, SVG,type Svg } from "@svgdotjs/svg.js";
 import { useEffect, useRef } from "react";
 import Style from './DrawChart.module.css'
-import { signAngles, planetAntiscia, getTriplicityArray, getAllFaces, getAllTermSymbols, getAllTermAngles } from "~/utils/astroCalc";
+import { signAngles, planetAntiscia, getTriplicityArray, getAllFaces, getAllTermSymbols, getAllTermAngles, getStarAspects } from "~/utils/astroCalc";
 import { Signs } from "~/utils/astroCalc";
 import type { house } from "~/utils/external/houses/types";
 import type { planet } from "~/utils/external/planets/types";
 import type { star } from "~/utils/external/stars/types";
 import type { arabicPart } from "~/utils/external/arabicParts/types";
+import type { aspect } from "~/utils/external/aspects/types";
 
 type ChartSVGProps = {
     housesData: house[] | null;
     planetsData: planet[] | null;
     starsData: star[] | null;
     arabicPartsData: arabicPart[] | null;
+    aspectsData: aspect[] | null;
 }
 
-export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, starsData, arabicPartsData }) => {
+export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, starsData, arabicPartsData, aspectsData }) => {
 
     const svgContainerRef = useRef<SVGSVGElement>(null);
     // Basic variables for the chart
@@ -26,7 +28,10 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
     const circleColors = ['#D3D3D3','#808080', '#D3D3D3', '#D3D3D3', '#D3D3D3', '#808080'];
     const percentageSign = 71;
     const ascendantAng = housesData[0].angle || 0;
-
+    // Outer wheel
+    const someStars = getStarAspects(aspectsData);
+    const starAngles: number[] = someStars.map(star => star.astroB.angle)
+    const starNames: string[] = someStars.map(star => star.astroB.name)
     // Sign, Triplicity, Faces, Terms wheels
     const signAnglesArray: number[] = signAngles(housesData);
     const signSymbols: string[] = Signs.map((sign) => sign.unicode);
@@ -141,6 +146,16 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
         }
     };
 
+    const starLines = (draw: Svg) => {
+        const startRadius = (percentages[5] / 100) * radius; // Radius of the first circle
+        const endRadius = ((percentages[5] + 6)/ 100) * radius; // Radius of the second circle
+        for (let i = 0; i < starAngles.length; i++) {
+            const angle = starAngles[i]; 
+            const line = draw.line(lineXYCircle(centerX, centerY, startRadius, endRadius, angle))
+            line.stroke({ color: '#000000', width: 1 });
+        }
+    };
+
     const planetLines = (draw: Svg) => {
         // Draw degree marks
         const endRadius = (percentages[1] / 100) * radius; // Radius of the second circle
@@ -215,6 +230,31 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
         const rot  = (angle + ascendantAng - 90 ) * -1;
         return rot;
       };
+
+      const createStarCircleTextPaths = (draw: Svg, centerX: number, centerY: number, radius: number) => {
+        const textPaths: Path[] = [];
+        const circleRadius = (((percentages[5] + 7) / 100) * radius);
+        const starAnglesAdjusted = adjustAngles(starAngles);
+        for (let j = 0; j < starAnglesAdjusted.length; j++) {
+            const startAngle = (starAnglesAdjusted[j] -2);
+            const c = circlePaths(centerX, centerY, startAngle, circleRadius);
+            // Use sweep-flag 0 to reverse the arc direction
+            const textPath = draw.path(`M ${c[0]},${c[1]} A ${circleRadius},${circleRadius} 0 0,1 ${c[2]},${c[3]}`)
+                .attr({ fill: 'none', stroke: 'none' });
+            textPaths.push(textPath);
+        }
+        return textPaths;
+    };
+
+    const createStarTextsonPath = (draw: Svg, textPaths: Path[]) => {
+        for (let i = 0; i < textPaths.length; i++) {
+            const text = draw.text(`${starNames[i]}`)
+                .font({ size: 9 })
+                .fill('#4682B4');
+            // Position the text along the textPath
+            text.path(textPaths[i]);
+        }
+    };
 
     const createSignCircleTextPaths = (draw: Svg, centerX: number, centerY: number, radius: number, percentages: number[]) => {
         const textPaths: Path[] = [];
@@ -388,7 +428,6 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
         const textPaths: [Path, number][] = [];
         const circleRadius = (((percentageSign -1 ) / 100) * radius);
         const planetAnglesadjusted = adjustAngles(planetAngles);
-        console.log(planetAngles, planetAnglesadjusted);
         for (let j = 0; j < planetAnglesadjusted.length; j++) {
             const startAngle = (planetAnglesadjusted[j] -2);
             const c = circlePaths(centerX, centerY, startAngle, circleRadius);
@@ -417,6 +456,7 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
             console.log("drawRef is null", drawRef)
             return;
         }
+        starLines(drawRef);
         antisciaLines(drawRef);
         degreeLines(drawRef);
         termLines(drawRef);
@@ -425,6 +465,7 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
         facesLines(drawRef);
         signLines(drawRef);
         arabicLines(drawRef);
+        createStarTextsonPath(drawRef, createStarCircleTextPaths(drawRef, centerX, centerY, radius));
         createTermsTextsonPath(drawRef, createTermsCircleTextPaths(drawRef, centerX, centerY, radius, percentages));
         createArabicPartTextsonPath(drawRef, createArabicPartCircleTextPaths(drawRef, centerX, centerY, radius, percentageSign));
         createFacesTextsonPath(drawRef, createFacesCircleTextPaths(drawRef, centerX, centerY, radius, percentages), facesArray);

@@ -55,7 +55,7 @@ export const chartRouter = createTRPCRouter({
             const starsData = await getStarsData(formatedDate, formatedTime, housesData, ascendantPos);
             const planetsData = await getPlanetsData(formatedDate, formatedTime, latitude, longitude, alt, houseSystem, housesData, ascendantPos)
             const arabicPartsData = getArabicPartArray(housesData, planetsData)
-            const astroTable = getAstroTable(planetsData, housesData, starsData, arabicPartsData)
+            const astroTable = getAstroTable(planetsData.slice(0,7), housesData, starsData, arabicPartsData)
             const aspectsData = getAspects(astroTable)
 
             return {

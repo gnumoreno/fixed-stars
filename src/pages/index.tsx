@@ -139,6 +139,7 @@ const NavButtons: React.FC = () => {
           planetsData={planetsData}
           starsData={starsData}
           arabicPartsData={arabicPartsData}
+          aspectsData={aspectsData}
         />}
 
       <div className={Style.buttonsContainer}>

@@ -108,3 +108,6 @@ body {
   margin-bottom: auto !important;
 }
 
+.starText {
+  cursor: pointer;
+}
