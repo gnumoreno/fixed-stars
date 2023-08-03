@@ -281,19 +281,11 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
                 .fill('#000000')
                 .addClass(Style.signSymbol);
 
-            text.mouseenter(() => {
-
-                handleMouseOverPopup({
-                    element: text,
-                    description: `Signo: ${signSymbols[i]}
-                Long: calma`,
-                    paddingX: 12,
-                    paddingY: 12,
-                })
-            });
-            text.mouseleave(() => {
-                handleMouseOutPopup();
-            });
+            createPopup({
+                element: text,
+                description: `Signo: ${signSymbols[i]}
+                Long: something`,
+            })
 
             // Position the text along the textPath
             text.path(textPaths[i]);
@@ -516,9 +508,9 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
     })
     type handleMouseOverPopupArgs = {
         element: Text | Path | Rect | Ellipse | Line | Image | G | Svg,
-        paddingX: number | undefined,
-        paddingY: number | undefined,
         description: string | null,
+        paddingX?: number,
+        paddingY?: number,
     }
     const handleMouseOverPopup = ({
         element,
@@ -526,8 +518,8 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
         paddingY,
         description,
     }: handleMouseOverPopupArgs) => {
-        const x = Number(element.x()) + paddingX;
-        const y = Number(element.y()) + paddingY;
+        const x = Number(element.x()) + (paddingX || 0);
+        const y = Number(element.y()) + (paddingY || 0);
         setPopupProps({
             description: description,
             x,
@@ -542,6 +534,34 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
                 description: null,
             }
         })
+    }
+
+
+
+    const createPopup = ({
+        element,
+        description,
+        paddingX,
+        paddingY,
+    }: handleMouseOverPopupArgs) => {
+
+        // Padding optional. Default is x = 12, y = -85
+
+        const dx = paddingX || 12;
+        const dy = paddingY || -85;
+
+        element.mouseenter(() => {
+
+            handleMouseOverPopup({
+                element: element,
+                description: description,
+                paddingX: dx,
+                paddingY: dy,
+            })
+        });
+        element.mouseleave(() => {
+            handleMouseOutPopup();
+        });
     }
 
     return (
