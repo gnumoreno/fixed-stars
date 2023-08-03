@@ -257,8 +257,10 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
               const shift = (2 - diff) / 2;
       
               if (angle1 < angle2) {
-                adjustedAngles[i] = angle1 - (shift - 1);
-                adjustedAngles[j] = angle2 + (shift + 1);
+                adjustedAngles[i] = angle1 - (shift);
+                adjustedAngles[j] = angle2 + (shift);
+                // adjustedAngles[i] = angle1 - (shift - 1);
+                // adjustedAngles[j] = angle2 + (shift + 1);
               } else {
                 adjustedAngles[i] = angle1 + shift;
                 adjustedAngles[j] = angle2 - shift;
