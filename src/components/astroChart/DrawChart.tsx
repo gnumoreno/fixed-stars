@@ -1,5 +1,5 @@
-import {type Path, SVG,type Svg } from "@svgdotjs/svg.js";
-import { useEffect, useRef } from "react";
+import { type Path, SVG, type Svg, Text, Rect, Ellipse, Line, Image, G } from "@svgdotjs/svg.js";
+import { useEffect, useRef, useState } from "react";
 import Style from './DrawChart.module.css'
 import { signAngles, planetAntiscia, getTriplicityArray, getAllFaces, getAllTermSymbols, getAllTermAngles, getStarAspects } from "~/utils/astroCalc";
 import { Signs } from "~/utils/astroCalc";
@@ -8,6 +8,8 @@ import type { planet } from "~/utils/external/planets/types";
 import type { star } from "~/utils/external/stars/types";
 import type { arabicPart } from "~/utils/external/arabicParts/types";
 import type { aspect } from "~/utils/external/aspects/types";
+import { ChartPopup, ChartPopupProps } from "./Utils";
+import { usePopup } from "~/hooks/usePopup";
 
 type ChartSVGProps = {
     housesData: house[] | null;
@@ -19,19 +21,21 @@ type ChartSVGProps = {
 
 export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, starsData, arabicPartsData, aspectsData }) => {
 
+
     const svgContainerRef = useRef<SVGSVGElement>(null);
     // Basic variables for the chart
     const centerX = 400;
     const centerY = 400;
     const radius = 300;
     const percentages = [55, 80, 84, 88, 92, 100];
-    const circleColors = ['#D3D3D3','#808080', '#D3D3D3', '#D3D3D3', '#D3D3D3', '#808080'];
+    const circleColors = ['#D3D3D3', '#808080', '#D3D3D3', '#D3D3D3', '#D3D3D3', '#808080'];
     const percentageSign = 71;
     const ascendantAng = housesData[0].angle || 0;
     // Outer wheel
     const someStars = getStarAspects(aspectsData);
     const starAngles: number[] = someStars.map(star => star.astroB.angle)
     const starNames: string[] = someStars.map(star => star.astroB.name)
+    const uniqueStarNames: string[] = starNames.filter((name, index) => starNames.indexOf(name) === index);
     // Sign, Triplicity, Faces, Terms wheels
     const signAnglesArray: number[] = signAngles(housesData);
     const signSymbols: string[] = Signs.map((sign) => sign.unicode);
@@ -42,10 +46,14 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
     const houseAngles = housesData.map((house) => house.angle);
     const planetAngles = planetsData.map((planet) => planet.angle);
     const planetSymbols = planetsData.map((planet) => planet.unicode);
-    const antisciaAngles = planetAntiscia(planetsData.slice(0,7), housesData);
+    const antisciaAngles = planetAntiscia(planetsData.slice(0, 7), housesData);
     const arabicArray = arabicPartsData;
     const arabicPartAng = arabicArray.map(arabicPart => arabicPart.angle);
     const arabicPartSymbols = arabicArray.map(arabicPart => arabicPart.unicode);
+
+    // Popup
+    const { createPopup, popupProps } = usePopup();
+
 
     const createCircle = (draw: Svg, percentages: number[]) => {
         // const draw = SVG(svgContainerRef.current);        
@@ -63,7 +71,7 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
     };
 
     // This is important. Do not touch it if don't know what you are doing. It is going to mess all the lines
-    const lineXYCircle = (centerX: number, centerY: number, startRadius: number, endRadius: number, angle: number) =>{
+    const lineXYCircle = (centerX: number, centerY: number, startRadius: number, endRadius: number, angle: number) => {
         const startX = centerX + Math.cos(angle * Math.PI / 180) * startRadius;
         const startY = centerY + Math.sin(angle * Math.PI / 180) * startRadius;
         const endX = centerX + Math.cos(angle * Math.PI / 180) * endRadius;
@@ -83,7 +91,7 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
             } else {
                 startRadius = ((percentages[1] - 1) / 100) * radius; // Radius of the first circle
             }
-            const angle = (i + signAnglesArray[0] + 180) * -1 ; // Calculate the angle for each line
+            const angle = (i + signAnglesArray[0] + 180) * -1; // Calculate the angle for each line
             const line = draw.line(lineXYCircle(centerX, centerY, startRadius, endRadius, angle))
             line.stroke({ color: '#D3D3D3', width: 1 });
         }
@@ -93,7 +101,7 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
         const startRadius = (percentages[0] / 100) * radius; // Radius of the first circle
         const endRadius = (percentages[1] / 100) * radius; // Radius of the second circle
         for (let i = 0; i < houseAngles.length; i++) {
-            const angle = houseAngles[i]; 
+            const angle = houseAngles[i];
             const line = draw.line(lineXYCircle(centerX, centerY, startRadius, endRadius, angle))
             line.stroke({ color: '#D3D3D3', width: i % 3 === 0 ? 3 : 2 });
         }
@@ -115,14 +123,14 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
         // const draw = SVG(svgContainerRef.current);
         const startRadius = (percentages[1] / 100) * radius; // Radius of the second circle
         const endRadius = (percentages[2] / 100) * radius; // Radius of the sixth circle
-      
+
         for (let i = 0; i < termAngles.length; i++) {
-          const angle = (termAngles[i] + 180) * -1; // Calculate the angle for each line
-          draw.line(lineXYCircle(centerX, centerY, startRadius, endRadius, angle))
-            .stroke({ color: '#D3D3D3', width: 2 });
+            const angle = (termAngles[i] + 180) * -1; // Calculate the angle for each line
+            draw.line(lineXYCircle(centerX, centerY, startRadius, endRadius, angle))
+                .stroke({ color: '#D3D3D3', width: 2 });
         }
-      };
-      
+    };
+
 
     const facesLines = (draw: Svg) => {
         // const draw = SVG(svgContainerRef.current);
@@ -148,9 +156,9 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
 
     const starLines = (draw: Svg) => {
         const startRadius = (percentages[5] / 100) * radius; // Radius of the first circle
-        const endRadius = ((percentages[5] + 6)/ 100) * radius; // Radius of the second circle
+        const endRadius = ((percentages[5] + 6) / 100) * radius; // Radius of the second circle
         for (let i = 0; i < starAngles.length; i++) {
-            const angle = starAngles[i]; 
+            const angle = starAngles[i];
             const line = draw.line(lineXYCircle(centerX, centerY, startRadius, endRadius, angle))
             line.stroke({ color: '#000000', width: 1 });
         }
@@ -161,7 +169,7 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
         const endRadius = (percentages[1] / 100) * radius; // Radius of the second circle
         const startRadius = ((percentages[1] - 4) / 100) * radius;
         for (let i = 0; i < planetAngles.length; i++) {
-            const angle = planetAngles[i]; 
+            const angle = planetAngles[i];
             // const angle = (angles[i] + 180) * -1 ; // Calculate the angle for each line
             const line = draw.line(lineXYCircle(centerX, centerY, startRadius, endRadius, angle))
             line.stroke({ color: '#6495ED', width: 2 });
@@ -174,7 +182,7 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
         const endRadius = (percentages[1] / 100) * radius; // Radius of the second circle
         const startRadius = ((percentages[1] - 10) / 100) * radius;
         for (let i = 0; i < angles.length; i++) {
-            const angle = (angles[i] + 180) * -1 ; // Calculate the angle for each line
+            const angle = (angles[i] + 180) * -1; // Calculate the angle for each line
             const line = draw.line(lineXYCircle(centerX, centerY, startRadius, endRadius, angle))
             line.stroke({ color: '#D3D3D3', width: 1 });
         }
@@ -193,7 +201,7 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
     };
 
     // This is important. Do not touch it if don't know what you are doing. It is going to mess all the map symbols.
-    const circlePaths = (centerX: number, centerY: number, angle: number, circleRadius: number) =>{
+    const circlePaths = (centerX: number, centerY: number, angle: number, circleRadius: number) => {
         const startAngle = angle
         const startAngleRad = (startAngle) * (Math.PI / 180);
         const startX = centerX + Math.cos(startAngleRad) * circleRadius;
@@ -203,15 +211,50 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
         return [startX, startY, endX, endY]
     };
 
-    const adjustAngles = (angles: number[]) => {
+    const adjustPlanetAngles = (angles: number[]) => {
         const adjustedAngles: number[] = angles.map((angle) => angle);
         for (let i = 0; i < angles.length; i++) {
-          for (let j = i + 1; j < angles.length; j++) {
+            for (let j = i + 1; j < angles.length; j++) {
+                const angle1 = adjustedAngles[i];
+                const angle2 = adjustedAngles[j];
+                const diff = Math.abs(angle1 - angle2);
+                if (diff < 4) {
+                    const shift = (3 - diff) / 2;
+
+                    if (angle1 < angle2) {
+                        adjustedAngles[i] = angle1 - (shift - 1);
+                        adjustedAngles[j] = angle2 + (shift + 1);
+                    } else {
+                        adjustedAngles[i] = angle1 + shift;
+                        adjustedAngles[j] = angle2 - shift;
+                    }
+                }
+            }
+        }
+        return adjustedAngles;
+    };
+
+    const adjustStarAngles = (angles: number[]) => {
+        const adjustedAngles: number[] = angles.map((angle) => angle);
+      
+        // First, remove any repeated angles (diff === 0)
+        for (let i = 0; i < adjustedAngles.length; i++) {
+          for (let j = i + 1; j < adjustedAngles.length; j++) {
+            if (adjustedAngles[i] === adjustedAngles[j]) {
+              adjustedAngles.splice(j, 1);
+              j--; // Decrement j to handle the shifted index due to splice
+            }
+          }
+        }
+      
+        // Next, adjust the remaining angles with diff < 3
+        for (let i = 0; i < adjustedAngles.length; i++) {
+          for (let j = i + 1; j < adjustedAngles.length; j++) {
             const angle1 = adjustedAngles[i];
             const angle2 = adjustedAngles[j];
             const diff = Math.abs(angle1 - angle2);
-            if (diff < 4) {
-              const shift = (3 - diff) / 2;
+            if (diff < 3) {
+              const shift = (2 - diff) / 2;
       
               if (angle1 < angle2) {
                 adjustedAngles[i] = angle1 - (shift - 1);
@@ -223,20 +266,22 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
             }
           }
         }
+      
         return adjustedAngles;
       };
+      
 
-      const rotateSymbol =  (angle: number) => {
-        const rot  = (angle + ascendantAng - 90 ) * -1;
+    const rotateSymbol = (angle: number) => {
+        const rot = (angle + ascendantAng - 90) * -1;
         return rot;
-      };
+    };
 
-      const createStarCircleTextPaths = (draw: Svg, centerX: number, centerY: number, radius: number) => {
+    const createStarCircleTextPaths = (draw: Svg, centerX: number, centerY: number, radius: number) => {
         const textPaths: Path[] = [];
         const circleRadius = (((percentages[5] + 7) / 100) * radius);
-        const starAnglesAdjusted = adjustAngles(starAngles);
+        const starAnglesAdjusted = adjustStarAngles(starAngles);
         for (let j = 0; j < starAnglesAdjusted.length; j++) {
-            const startAngle = (starAnglesAdjusted[j] -2);
+            const startAngle = (starAnglesAdjusted[j] - 1);
             const c = circlePaths(centerX, centerY, startAngle, circleRadius);
             // Use sweep-flag 0 to reverse the arc direction
             const textPath = draw.path(`M ${c[0]},${c[1]} A ${circleRadius},${circleRadius} 0 0,1 ${c[2]},${c[3]}`)
@@ -248,10 +293,15 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
 
     const createStarTextsonPath = (draw: Svg, textPaths: Path[]) => {
         for (let i = 0; i < textPaths.length; i++) {
-            const text = draw.text(`${starNames[i]}`)
+            const text = draw.text('\u2605')
                 .font({ size: 9 })
-                .fill('#4682B4');
-            // Position the text along the textPath
+                .fill('#4682B4')
+                .addClass(Style.starSymbol);
+
+            createPopup({
+                element: text,
+                description: `${uniqueStarNames[i]}`,
+            })
             text.path(textPaths[i]);
         }
     };
@@ -266,18 +316,26 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
             // Use sweep-flag 0 to reverse the arc direction
             const textPath = draw.path(`M ${c[0]},${c[1]} A ${circleRadius},${circleRadius} 0 0,1 ${c[2]},${c[3]}`)
                 .attr({ fill: 'none', stroke: 'none' });
-    
+
             textPaths.push(textPath);
         }
-    
+
         return textPaths;
     };
-    
+
     const createSignTextsonPath = (draw: Svg, textPaths: Path[]) => {
         for (let i = 0; i < textPaths.length; i++) {
             const text = draw.text(`${signSymbols[i]}`)
                 .font({ size: 12 })
-                .fill('#000000');
+                .fill('#000000')
+                .addClass(Style.signSymbol);
+
+            createPopup({
+                element: text,
+                description: `Signo: ${signSymbols[i]}
+                Long: something`,
+            })
+
             // Position the text along the textPath
             text.path(textPaths[i]);
         }
@@ -381,7 +439,7 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
             // Use sweep-flag 0 to reverse the arc direction
             const textPath = draw.path(`M ${c[0]},${c[1]} A ${circleRadius},${circleRadius} 0 0,1 ${c[2]},${c[3]}`)
                 .attr({ fill: 'none', stroke: 'none' });
-            textPaths.push([textPath, rotateSymbol((antisciaAngles[j] + ascendantAng ) * -1 )]);
+            textPaths.push([textPath, rotateSymbol((antisciaAngles[j] + ascendantAng) * -1)]);
         }
         return textPaths;
     };
@@ -392,7 +450,7 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
                 .font({ size: 10 })
                 .fill('#A9A9A9');
             // Position the text along the textPath
-            text.path(textPaths[i][0]); 
+            text.path(textPaths[i][0]);
             // @ts-ignore
             text.animate(1).rotate(textPaths[i][1], text.cx(), text.cy()); // eslint-disable-line 
         }
@@ -426,10 +484,10 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
 
     const createPlanetCircleTextPaths = (draw: Svg, centerX: number, centerY: number, radius: number, percentageSign) => {
         const textPaths: [Path, number][] = [];
-        const circleRadius = (((percentageSign -1 ) / 100) * radius);
-        const planetAnglesadjusted = adjustAngles(planetAngles);
+        const circleRadius = (((percentageSign - 1) / 100) * radius);
+        const planetAnglesadjusted = adjustPlanetAngles(planetAngles);
         for (let j = 0; j < planetAnglesadjusted.length; j++) {
-            const startAngle = (planetAnglesadjusted[j] -2);
+            const startAngle = (planetAnglesadjusted[j] - 2);
             const c = circlePaths(centerX, centerY, startAngle, circleRadius);
             // Use sweep-flag 0 to reverse the arc direction
             const textPath = draw.path(`M ${c[0]},${c[1]} A ${circleRadius},${circleRadius} 0 0,1 ${c[2]},${c[3]}`)
@@ -445,6 +503,12 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
                 .font({ size: 20 })
                 .fill('#4682B4');
             // Position the text along the textPath
+            createPopup({
+                element: text,
+                description: `Planeta: ${planetSymbols[i]}
+                Long: something`,
+            })
+
             text.path(textPaths[i][0]);
             // @ts-ignore
             text.animate(1).rotate(textPaths[i][1], text.cx(), text.cy()); // eslint-disable-line 
@@ -477,7 +541,7 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
     }
 
     useEffect(() => {
-        
+
         // useEffect runs once when the component is loaded and then every time the dependencies change [housesData, planetsData, starsData]
         // Calling the drawChartFunc function
         const drawRef = SVG(svgContainerRef.current);
@@ -492,9 +556,14 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
 
     }, [housesData, planetsData, starsData]); // eslint-disable-line react-hooks/exhaustive-deps
 
+
+
     return (
         <div className={Style.svgContainer}>
             <svg id="svg-container" ref={svgContainerRef}></svg>
+            <ChartPopup
+                {...popupProps}
+            />
         </div>
     )
 }
