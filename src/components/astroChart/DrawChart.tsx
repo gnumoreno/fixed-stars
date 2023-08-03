@@ -35,6 +35,7 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
     const someStars = getStarAspects(aspectsData);
     const starAngles: number[] = someStars.map(star => star.astroB.angle)
     const starNames: string[] = someStars.map(star => star.astroB.name)
+    const uniqueStarNames: string[] = starNames.filter((name, index) => starNames.indexOf(name) === index);
     // Sign, Triplicity, Faces, Terms wheels
     const signAnglesArray: number[] = signAngles(housesData);
     const signSymbols: string[] = Signs.map((sign) => sign.unicode);
@@ -210,7 +211,7 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
         return [startX, startY, endX, endY]
     };
 
-    const adjustAngles = (angles: number[]) => {
+    const adjustPlanetAngles = (angles: number[]) => {
         const adjustedAngles: number[] = angles.map((angle) => angle);
         for (let i = 0; i < angles.length; i++) {
             for (let j = i + 1; j < angles.length; j++) {
@@ -233,6 +234,43 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
         return adjustedAngles;
     };
 
+    const adjustStarAngles = (angles: number[]) => {
+        const adjustedAngles: number[] = angles.map((angle) => angle);
+      
+        // First, remove any repeated angles (diff === 0)
+        for (let i = 0; i < adjustedAngles.length; i++) {
+          for (let j = i + 1; j < adjustedAngles.length; j++) {
+            if (adjustedAngles[i] === adjustedAngles[j]) {
+              adjustedAngles.splice(j, 1);
+              j--; // Decrement j to handle the shifted index due to splice
+            }
+          }
+        }
+      
+        // Next, adjust the remaining angles with diff < 3
+        for (let i = 0; i < adjustedAngles.length; i++) {
+          for (let j = i + 1; j < adjustedAngles.length; j++) {
+            const angle1 = adjustedAngles[i];
+            const angle2 = adjustedAngles[j];
+            const diff = Math.abs(angle1 - angle2);
+            if (diff < 3) {
+              const shift = (2 - diff) / 2;
+      
+              if (angle1 < angle2) {
+                adjustedAngles[i] = angle1 - (shift - 1);
+                adjustedAngles[j] = angle2 + (shift + 1);
+              } else {
+                adjustedAngles[i] = angle1 + shift;
+                adjustedAngles[j] = angle2 - shift;
+              }
+            }
+          }
+        }
+      
+        return adjustedAngles;
+      };
+      
+
     const rotateSymbol = (angle: number) => {
         const rot = (angle + ascendantAng - 90) * -1;
         return rot;
@@ -241,9 +279,9 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
     const createStarCircleTextPaths = (draw: Svg, centerX: number, centerY: number, radius: number) => {
         const textPaths: Path[] = [];
         const circleRadius = (((percentages[5] + 7) / 100) * radius);
-        const starAnglesAdjusted = adjustAngles(starAngles);
+        const starAnglesAdjusted = adjustStarAngles(starAngles);
         for (let j = 0; j < starAnglesAdjusted.length; j++) {
-            const startAngle = (starAnglesAdjusted[j] - 2);
+            const startAngle = (starAnglesAdjusted[j] - 1);
             const c = circlePaths(centerX, centerY, startAngle, circleRadius);
             // Use sweep-flag 0 to reverse the arc direction
             const textPath = draw.path(`M ${c[0]},${c[1]} A ${circleRadius},${circleRadius} 0 0,1 ${c[2]},${c[3]}`)
@@ -255,10 +293,15 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
 
     const createStarTextsonPath = (draw: Svg, textPaths: Path[]) => {
         for (let i = 0; i < textPaths.length; i++) {
-            const text = draw.text(`${starNames[i]}`)
+            const text = draw.text('\u2605')
                 .font({ size: 9 })
-                .fill('#4682B4');
-            // Position the text along the textPath
+                .fill('#4682B4')
+                .addClass(Style.starSymbol);
+
+            createPopup({
+                element: text,
+                description: `${uniqueStarNames[i]}`,
+            })
             text.path(textPaths[i]);
         }
     };
@@ -442,7 +485,7 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
     const createPlanetCircleTextPaths = (draw: Svg, centerX: number, centerY: number, radius: number, percentageSign) => {
         const textPaths: [Path, number][] = [];
         const circleRadius = (((percentageSign - 1) / 100) * radius);
-        const planetAnglesadjusted = adjustAngles(planetAngles);
+        const planetAnglesadjusted = adjustPlanetAngles(planetAngles);
         for (let j = 0; j < planetAnglesadjusted.length; j++) {
             const startAngle = (planetAnglesadjusted[j] - 2);
             const c = circlePaths(centerX, centerY, startAngle, circleRadius);
