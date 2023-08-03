@@ -9,6 +9,7 @@ import type { star } from "~/utils/external/stars/types";
 import type { arabicPart } from "~/utils/external/arabicParts/types";
 import type { aspect } from "~/utils/external/aspects/types";
 import { ChartPopup, ChartPopupProps } from "./Utils";
+import { usePopup } from "~/hooks/usePopup";
 
 type ChartSVGProps = {
     housesData: house[] | null;
@@ -19,6 +20,7 @@ type ChartSVGProps = {
 }
 
 export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, starsData, arabicPartsData, aspectsData }) => {
+
 
     const svgContainerRef = useRef<SVGSVGElement>(null);
     // Basic variables for the chart
@@ -47,6 +49,10 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
     const arabicArray = arabicPartsData;
     const arabicPartAng = arabicArray.map(arabicPart => arabicPart.angle);
     const arabicPartSymbols = arabicArray.map(arabicPart => arabicPart.unicode);
+
+    // Popup
+    const { createPopup, popupProps } = usePopup();
+
 
     const createCircle = (draw: Svg, percentages: number[]) => {
         // const draw = SVG(svgContainerRef.current);        
@@ -454,6 +460,12 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
                 .font({ size: 20 })
                 .fill('#4682B4');
             // Position the text along the textPath
+            createPopup({
+                element: text,
+                description: `Planeta: ${planetSymbols[i]}
+                Long: something`,
+            })
+
             text.path(textPaths[i][0]);
             // @ts-ignore
             text.animate(1).rotate(textPaths[i][1], text.cx(), text.cy()); // eslint-disable-line 
@@ -501,76 +513,13 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
 
     }, [housesData, planetsData, starsData]); // eslint-disable-line react-hooks/exhaustive-deps
 
-    const [popupProps, setPopupProps] = useState<ChartPopupProps>({
-        description: null,
-        x: 0,
-        y: 0,
-    })
-    type handleMouseOverPopupArgs = {
-        element: Text | Path | Rect | Ellipse | Line | Image | G | Svg,
-        description: string | null,
-        paddingX?: number,
-        paddingY?: number,
-    }
-    const handleMouseOverPopup = ({
-        element,
-        paddingX,
-        paddingY,
-        description,
-    }: handleMouseOverPopupArgs) => {
-        const x = Number(element.x()) + (paddingX || 0);
-        const y = Number(element.y()) + (paddingY || 0);
-        setPopupProps({
-            description: description,
-            x,
-            y,
-        })
-    }
 
-    const handleMouseOutPopup = () => {
-        setPopupProps((prev) => {
-            return {
-                ...prev,
-                description: null,
-            }
-        })
-    }
-
-
-
-    const createPopup = ({
-        element,
-        description,
-        paddingX,
-        paddingY,
-    }: handleMouseOverPopupArgs) => {
-
-        // Padding optional. Default is x = 12, y = -85
-
-        const dx = paddingX || 12;
-        const dy = paddingY || -85;
-
-        element.mouseenter(() => {
-
-            handleMouseOverPopup({
-                element: element,
-                description: description,
-                paddingX: dx,
-                paddingY: dy,
-            })
-        });
-        element.mouseleave(() => {
-            handleMouseOutPopup();
-        });
-    }
 
     return (
         <div className={Style.svgContainer}>
             <svg id="svg-container" ref={svgContainerRef}></svg>
             <ChartPopup
-                description={popupProps.description}
-                x={popupProps.x}
-                y={popupProps.y}
+                {...popupProps}
             />
         </div>
     )
