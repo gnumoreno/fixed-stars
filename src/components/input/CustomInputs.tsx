@@ -90,7 +90,6 @@ export const DateSelection: React.FC<DateSelectionProps> = ({
     }
 
     const directlySetDate = (date: Date) => {
-        console.log(date)
         if(!isValid(date)) {
             directlySetDate(new Date())
             return

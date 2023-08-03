@@ -280,6 +280,32 @@ export function getOtherEntities(aspects: aspect[], astroType: string, astroName
   return otherEntities as aspectedTo[];
 }
 
+export function getStarAspects(aspects: aspect[]) {
+  const starAspects = aspects.filter((aspect) => {
+    return aspect.astrotypeA === "star" || aspect.astrotypeB === "star";
+  });
+  
+  // Map the filtered data to extract the required information for each side of the aspect
+  const starAspectDetails = starAspects.map((aspect) => {
+    const astroA = {
+      name: aspect.astronameA,
+      angle: aspect.angleA,
+      aspectType: aspect.typeOfAspect,
+      aspectedAstro: aspect.astrotypeB === "star" ? aspect.astronameB : null,
+    };
+  
+    const astroB = {
+      name: aspect.astronameB,
+      angle: aspect.angleB,
+      aspectType: aspect.typeOfAspect,
+      aspectedAstro: aspect.astrotypeA === "star" ? aspect.astronameA : null,
+    };
+  
+    return { astroA, astroB };
+  });
+  return starAspectDetails;
+}
+
 export function aspectedToTableString(aspects: aspectedTo[]) {
   if(aspects.length === 0) {
     return "None";
