@@ -287,8 +287,8 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
                     element: text,
                     description: `Signo: ${signSymbols[i]}
                 Long: calma`,
-                    paddingX: 15,
-                    paddingY: -85,
+                    paddingX: 12,
+                    paddingY: 12,
                 })
             });
             text.mouseleave(() => {
