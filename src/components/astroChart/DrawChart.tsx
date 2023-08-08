@@ -46,6 +46,11 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
     const houseAngles = housesData.map((house) => house.angle);
     const planetAngles = planetsData.map((planet) => planet.angle);
     const planetSymbols = planetsData.map((planet) => planet.unicode);
+    const planetPos = planetsData.map((planet) => {
+        return{
+            deg:planet.longDegree, min:planet.longMinute, sec:planet.longSecond
+        }
+    });
     const antisciaAngles = planetAntiscia(planetsData.slice(0, 7), housesData);
     const arabicArray = arabicPartsData;
     const arabicPartAng = arabicArray.map(arabicPart => arabicPart.angle);
@@ -498,7 +503,7 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
         }
         return textPaths;
     };
-
+// {planet.longDegree}° {planet.longMinute}&lsquo; {planet.longSecond}&quot;
     const createPlanetTextsonPath = (draw: Svg, textPaths: [Path, number][]) => {
         for (let i = 0; i < textPaths.length; i++) {
             const text = draw.text(`${planetSymbols[i]}`)
@@ -507,8 +512,7 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
             // Position the text along the textPath
             createPopup({
                 element: text,
-                description: `Planeta: ${planetSymbols[i]}
-                Long: something`,
+                description: `${planetPos[i].deg}° ${planetPos[i].min}' ${planetPos[i].sec}"`,
             })
 
             text.path(textPaths[i][0]);
