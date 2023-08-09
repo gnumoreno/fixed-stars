@@ -7,7 +7,7 @@ import { aspectProperties } from "./external/aspects/properties";
 export const Signs = [
   { sign: "Aries", unicode: '\u2648', angle: 0, domicile: "Mars", exaltation: "Sun", triplicity_day: "Sun", 
     triplicity_night: "Jupiter", detriment: "Venus", fall: "Saturn", 
-    terms: [["true Node", 6], ["Venus", 14], ["Mercury", 21], ["Mars", 26], ["Saturn", 30]], faces: ["Mars", "Sun", "Venus"] },
+    terms: [["Jupiter", 6], ["Venus", 14], ["Mercury", 21], ["Mars", 26], ["Saturn", 30]], faces: ["Mars", "Sun", "Venus"] },
   { sign: "Taurus", unicode: '\u2649', angle: 30, domicile: "Venus", exaltation: "Moon", triplicity_day: "Venus", 
     triplicity_night: "Moon", detriment: "Mars", fall: "none", 
     terms: [["Venus", 8], ["Mercury", 15], ["Jupiter", 22], ["Saturn", 26], ["Mars", 30]], faces: ["Mercury", "Moon", "Saturn"] },

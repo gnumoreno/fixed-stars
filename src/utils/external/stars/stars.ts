@@ -1,5 +1,5 @@
 import { env } from "~/env.mjs";
-import { starProperties } from "./properties";
+import { stars } from "./properties";
 import type { star, starAPI } from "./types";
 import { decToDMS, getAngle, houseFromDec } from "~/utils/astroCalc";
 import type { house } from "../houses/types";
@@ -7,8 +7,8 @@ import type { house } from "../houses/types";
 
 
 export const getStarsData = async (date: string, time: string, houses: house[], ascendantPos: number) => {
-
-    const starsURL = `${env.GO_API_ENDPOINT}/run-star?birthdate=${date}&utctime=${time}&stars=${starProperties.join(',')}`
+    const starNames = stars.map((star) => star.name);
+    const starsURL = `${env.GO_API_ENDPOINT}/run-star?birthdate=${date}&utctime=${time}&stars=${starNames.join(',')}`
 
     const starsArrayResponse = await fetch(starsURL, {
         method: 'GET',
@@ -20,6 +20,12 @@ export const getStarsData = async (date: string, time: string, houses: house[], 
     const starsArray = await starsArrayResponse.json() as starAPI[];
 
     return starsArray.map(star => {
+        const starProps = stars.find((s) => s.name === star.starName) || {
+            name: "",
+            orb: 1,
+            nature: "",
+            url: "",
+        };
         const tmp = decToDMS(parseFloat(star.longitude));
         // const long = parseFloat(star.longitude);
         const longitude = parseFloat(star.longitude);
@@ -38,7 +44,9 @@ export const getStarsData = async (date: string, time: string, houses: house[], 
             longDegree: tmp.signDegree,
             longMinute: tmp.signMinute,
             longSecond: tmp.signSecond,
-            orb: 1
+            orb: starProps.orb,
+            nature: starProps.nature,
+            url: starProps.url,
         }
 
         return result

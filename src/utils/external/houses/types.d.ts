@@ -13,3 +13,11 @@ export type house = {
     name: string;
     longitude: string;
   }
+
+  export type houseProps = {
+    name: string;
+    angle: number;
+    deg: number;
+    min: number;
+    sec:number;
+  }

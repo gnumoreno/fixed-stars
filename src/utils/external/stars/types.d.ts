@@ -23,5 +23,14 @@ export type star = {
     house: number;
     distance: number;
     magnitude: number;
-    orb: 1;
+    orb: number;
+    nature: string;
+    url: string;
   }
+
+export type StarProperties = {
+    name: string;
+    orb: number;
+    nature: string;
+    url: string;
+}
