@@ -1,7 +1,7 @@
 import { type StarProperties } from "./types";
 
 export const stars: StarProperties[] = [
-    { name: "Acrux", orb: 2, nature: "", url: "https://www.constellationsofwords.com/acrux/"},
+    { name: "Acrux", orb: 2, nature: "♀ + ♃", url: "https://www.constellationsofwords.com/acrux/"},
     { name: "Aculeus", orb: 1, nature: "♂ + ☾", url: "https://www.constellationsofwords.com/acumen/"},
     { name: "Acumen", orb: 1, nature: "♂ + ☾", url: "https://www.constellationsofwords.com/agena/"},
     { name: "Agena", orb: 1, nature: "♀ + ♃", url: "https://www.constellationsofwords.com/agena/"},

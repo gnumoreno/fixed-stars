@@ -7,8 +7,8 @@ import type { house } from "../houses/types";
 
 
 export const getStarsData = async (date: string, time: string, houses: house[], ascendantPos: number) => {
-
-    const starsURL = `${env.GO_API_ENDPOINT}/run-star?birthdate=${date}&utctime=${time}&stars=${StarProperties.join(',')}`
+    const starNames = stars.map((star) => star.name);
+    const starsURL = `${env.GO_API_ENDPOINT}/run-star?birthdate=${date}&utctime=${time}&stars=${starNames.join(',')}`
 
     const starsArrayResponse = await fetch(starsURL, {
         method: 'GET',
