@@ -39,7 +39,7 @@ const NavButtons: React.FC = () => {
   const [starsData, setStarsData] = useState<star[] | null>(null);
   const [aspectsData, setAspectsData] = useState<aspect[] | null>(null);
   const [arabicPartsData, setArabicPartsData] = useState<arabicPart[] | null>(null);
-  const [inputType, setInputType] = useState<"decimal" | "dms">("dms");
+  const [inputType, setInputType] = useState<"decimal" | "dms">("decimal");
   const [decimalValues, setDecimalValues] = useState<{ long: string; lat: string }>({ long: "0", lat: "0" });
   const [longitude, setLongitude] = useState<{ degrees: string; minutes: string; seconds: string }>({ degrees: "0", minutes: "0", seconds: "0" });
   const [latitude, setLatitude] = useState<{ degrees: string; minutes: string; seconds: string }>({ degrees: "0", minutes: "0", seconds: "0" });

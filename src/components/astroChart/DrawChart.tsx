@@ -25,8 +25,8 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
     const svgContainerRef = useRef<SVGSVGElement>(null);
 
     // Basic Wheel Variables
-    const centerX = 400;
-    const centerY = 400;
+    const centerX = 350;
+    const centerY = 450;
     const radius = 300;
     const percentages = [55, 80, 84, 88, 92, 100];
     const circleColors = ['#D3D3D3', '#808080', '#D3D3D3', '#D3D3D3', '#D3D3D3', '#808080'];

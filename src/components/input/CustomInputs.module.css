@@ -437,3 +437,54 @@
 
 
 }
+
+/* City Selection */
+
+.countryContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.countryModal {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    position: absolute;
+    top: 22px;
+    left: 0;
+    background-color: white;
+    border: 1px solid black;
+    display: none;
+    max-height: 300px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    z-index: 999;
+}
+
+.countryModalOpen {
+    display: flex;
+}
+
+.countryModalOption {
+    text-align: left;
+    width: 100%;
+    padding-left: 10px;
+    padding-right: 10px;
+    white-space: nowrap;
+    font-size: 10px;
+    max-width: 300px;
+    cursor: pointer;
+    margin: 0;
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+.countryModalOption:hover {
+    background-color: var(--GRAY1);
+}
