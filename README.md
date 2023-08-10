@@ -2,7 +2,9 @@
 
 Primary purspose is to help my astrologer friends (yes, I have a bunch of them!) to have a reliable tool to calculate the position of fixed stars for a particular date. 
 
-This is just a very simple website designed to be very easy to use.
+This is just a simple website designed to be very easy to use.
+
+https://fixed-stars.vercel.app/
 
 by Moreno Garcia and Matheus Lasserre
 
