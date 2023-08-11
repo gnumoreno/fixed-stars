@@ -360,6 +360,7 @@ type CoordinatesSelectionProps = {
     setInputType: React.Dispatch<React.SetStateAction<"decimal" | "dms">>
     nextInputRef?: React.RefObject<HTMLInputElement>
     startRef?: React.RefObject<HTMLInputElement>
+    setQueryCity: React.Dispatch<React.SetStateAction<CityData | null>>
 }
 
 export const CoordinatesSelection: React.FC<CoordinatesSelectionProps> = ({
@@ -371,6 +372,7 @@ export const CoordinatesSelection: React.FC<CoordinatesSelectionProps> = ({
     setLongitude,
     setInputType,
     // nextInputRef,
+    setQueryCity,
     startRef
 }) => {
 
@@ -599,6 +601,7 @@ export const CoordinatesSelection: React.FC<CoordinatesSelectionProps> = ({
                     <CitySelection
                         setDecimalCord={setDecimalCord}
                         startRef={startRef}
+                        setQueryCity={setQueryCity}
                     />
                     :
                     <div className={Style.coordInputs}>
@@ -732,7 +735,7 @@ export const CoordinatesSelection: React.FC<CoordinatesSelectionProps> = ({
                         onClick={() => handleInputTypeChange("Decimal")}
                     ></div>
                     <p className={Style.coordTypeText}>
-                        Decimal
+                        Dec
                     </p>
                 </div>
                 <div className={Style.coordTypeOptions}>
@@ -740,7 +743,8 @@ export const CoordinatesSelection: React.FC<CoordinatesSelectionProps> = ({
                         onClick={() => handleInputTypeChange("DMS")}
                     ></div>
                     <p className={Style.coordTypeText}>
-                        Degrees, Minutes,<br></br> Seconds (DMS)
+                        {/* Degrees, Minutes,<br></br> Seconds (DMS) */}
+                        DMS
                     </p>
                 </div>
                 <div className={Style.coordTypeOptions}>
@@ -759,20 +763,19 @@ export const CoordinatesSelection: React.FC<CoordinatesSelectionProps> = ({
 type CitySelectionProps = {
     setDecimalCord: React.Dispatch<React.SetStateAction<{ long: string; lat: string }>>
     startRef?: React.RefObject<HTMLInputElement>
+    setQueryCity: React.Dispatch<React.SetStateAction<CityData | null>>
 }
 
 export const CitySelection: React.FC<CitySelectionProps> = ({
     setDecimalCord,
-    startRef
+    startRef,
+    setQueryCity
 }) => {
     const [country, setCountry] = useState<string>("")
     const queryCountry = api.chart.getCountries.useQuery({
         queryString: country
     }, {
         refetchOnWindowFocus: false,
-        onSuccess: (data) => {
-            console.log(data)
-        }
     });
     const [selectedCountry, setSelectedCountry] = useState<string>("")
     const [isCountryFocused, setIsCountryFocused] = useState<boolean>(false)
@@ -792,9 +795,6 @@ export const CitySelection: React.FC<CitySelectionProps> = ({
         country: selectedCountry
     }, {
         refetchOnWindowFocus: false,
-        onSuccess: (data) => {
-            console.log(data)
-        },
         enabled: !!selectedCountry
     });
     const [selectedCity, setSelectedCity] = useState<CityData | null>(null)
@@ -803,6 +803,7 @@ export const CitySelection: React.FC<CitySelectionProps> = ({
 
     const handleSelectCity = (city: CityData) => {
         setSelectedCity(city)
+        setQueryCity(city)
         setCity(city.city_ascii)
         setDecimalCord({ long: city.lng.toString(), lat: city.lat.toString() })
     }
@@ -828,7 +829,6 @@ export const CitySelection: React.FC<CitySelectionProps> = ({
                     onChange={(e) => setCountry(e.target.value)}
                     onKeyDown={(e) => {
                         if (e.key === 'Backspace') {
-                            console.log('Backspace')
                             setSelectedCountry('')
                         }
                     }}
@@ -878,7 +878,6 @@ export const CitySelection: React.FC<CitySelectionProps> = ({
                     onChange={(e) => setCity(e.target.value)}
                     onKeyDown={(e) => {
                         if (e.key === 'Backspace') {
-                            console.log('Backspace')
                             setSelectedCity(null)
                         }
                     }}
@@ -920,6 +919,40 @@ export const CitySelection: React.FC<CitySelectionProps> = ({
                 }
 
             </div>
+        </div>
+    )
+}
+
+type TimeZoneSelectionProps = {
+    abv: string;
+    gmt_offset: number;
+    utcDateTime: Date;
+    currentDate: number;
+}
+
+export const TimeZoneSelection: React.FC<TimeZoneSelectionProps> = ({
+    abv,
+    gmt_offset,
+    utcDateTime,
+    currentDate
+}) => {
+    const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    const getDateString = (date: Date) => {
+        const UTCTimeString = `${padWithLeadingZeros(date.getUTCHours(), 2)}:${padWithLeadingZeros(date.getUTCMinutes(), 2)}`
+        const isDifferentDay = currentDate !== date.getUTCDate();
+        const UTCDayAndMonth = `${isDifferentDay ? `, ${date.getUTCDate()} ${months[date.getUTCMonth()]}` : ''}`
+        return (
+            <p className={Style.timezoneHour}>
+                {UTCTimeString}<span className={Style.timezoneHourMini}>{UTCDayAndMonth}</span>
+            </p>
+        )
+    }
+    return (
+        <div className={Style.timezoneContainer}>
+            <p className={Style.timezoneAbv}>
+                UTC{gmt_offset > 0 ? `+${gmt_offset}`: gmt_offset < 0 ? `-${Math.abs(gmt_offset)}`:'' } ({abv})
+            </p>
+            {getDateString(utcDateTime)}
         </div>
     )
 }
