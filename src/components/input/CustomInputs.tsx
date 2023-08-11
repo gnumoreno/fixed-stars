@@ -735,7 +735,7 @@ export const CoordinatesSelection: React.FC<CoordinatesSelectionProps> = ({
                         onClick={() => handleInputTypeChange("Decimal")}
                     ></div>
                     <p className={Style.coordTypeText}>
-                        Decimal
+                        Dec
                     </p>
                 </div>
                 <div className={Style.coordTypeOptions}>
@@ -935,18 +935,20 @@ type TimeZoneSelectionProps = {
     abv: string;
     gmt_offset: number;
     utcDateTime: Date;
+    currentDate: number;
 }
 
 export const TimeZoneSelection: React.FC<TimeZoneSelectionProps> = ({
     abv,
     gmt_offset,
-    utcDateTime
+    utcDateTime,
+    currentDate
 }) => {
     const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
     const getDateString = (date: Date) => {
         const UTCTimeString = `${padWithLeadingZeros(date.getUTCHours(), 2)}:${padWithLeadingZeros(date.getUTCMinutes(), 2)}`
-        const isDifferentDay = date.getDate() !== date.getUTCDate();
-        console.log(isDifferentDay, date.getUTCDate(), date.getUTCDate())
+        const isDifferentDay = currentDate !== date.getUTCDate();
+        console.log(isDifferentDay, currentDate, date.getUTCDate())
         const UTCDayAndMonth = `${isDifferentDay ? `, ${date.getUTCDate()} ${months[date.getUTCMonth()]}` : ''}`
         return (
             <p className={Style.timezoneHour}>

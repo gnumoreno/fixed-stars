@@ -12,7 +12,7 @@ import type { star } from "~/utils/external/stars/types";
 import { FixedStarsTable, HousesTable, PlanetsTable } from "~/components/tables/Tables";
 import { type aspect } from "~/utils/external/aspects/types";
 import { type arabicPart } from "~/utils/external/arabicParts/types";
-import { CityData } from "~/utils/cities/queries";
+import type { CityData } from "~/utils/cities/queries";
 import { padWithLeadingZeros } from "~/utils/input";
 
 
@@ -138,6 +138,7 @@ const NavButtons: React.FC = () => {
               abv={adjustedTimeZone.data.timeZone.abv}
               gmt_offset={adjustedTimeZone.data.timeZone.gmt_offset}
               utcDateTime={adjustedTimeZone.data.timeZone.utc}
+              currentDate={date.getDate()}
              />
              :
              null
