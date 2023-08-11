@@ -124,9 +124,9 @@ export const chartRouter = createTRPCRouter({
 
         return {
             timeZone: adjustedTimeZone,
-            geoTzPerf:`(GeoTz: ${(t1 - t0).toFixed(4)}ms)`,
-            BinarySearchPerf: `(BinarySearch: ${(TzPerfEnd - TzPerf).toFixed(4)}ms)`,
-            queryPerf: `(Query: ${(TzPerfEnd - t0).toFixed(4)}ms)`
+            geoTzPerf:`GeoTz: ${(t1 - t0).toFixed(4)}ms`,
+            BinarySearchPerf: `BinarySearch: ${(TzPerfEnd - TzPerf).toFixed(4)}ms`,
+            queryPerf: `Query: ${(TzPerfEnd - t0).toFixed(4)}ms`
         };
     })
 
