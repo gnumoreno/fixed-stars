@@ -1,7 +1,7 @@
 import { type StarProperties } from "./types";
 
 export const stars: StarProperties[] = [
-    { name: "Acrux", orb: 2, nature: "♀ + ♃", url: "https://www.constellationsofwords.com/acrux/"},
+    { name: "Acrux", orb: 1, nature: "♀ + ♃", url: "https://www.constellationsofwords.com/acrux/"},
     { name: "Aculeus", orb: 1, nature: "♂ + ☾", url: "https://www.constellationsofwords.com/acumen/"},
     { name: "Acumen", orb: 1, nature: "♂ + ☾", url: "https://www.constellationsofwords.com/agena/"},
     { name: "Agena", orb: 1, nature: "♀ + ♃", url: "https://www.constellationsofwords.com/agena/"},
@@ -35,10 +35,12 @@ export const stars: StarProperties[] = [
     { name: "Menkar", orb: 1, nature: "♄", url: "https://www.constellationsofwords.com/menkar/"},
     { name: "Mirach", orb: 1, nature: "♀", url: "https://www.constellationsofwords.com/mirach/"},
     { name: "Mirfak", orb: 1, nature: "♃ + ♄", url: "https://www.constellationsofwords.com/mirfak/"},
+    { name: "Neptune", orb: 1, nature: "♆", url: ""},
     { name: "Nunki", orb: 1, nature: "♃ + < ☿", url: "https://www.constellationsofwords.com/nunki/"},
     { name: "Pollux", orb: 1, nature: "♂", url: "https://www.constellationsofwords.com/pollux/"},
     { name: "Praesepe", orb: 1, nature: "♂ + ☾", url: "https://www.constellationsofwords.com/praesaepe/"},
     { name: "Procyon", orb: 1, nature: "☿ + < ♂", url: "https://www.constellationsofwords.com/procyon/"},
+    { name: "Pluto", orb: 1, nature: "♇", url: ""},
     { name: "Rasalgethi", orb: 1, nature: "☿", url: "https://www.constellationsofwords.com/ras-algethi/"},
     { name: "Regulus", orb: 3, nature: "♂ + ♃", url: "https://www.constellationsofwords.com/regulus/"},
     { name: "Rigel", orb: 1, nature: "♃ + ♄", url: "https://www.constellationsofwords.com/rigel/"},
@@ -50,6 +52,7 @@ export const stars: StarProperties[] = [
     { name: "Spica", orb: 3, nature: "♀ + < ♂", url: "https://www.constellationsofwords.com/spica/"},
     { name: "Toliman", orb: 1, nature: "♀ + ♃", url: "https://www.constellationsofwords.com/toliman/"},
     { name: "Unukalhai", orb: 1, nature: "♄ + ♂", url: "https://www.constellationsofwords.com/unukalhai/"},
+    { name: "Uranus", orb: 1, nature: "♅", url: ""},
     { name: "Vega", orb: 1, nature: "♀ + ☿", url: "https://www.constellationsofwords.com/vega/"},
     { name: "Vindemiatrix", orb: 1, nature: "♄ + < ☿", url: "https://www.constellationsofwords.com/vindemiatrix/"},
     { name: "Zosma", orb: 1, nature: "♄ + ♀", url: "https://www.constellationsofwords.com/zosma/"},
