@@ -929,3 +929,36 @@ export const CitySelection: React.FC<CitySelectionProps> = ({
         </div>
     )
 }
+
+type TimeZoneSelectionProps = {
+    abv: string;
+    gmt_offset: number;
+    utcDateTime: Date;
+}
+
+export const TimeZoneSelection: React.FC<TimeZoneSelectionProps> = ({
+    abv,
+    gmt_offset,
+    utcDateTime
+}) => {
+    const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    const getDateString = (date: Date) => {
+        const UTCTimeString = `${padWithLeadingZeros(date.getUTCHours(), 2)}:${padWithLeadingZeros(date.getUTCMinutes(), 2)}`
+        const isDifferentDay = date.getDate() !== date.getUTCDate();
+        console.log(isDifferentDay, date.getUTCDate(), date.getUTCDate())
+        const UTCDayAndMonth = `${isDifferentDay ? `, ${date.getUTCDate()} ${months[date.getUTCMonth()]}` : ''}`
+        return (
+            <p className={Style.timezoneHour}>
+                {UTCTimeString}<span className={Style.timezoneHourMini}>{UTCDayAndMonth}</span>
+            </p>
+        )
+    }
+    return (
+        <div className={Style.timezoneContainer}>
+            <p className={Style.timezoneAbv}>
+                UTC{gmt_offset > 0 ? `+${gmt_offset}`: gmt_offset < 0 ? `-${Math.abs(gmt_offset)}`:'' } ({abv})
+            </p>
+            {getDateString(utcDateTime)}
+        </div>
+    )
+}

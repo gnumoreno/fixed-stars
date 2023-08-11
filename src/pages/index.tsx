@@ -5,7 +5,7 @@ import Style from "./Index.module.css";
 import Head from "next/head";
 import { Loading } from "~/components/utils/Loading";
 import { ChartSVG } from "~/components/astroChart/DrawChart";
-import { CoordinatesSelection, DateSelection, TimeSelection } from "~/components/input/CustomInputs";
+import { CoordinatesSelection, DateSelection, TimeSelection, TimeZoneSelection } from "~/components/input/CustomInputs";
 import type { house } from "~/utils/external/houses/types";
 import type { planet } from "~/utils/external/planets/types";
 import type { star } from "~/utils/external/stars/types";
@@ -13,6 +13,7 @@ import { FixedStarsTable, HousesTable, PlanetsTable } from "~/components/tables/
 import { type aspect } from "~/utils/external/aspects/types";
 import { type arabicPart } from "~/utils/external/arabicParts/types";
 import { CityData } from "~/utils/cities/queries";
+import { padWithLeadingZeros } from "~/utils/input";
 
 
 const Testpage: NextPage = () => {
@@ -51,8 +52,8 @@ const NavButtons: React.FC = () => {
     e.preventDefault();
     testCommand.mutate(
       {
-        date: date,
-        time: time,
+        date: adjustedTimeZone.data.timeZone.utc,
+        time: `${padWithLeadingZeros(adjustedTimeZone.data.timeZone.utc.getUTCHours(), 2)}:${padWithLeadingZeros(adjustedTimeZone.data.timeZone.utc.getUTCMinutes(), 2)}`,
         long: Number(decimalValues.long),
         lat: Number(decimalValues.lat),
         dmsLong: {
@@ -96,6 +97,7 @@ const NavButtons: React.FC = () => {
     countryCode: city?.iso2,
     lat: city?.lat,
     long: city?.lng,
+    time: time
   }, {
     enabled: city !== null,
     onSuccess: (data) => {
@@ -110,19 +112,29 @@ const NavButtons: React.FC = () => {
         <form onSubmit={(e) => { handleFormSubmit(e) }} className={Style.form}>
           <h1 className={Style.title} onClick={() => console.log(time, longitude)}>BirthData</h1>
           <div className={Style.logoDivider}></div>
-          <label htmlFor="date">Date:</label>
+          {/* <label htmlFor="date">Date:</label> */}
           <DateSelection
             date={date}
             setDate={setDate}
             nextInputRef={timeSelectionRef}
           />
-          <label htmlFor="time">Time (UTC):</label>
+          {/* <label htmlFor="time">Time:</label> */}
           <TimeSelection
             time={time}
             setTime={setTime}
             nextInputRef={coordinatesSelectionRef}
             startRef={timeSelectionRef}
           />
+          {
+            adjustedTimeZone.data ?
+            <TimeZoneSelection
+              abv={adjustedTimeZone.data.timeZone.abv}
+              gmt_offset={adjustedTimeZone.data.timeZone.gmt_offset}
+              utcDateTime={adjustedTimeZone.data.timeZone.utc}
+             />
+             :
+             null
+          }
           <CoordinatesSelection
             setQueryCity={setCity}
             decimalCord={decimalValues}

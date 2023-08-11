@@ -529,3 +529,52 @@
         }
     
 }
+
+
+/* timezones */
+
+.timezoneContainer{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    width: auto;
+}
+
+.timezoneAbv{
+    font-size: 12px;
+    font-weight: 600;
+    margin: 0;
+    margin-right: 5px;
+    white-space: nowrap;
+    background-color: #f6f6f6;
+    border: 1px solid var(--GRAY1);
+    height: 30px;
+    border-radius: 4px;
+    padding: 0 5px;
+    line-height: 30px;
+    cursor: not-allowed;
+}
+
+.timezoneHour{
+    font-size: 12px;
+    font-weight: 600;
+    margin: 0;
+    margin-right: 5px;
+    white-space: nowrap;
+    background-color: #f6F6F6;
+    border: 1px solid var(--GRAY1);
+    height: 30px;
+    border-radius: 4px;
+    padding: 0 5px;
+    line-height: 30px;
+    cursor: not-allowed;
+
+}
+
+.timezoneHourMini{
+    font-size: 10px;
+    font-weight: 600;
+    margin: 0;
+    margin-right: 5px;
+}

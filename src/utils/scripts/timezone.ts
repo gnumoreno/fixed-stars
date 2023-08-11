@@ -15,7 +15,7 @@ const timezones = rawTimezone as timezoneType[];
 // First, let's sort the timezones by country code
 
 
-export const findTimezone = (countryCode:string, zoneName:string, timeStart:number) => {
+export const findTimezone = (countryCode: string, zoneName: string, timeStart: number) => {
     const countryTimezones = binarySearchByCountryCode(timezones, countryCode);
     const [firstIdx, lastIdx] = findSameTimezoneAfterBinarySearch(timezones, countryTimezones);
     const zoneTimezones = binarySearchByZoneName(timezones, zoneName, firstIdx, lastIdx);
@@ -23,16 +23,16 @@ export const findTimezone = (countryCode:string, zoneName:string, timeStart:numb
     const timeStartIdx = binarySearchByTimeStart(timezones, timeStart, zoneFirstIdx, zoneLastIdx);
 
     return timezones[timeStartIdx];
-   
+
 }
 
-const binarySearchByCountryCode = (timezones:timezoneType[], countryCode:string) => {
+const binarySearchByCountryCode = (timezones: timezoneType[], countryCode: string) => {
     let low = 0;
     let high = timezones.length;
     do {
         const mid = Math.floor(low + ((high - low) / 2));
         const midCountryCode = timezones[mid].country_code;
-        
+
         if (midCountryCode === countryCode) {
             return mid;
         } else if (midCountryCode > countryCode) {
@@ -41,17 +41,17 @@ const binarySearchByCountryCode = (timezones:timezoneType[], countryCode:string)
             low = mid + 1;
         }
 
-    } while (low < high);  
+    } while (low < high);
     return -1;
 }
 
-const findSameTimezoneAfterBinarySearch = (timezones:timezoneType[], idx:number) => {
+const findSameTimezoneAfterBinarySearch = (timezones: timezoneType[], idx: number) => {
     let lastIdx = idx;
     let lastFound = false;
     let firstIdx = idx;
     let firstFound = false;
     const countryCode = timezones[idx].country_code;
-    
+
     do {
         if (lastFound === false) {
             lastIdx++;
@@ -71,7 +71,7 @@ const findSameTimezoneAfterBinarySearch = (timezones:timezoneType[], idx:number)
     return [firstIdx, lastIdx];
 }
 
-const binarySearchByZoneName = (timezones:timezoneType[], zoneName:string, startIdx:number, finalIdx:number) => {
+const binarySearchByZoneName = (timezones: timezoneType[], zoneName: string, startIdx: number, finalIdx: number) => {
     let low = startIdx;
     let high = finalIdx;
     do {
@@ -88,13 +88,13 @@ const binarySearchByZoneName = (timezones:timezoneType[], zoneName:string, start
     return -1;
 }
 
-const findSameTimezoneAfterZoneBinarySearch = (timezones:timezoneType[], idx:number) => {
+const findSameTimezoneAfterZoneBinarySearch = (timezones: timezoneType[], idx: number) => {
     let lastIdx = idx;
     let lastFound = false;
     let firstIdx = idx;
     let firstFound = false;
     const zoneName = timezones[idx].zone_name;
-    
+
     do {
         if (lastFound === false) {
             lastIdx++;
@@ -114,17 +114,24 @@ const findSameTimezoneAfterZoneBinarySearch = (timezones:timezoneType[], idx:num
     return [firstIdx, lastIdx];
 }
 
-const binarySearchByTimeStart = (timezones:timezoneType[], startTime:number, startIdx:number, finalIdx:number) => {
+const binarySearchByTimeStart = (timezones: timezoneType[], startTime: number, startIdx: number, finalIdx: number) => {
     let low = startIdx;
     let high = finalIdx;
     do {
         const mid = Math.floor(low + ((high - low) / 2));
         const midTimeStart = timezones[mid].time_start;
-        if(mid === finalIdx) {
+        // log low mid and high
+        if (mid === finalIdx) {
             return mid;
         }
-        if (midTimeStart === startTime || (midTimeStart > startTime && timezones[mid - 1].time_start < startTime)) {
-            return mid - 1;
+        if (
+            midTimeStart === startTime ||
+            (midTimeStart < startTime && timezones[mid + 1].time_start > startTime)
+        ) {
+            return mid;
+        } if ((midTimeStart < startTime && timezones[mid + 1].time_start < startTime) && (mid + 2 > high)) {
+            return mid + 1;
+
         } else if (midTimeStart > startTime) {
             high = mid;
         } else {

@@ -97,7 +97,7 @@ export const chartRouter = createTRPCRouter({
         queryString: z.string(),
     })).query(({ input }) => {
         const countriesResult = getCountries(input.queryString);
-        return countriesResult;
+        return countriesResult.slice(0, 20);
     }),
 
     getCities: publicProcedure.input(z.object({
@@ -105,7 +105,7 @@ export const chartRouter = createTRPCRouter({
         country: z.string(),
     })).query(({ input }) => {
         const citiesResult = queryCities(input.queryString, input.country);
-        return citiesResult;
+        return citiesResult.slice(0, 20);
     }),
 
     getTimezone: publicProcedure.input(z.object({
@@ -113,21 +113,41 @@ export const chartRouter = createTRPCRouter({
         lat: z.number(),
         countryCode: z.string(),
         date: z.date(),
+        time: z.string(), // hh:mm 
     })).query(({ input }) => {
-        const t0 = performance.now();
+        console.log('Received Date: ', input.date)
+        const myDate = input.date;
+        myDate.setHours(0, 0, 0, 0);
         const timezoneName = find(input.lat, input.long)[0];
-        const t1 = performance.now();
-        const unixDate = input.date.getTime() / 1000;
+        const timeInMs = timeStringToMs(input.time);
+        const unixDate = (myDate.getTime() + timeInMs) / 1000;
+
         const TzPerf = performance.now();
         const adjustedTimeZone = findTimezone(input.countryCode, timezoneName, unixDate);
+        console.log('Adjusted Timezone: ', adjustedTimeZone)
         const TzPerfEnd = performance.now();
 
+        const UTCDate = new Date((unixDate * 1000) + (adjustedTimeZone.gmt_offset * -1));
+
         return {
-            timeZone: adjustedTimeZone,
-            geoTzPerf:`GeoTz: ${(t1 - t0).toFixed(4)}ms`,
+            timeZone: {
+                abv: adjustedTimeZone.abbreviation,
+                gmt_offset: (adjustedTimeZone.gmt_offset / 3600),
+                utc: UTCDate,
+            },
             BinarySearchPerf: `BinarySearch: ${(TzPerfEnd - TzPerf).toFixed(4)}ms`,
-            queryPerf: `Query: ${(TzPerfEnd - t0).toFixed(4)}ms`
         };
     })
 
 });
+
+const timeStringToMs = (timeString: string) => {
+    const timeArray = timeString.split(":");
+    const hours = parseInt(timeArray[0]);
+    const minutes = parseInt(timeArray[1]);
+
+    const hoursToMs = hours * 60 * 60 * 1000;
+    const minutesToMs = minutes * 60 * 1000;
+
+    return hoursToMs + minutesToMs
+}
