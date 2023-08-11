@@ -580,3 +580,20 @@
     margin: 0;
     margin-right: 5px;
 }
+
+@media screen and (max-width:1260px) {
+    
+    .timezoneAbv{
+        font-size: 10px;
+    }
+    
+    .timezoneHour{
+        font-size: 10px;
+    }
+    
+    .timezoneHourMini{
+        font-size: 8px;
+    }
+    
+
+}

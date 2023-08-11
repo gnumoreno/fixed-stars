@@ -209,10 +209,13 @@
     gap: 5px;
     max-width: 500px;
     width: 100vw !important;
+    padding-left: 2px;
+    padding-right: 2px;
   }
 
   .formRow {
     flex-wrap: wrap;
+    gap: 3px;
   }
 
   .form > label {
