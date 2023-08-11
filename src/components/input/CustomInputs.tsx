@@ -936,23 +936,56 @@ export const TimeZoneSelection: React.FC<TimeZoneSelectionProps> = ({
     utcDateTime,
     currentDate
 }) => {
-    const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     const getDateString = (date: Date) => {
         const UTCTimeString = `${padWithLeadingZeros(date.getUTCHours(), 2)}:${padWithLeadingZeros(date.getUTCMinutes(), 2)}`
         const isDifferentDay = currentDate !== date.getUTCDate();
         const UTCDayAndMonth = `${isDifferentDay ? `, ${date.getUTCDate()} ${months[date.getUTCMonth()]}` : ''}`
         return (
             <p className={Style.timezoneHour}>
-                {UTCTimeString}<span className={Style.timezoneHourMini}>{UTCDayAndMonth}</span>
+                {UTCTimeString} (UTC)<span className={Style.timezoneHourMini}>{UTCDayAndMonth}</span>
             </p>
         )
     }
     return (
         <div className={Style.timezoneContainer}>
             <p className={Style.timezoneAbv}>
-                UTC{gmt_offset > 0 ? `+${gmt_offset}`: gmt_offset < 0 ? `-${Math.abs(gmt_offset)}`:'' } ({abv})
+                UTC{gmt_offset > 0 ? `+${gmt_offset}` : gmt_offset < 0 ? `-${Math.abs(gmt_offset)}` : ''} ({abv})
             </p>
             {getDateString(utcDateTime)}
+        </div>
+    )
+}
+
+export type HouseSystem = "P" | "R"
+
+type HouseSystemSelectionProps = {
+    setHouseSystem: React.Dispatch<React.SetStateAction<HouseSystem>>;
+    houseSystem: HouseSystem;
+}
+
+export const HouseSystemSelection: React.FC<HouseSystemSelectionProps> = ({
+    houseSystem,
+    setHouseSystem
+}) => {
+    return (
+        <div className={Style.hsystemType}>
+            <div className={Style.hsystemTypeOptions}>
+                <div className={Style.hsystemTypeButton + ' ' + `${houseSystem === "P" ? Style.hsystemTypeButtonActive : ''}`}
+                    onClick={() => setHouseSystem("P")}
+                ></div>
+                <p className={Style.hsystemTypeText}>
+                    Placidus
+                </p>
+            </div>
+            <div className={Style.hsystemTypeOptions}>
+                <div className={Style.hsystemTypeButton + ' ' + `${houseSystem === "R" ? Style.hsystemTypeButtonActive : ''}`}
+                    onClick={() => setHouseSystem("R")}
+                ></div>
+                <p className={Style.hsystemTypeText}>
+                    Regiomontanus
+                </p>
+            </div>
         </div>
     )
 }
