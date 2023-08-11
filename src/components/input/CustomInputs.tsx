@@ -743,7 +743,8 @@ export const CoordinatesSelection: React.FC<CoordinatesSelectionProps> = ({
                         onClick={() => handleInputTypeChange("DMS")}
                     ></div>
                     <p className={Style.coordTypeText}>
-                        Degrees, Minutes,<br></br> Seconds (DMS)
+                        {/* Degrees, Minutes,<br></br> Seconds (DMS) */}
+                        DMS
                     </p>
                 </div>
                 <div className={Style.coordTypeOptions}>

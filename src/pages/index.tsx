@@ -50,10 +50,16 @@ const NavButtons: React.FC = () => {
 
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    let reqTime = time;
+    let reqDate = date;
+    if(adjustedTimeZone.data) {
+      reqTime = `${padWithLeadingZeros(adjustedTimeZone.data.timeZone.utc.getUTCHours(), 2)}:${padWithLeadingZeros(adjustedTimeZone.data.timeZone.utc.getUTCMinutes(), 2)}`;
+      reqDate = adjustedTimeZone.data.timeZone.utc;
+    }
     testCommand.mutate(
       {
-        date: adjustedTimeZone.data.timeZone.utc,
-        time: `${padWithLeadingZeros(adjustedTimeZone.data.timeZone.utc.getUTCHours(), 2)}:${padWithLeadingZeros(adjustedTimeZone.data.timeZone.utc.getUTCMinutes(), 2)}`,
+        date: reqDate,
+        time: reqTime,
         long: Number(decimalValues.long),
         lat: Number(decimalValues.lat),
         dmsLong: {
@@ -110,6 +116,7 @@ const NavButtons: React.FC = () => {
     <div className={Style.pageContainer}>
       <div className={Style.formContainer}>
         <form onSubmit={(e) => { handleFormSubmit(e) }} className={Style.form}>
+          <div className={Style.formRow}>
           <h1 className={Style.title} onClick={() => console.log(time, longitude)}>BirthData</h1>
           <div className={Style.logoDivider}></div>
           {/* <label htmlFor="date">Date:</label> */}
@@ -135,6 +142,9 @@ const NavButtons: React.FC = () => {
              :
              null
           }
+          </div>
+
+          <div className={Style.formRow}>
           <CoordinatesSelection
             setQueryCity={setCity}
             decimalCord={decimalValues}
@@ -155,6 +165,7 @@ const NavButtons: React.FC = () => {
               :
               <button type="submit" className={Style.submitButton}>Calculate</button>
           }
+          </div>
         </form>
 
       </div>

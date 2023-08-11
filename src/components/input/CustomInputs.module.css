@@ -326,7 +326,7 @@
 
 .coordType {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     gap: 6px;
     /* margin-top: 10px; */
     margin-left: 5px;
@@ -335,10 +335,12 @@
 
 .coordTypeOptions {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
-    gap: 10px;
+    justify-content: space-between;
+    gap: 0px;
+    width: 30px;
+    height: 30px;
 }
 
 .coordTypeText {

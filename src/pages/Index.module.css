@@ -89,17 +89,17 @@
   justify-content: center;
   margin-top: 0;
   background-color: var(--GRAY1);
-  height: 80px;
+  height: 120px;
   z-index: 999;
 }
 
 .form {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   width: 100%;
   align-items: center;
   justify-content: center;
-  height: 80px;
+  height: 120px;
   gap: 6px;
   margin: auto;
   /* border: 1px solid gray; */
@@ -107,6 +107,15 @@
   padding: 10px;
   max-width: 1280px;
   /* margin-top: 30px; */
+}
+
+.formRow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 40px;
 }
 
 
@@ -152,10 +161,13 @@
   font-weight: 600;
   letter-spacing: 0.5px;
   background-color: var(--GREEN4);
+  color: var(--WHITE1);
+  border: none;
   transition: filter 0.1s ease-in-out;
   margin-top: 0;
   margin-bottom: 0;
   margin-left: auto;
+  cursor: pointer;
 
 }
 
@@ -185,7 +197,7 @@
 
 
   .formContainer {
-    height: 140px;
+    height: 170px;
     align-items: flex-start;
   }
 
@@ -195,8 +207,12 @@
     margin-bottom: 0;
     justify-content: center;
     gap: 5px;
-    max-width: 750px;
+    max-width: 500px;
     width: 100vw !important;
+  }
+
+  .formRow {
+    flex-wrap: wrap;
   }
 
   .form > label {
