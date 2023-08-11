@@ -23,7 +23,7 @@ export const usePopup = () => {
         description,
     }: handleMouseOverPopupArgs) => {
         // x: 350 y:450
-        console.log(`x: ${Number(element.x())}, y: ${Number(element.y())}`)
+        // console.log(`x: ${Number(element.x())}, y: ${Number(element.y())}`)
         const x = Number(element.x())
         const y = Number(element.y())
         let finalX = 0;

@@ -105,10 +105,7 @@ const NavButtons: React.FC = () => {
     long: city?.lng,
     time: time
   }, {
-    enabled: city !== null,
-    onSuccess: (data) => {
-      console.log(data);
-    }
+    enabled: city !== null
   })
 
 

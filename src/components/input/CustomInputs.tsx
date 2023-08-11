@@ -776,9 +776,6 @@ export const CitySelection: React.FC<CitySelectionProps> = ({
         queryString: country
     }, {
         refetchOnWindowFocus: false,
-        onSuccess: (data) => {
-            console.log(data)
-        }
     });
     const [selectedCountry, setSelectedCountry] = useState<string>("")
     const [isCountryFocused, setIsCountryFocused] = useState<boolean>(false)
@@ -798,9 +795,6 @@ export const CitySelection: React.FC<CitySelectionProps> = ({
         country: selectedCountry
     }, {
         refetchOnWindowFocus: false,
-        onSuccess: (data) => {
-            console.log(data)
-        },
         enabled: !!selectedCountry
     });
     const [selectedCity, setSelectedCity] = useState<CityData | null>(null)
@@ -835,7 +829,6 @@ export const CitySelection: React.FC<CitySelectionProps> = ({
                     onChange={(e) => setCountry(e.target.value)}
                     onKeyDown={(e) => {
                         if (e.key === 'Backspace') {
-                            console.log('Backspace')
                             setSelectedCountry('')
                         }
                     }}
@@ -885,7 +878,6 @@ export const CitySelection: React.FC<CitySelectionProps> = ({
                     onChange={(e) => setCity(e.target.value)}
                     onKeyDown={(e) => {
                         if (e.key === 'Backspace') {
-                            console.log('Backspace')
                             setSelectedCity(null)
                         }
                     }}
@@ -948,7 +940,6 @@ export const TimeZoneSelection: React.FC<TimeZoneSelectionProps> = ({
     const getDateString = (date: Date) => {
         const UTCTimeString = `${padWithLeadingZeros(date.getUTCHours(), 2)}:${padWithLeadingZeros(date.getUTCMinutes(), 2)}`
         const isDifferentDay = currentDate !== date.getUTCDate();
-        console.log(isDifferentDay, currentDate, date.getUTCDate())
         const UTCDayAndMonth = `${isDifferentDay ? `, ${date.getUTCDate()} ${months[date.getUTCMonth()]}` : ''}`
         return (
             <p className={Style.timezoneHour}>

@@ -116,28 +116,28 @@ export const chartRouter = createTRPCRouter({
         date: z.date(),
         time: z.string(), // hh:mm 
     })).query(({ input }) => {
-        console.log('Received Date: ', input.date)
+        // console.log('Received Date: ', input.date)
         const myDate = input.date;
         myDate.setHours(0, 0, 0, 0);
         const fnsUnix = getUnixTime(myDate);
-        console.log('fnsUnix:', new Date(fnsUnix * 1000))
+        // console.log('fnsUnix:', new Date(fnsUnix * 1000))
         const UnixWithoutOffset = fnsUnix - (myDate.getTimezoneOffset() * 60);
-        console.log('UnixWithoutOffset:', new Date(UnixWithoutOffset * 1000))
+        // console.log('UnixWithoutOffset:', new Date(UnixWithoutOffset * 1000))
        
         const timezoneName = find(input.lat, input.long)[0];
         const timeInSeconds = timeStringToSeconds(input.time);
-        console.log('Time in Seconds: ', timeInSeconds)
+        // console.log('Time in Seconds: ', timeInSeconds)
         const unixDate = UnixWithoutOffset + timeInSeconds;
-        console.log('Unix Date: ', new Date(unixDate * 1000))
+        // console.log('Unix Date: ', new Date(unixDate * 1000))
 
         const TzPerf = performance.now();
         const adjustedTimeZone = findTimezone(input.countryCode, timezoneName, unixDate);
         // console.log('Adjusted Timezone: ', adjustedTimeZone)
         const TzPerfEnd = performance.now();
         const AdjustedUnixDate = unixDate + (adjustedTimeZone.gmt_offset * -1);
-        console.log('Adjusted Unix Date: ', new Date(AdjustedUnixDate * 1000))
+        // console.log('Adjusted Unix Date: ', new Date(AdjustedUnixDate * 1000))
         const UTCDate = new Date(AdjustedUnixDate * 1000);
-        console.log(UTCDate.toISOString())
+        // console.log(UTCDate.toISOString())
 
         return {
             timeZone: {
