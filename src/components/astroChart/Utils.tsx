@@ -30,16 +30,23 @@ export const ChartPopup: React.FC<ChartPopupProps> = ({
             borderRadius: '5px',
             zIndex: 100,
             opacity: description === null ? 0 : 1,
+            pointerEvents: description === null ? "none" : "auto",
             transition: 'opacity 0.2s ease-in-out',
             whiteSpace: 'pre-line'
         }}>
-            <p>{
-                description === null
-                    ? 
-                    previousDescription
-                    : 
-                    description
-            }</p>
+            <p
+            style={{
+                fontSize: '12px',
+            }}
+            >
+                {
+                    description === null
+                        ?
+                        previousDescription
+                        :
+                        description
+                }
+            </p>
         </div>
     )
 }

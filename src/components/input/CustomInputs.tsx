@@ -9,7 +9,8 @@ import "react-time-picker-typescript/dist/style.css";
 import 'react-date-range/dist/styles.css'; // main css file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 import { api } from '~/utils/api'
-import { CityData } from '~/utils/cities/queries'
+import { type CityData } from '~/utils/cities/queries'
+import { Loading } from '../utils/Loading'
 
 type DateSelectionProps = {
     date: Date
@@ -369,7 +370,7 @@ export const CoordinatesSelection: React.FC<CoordinatesSelectionProps> = ({
     longitude,
     setLongitude,
     setInputType,
-    nextInputRef,
+    // nextInputRef,
     startRef
 }) => {
 
@@ -596,7 +597,6 @@ export const CoordinatesSelection: React.FC<CoordinatesSelectionProps> = ({
                 locationType === "City"
                     ?
                     <CitySelection
-                        decimalCord={decimalCord}
                         setDecimalCord={setDecimalCord}
                         startRef={startRef}
                     />
@@ -757,13 +757,11 @@ export const CoordinatesSelection: React.FC<CoordinatesSelectionProps> = ({
 }
 
 type CitySelectionProps = {
-    decimalCord: { long: string; lat: string }
     setDecimalCord: React.Dispatch<React.SetStateAction<{ long: string; lat: string }>>
     startRef?: React.RefObject<HTMLInputElement>
 }
 
 export const CitySelection: React.FC<CitySelectionProps> = ({
-    decimalCord,
     setDecimalCord,
     startRef
 }) => {
@@ -777,8 +775,16 @@ export const CitySelection: React.FC<CitySelectionProps> = ({
         }
     });
     const [selectedCountry, setSelectedCountry] = useState<string>("")
+    const [isCountryFocused, setIsCountryFocused] = useState<boolean>(false)
 
-
+    const handleCountryBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+        if (e.relatedTarget !== null) {
+            if (e.relatedTarget.getAttribute('data-type') === 'country') return
+            setIsCountryFocused(false)
+        } else {
+            setIsCountryFocused(false)
+        }
+    }
 
     const [city, setCity] = useState<string>("")
     const queryCity = api.chart.getCities.useQuery({
@@ -792,15 +798,30 @@ export const CitySelection: React.FC<CitySelectionProps> = ({
         enabled: !!selectedCountry
     });
     const [selectedCity, setSelectedCity] = useState<CityData | null>(null)
+    const [isCityFocused, setIsCityFocused] = useState<boolean>(false)
+    const cityRef = useRef<HTMLInputElement>(null)
 
     const handleSelectCity = (city: CityData) => {
         setSelectedCity(city)
         setCity(city.city_ascii)
         setDecimalCord({ long: city.lng.toString(), lat: city.lat.toString() })
     }
+
+    const handleCityBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+        if (e.relatedTarget !== null) {
+            if (e.relatedTarget.getAttribute('data-type') === 'city') return
+            setIsCityFocused(false)
+        } else {
+            setIsCityFocused(false)
+        }
+    }
+
     return (
-        <div>
-            <div className={Style.countryContainer}>
+        <div className={Style.citySelectionContainer}>
+            <div className={Style.countryContainer}
+                onFocus={() => setIsCountryFocused(true)}
+                onBlur={handleCountryBlur}
+            >
                 <input
                     type="text"
                     value={selectedCountry ? selectedCountry : country}
@@ -812,26 +833,45 @@ export const CitySelection: React.FC<CitySelectionProps> = ({
                         }
                     }}
                     ref={startRef}
+                    className={Style.locationInput}
+                    placeholder='Country'
                 />
-                <div className={Style.countryModal + ' ' + `${!!country && !selectedCountry ? Style.countryModalOpen : null}`}>
+                <div className={Style.countryModal + ' ' + `${!!country && !selectedCountry && isCountryFocused ? Style.countryModalOpen : null}`}>
                     {
-                        queryCountry.data?.map((country, idx) => {
-                            return (
-                                <p
-                                    key={`${country}-${idx}}`}
-                                    onClick={() => { setSelectedCountry(country); setCountry(country) }}
-                                    className={Style.countryModalOption}
-                                >
-                                    {country}
-                                </p>
-                            )
-                        })
+                        queryCountry.isLoading
+                            ?
+                            <Loading width={20} />
+                            :
+                            queryCountry.data?.map((country, idx) => {
+                                return (
+                                    <p
+                                        key={`${country}-${idx}}`}
+                                        onClick={() => { setSelectedCountry(country); setCountry(country) }}
+                                        className={Style.countryModalOption}
+                                        data-type='country'
+                                        tabIndex={0}
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter') {
+                                                e.preventDefault()
+                                                setSelectedCountry(country)
+                                                setCountry(country)
+                                                cityRef.current?.focus()
+                                            }
+                                        }}
+                                    >
+                                        {country}
+                                    </p>
+                                )
+                            })
                     }
                 </div>
 
             </div>
 
-            <div className={Style.countryContainer}>
+            <div className={Style.countryContainer}
+                onFocus={() => setIsCityFocused(true)}
+                onBlur={handleCityBlur}
+            >
                 <input
                     type="text"
                     value={selectedCity ? selectedCity.city : city}
@@ -842,23 +882,39 @@ export const CitySelection: React.FC<CitySelectionProps> = ({
                             setSelectedCity(null)
                         }
                     }}
+                    className={Style.locationInput}
+                    placeholder='City'
+                    onBlur={handleCityBlur}
+                    ref={cityRef}
                 />
                 {
                     !!selectedCountry &&
-                    <div className={Style.countryModal + ' ' + `${!!city && !selectedCity ? Style.countryModalOpen : null}`}>
+                    <div className={Style.countryModal + ' ' + `${!!city && !selectedCity && isCityFocused ? Style.countryModalOpen : null}`}>
                         {
+                            queryCity.isLoading
+                                ?
+                                <Loading width={20} />
+                                :
+                                queryCity.data?.slice(0, 50).map((city, idx) => {
+                                    return (
+                                        <p
+                                            key={`${city.city}-${city.city_ascii}-${idx}}`}
+                                            onClick={() => handleSelectCity(city)}
+                                            className={Style.countryModalOption}
+                                            data-type='city'
+                                            tabIndex={0}
+                                            onKeyDown={(e) => {
+                                                if (e.key === 'Enter') {
+                                                    e.preventDefault()
+                                                    handleSelectCity(city)
+                                                }
+                                            }}
 
-                            queryCity.data?.slice(0, 50).map((city, idx) => {
-                                return (
-                                    <p
-                                        key={`${city.city}-${city.city_ascii}-${idx}}`}
-                                        onClick={() => handleSelectCity(city)}
-                                        className={Style.countryModalOption}
-                                    >
-                                        {city.city} ({city.admin_name}) ({city.lng} {city.lat})
-                                    </p>
-                                )
-                            })
+                                        >
+                                            {city.city} ({city.admin_name}) ({city.lng} {city.lat})
+                                        </p>
+                                    )
+                                })
                         }
                     </div>
                 }

@@ -15,25 +15,36 @@ type HousesTableProps = {
 export const HousesTable: React.FC<HousesTableProps> = ({ housesArray, aspects }) => {
     type sortOptions =
         | "name"
-        | "long"
+        | "position"
         | "lat"
         | "speed"
         | "sign";
 
-    const [sort, setSort] = useState<sortOptions>("long");
-
+    const [sort, setSort] = useState<sortOptions>("position");
+    const [reverse, setReverse] = useState<boolean>(false);
+    const handleSort = (sortTo: sortOptions) => {
+        if (sortTo === sort) {
+            setReverse(!reverse)
+            return;
+        }
+        setSort(sortTo);
+    }
     const sortedArray = (housesArray: house[]) => {
         const output = housesArray;
         return output
             .sort((a, b) => {
-
+                if (reverse) {
+                    if (a[sort] < b[sort]) return 1;
+                    if (a[sort] > b[sort]) return -1;
+                    return 0;
+                }
                 if (a[sort] < b[sort]) return -1;
                 if (a[sort] > b[sort]) return 1;
                 return 0;
             })
             .map((house, index) => (
                 <tr className={Style.tr} key={index}>
-                    <td className={Style.td} style={{ minWidth: "150px", maxWidth: "150px" }} title={house.name}>{limitCharacters(house.name)}</td>
+                    <td className={Style.td} title={house.name}>{limitCharacters(house.name)}</td>
                     <td className={Style.td}>{house.position}</td>
                     <td className={Style.td}>{house.sign}</td>
                     <td className={Style.td} style={{ minWidth: "130px" }}>{house.longDegree}° {house.longMinute}&lsquo; {house.longSecond}&quot;</td>
@@ -55,11 +66,11 @@ export const HousesTable: React.FC<HousesTableProps> = ({ housesArray, aspects }
             <table className={Style.table}>
                 <thead>
                     <tr className={Style.thead}>
-                        <th className={Style.th} style={{ minWidth: "150px", maxWidth: "150px" }} onClick={() => setSort("name")}>house</th>
-                        <th className={Style.th} onClick={() => setSort("long")}>Long (decimal)</th>
-                        <th className={Style.th} onClick={() => setSort("sign")}>Sign</th>
+                        <th className={Style.th} onClick={() => handleSort("name")}>house</th>
+                        <th className={Style.th} onClick={() => handleSort("position")}>Long (decimal)</th>
+                        <th className={Style.th} onClick={() => handleSort("sign")}>Sign</th>
                         <th className={Style.th} style={{ minWidth: "130px" }}>Long (DMS)</th>
-                        <th className={Style.th} style={{ minWidth: "130px" }}>Aspects</th>
+                        <th className={Style.th} >Aspects</th>
                     </tr>
                 </thead>
                 <tbody>{sortedArray(housesArray)}</tbody>
@@ -77,27 +88,39 @@ type PlanetsTableProps = {
 export const PlanetsTable: React.FC<PlanetsTableProps> = ({ planetsArray, aspects }) => {
     type sortOptions =
         | "name"
-        | "long"
+        | "position"
         | "lat"
         | "speed"
         | "house"
         | "sign"
         | "aspect";
 
-    const [sort, setSort] = useState<sortOptions>("long");
+    const [sort, setSort] = useState<sortOptions>("position");
+    const [reverse, setReverse] = useState<boolean>(false);
+    const handleSort = (sortTo: sortOptions) => {
+        if (sortTo === sort) {
+            setReverse(!reverse)
+            return;
+        }
+        setSort(sortTo);
+    }
 
     const sortedArray = (planetsArray: planet[]) => {
         const output = planetsArray;
         return output
             .sort((a, b) => {
-
+                if (reverse) {
+                    if (a[sort] < b[sort]) return 1;
+                    if (a[sort] > b[sort]) return -1;
+                    return 0;
+                }
                 if (a[sort] < b[sort]) return -1;
                 if (a[sort] > b[sort]) return 1;
                 return 0;
             })
             .map((planet, index) => (
                 <tr className={Style.tr} key={index}>
-                    <td className={Style.td} style={{ minWidth: "150px", maxWidth: "150px" }} title={planet.name}>{limitCharacters(planet.name)}</td>
+                    <td className={Style.td} title={planet.name}>{limitCharacters(planet.name)}</td>
                     <td className={Style.td}>{planet.position}</td>
                     <td className={Style.td}>{planet.sign}</td>
                     <td className={Style.td} style={{ minWidth: "130px" }}>{planet.longDegree}° {planet.longMinute}&lsquo; {planet.longSecond}&quot;</td>
@@ -122,14 +145,14 @@ export const PlanetsTable: React.FC<PlanetsTableProps> = ({ planetsArray, aspect
             <table className={Style.table}>
                 <thead>
                     <tr className={Style.thead}>
-                        <th className={Style.th} style={{ minWidth: "150px", maxWidth: "150px" }} onClick={() => setSort("name")}>Planet</th>
-                        <th className={Style.th} onClick={() => setSort("long")}>Long (decimal)</th>
-                        <th className={Style.th} onClick={() => setSort("sign")}>Sign</th>
+                        <th className={Style.th} style={{ minWidth: "150px", maxWidth: "150px" }} onClick={() => handleSort("name")}>Planet</th>
+                        <th className={Style.th} onClick={() => handleSort("position")}>Long (decimal)</th>
+                        <th className={Style.th} onClick={() => handleSort("sign")}>Sign</th>
                         <th className={Style.th} style={{ minWidth: "130px" }}>Long (DMS)</th>
-                        <th className={Style.th} onClick={() => setSort("lat")}>Latitude</th>
-                        <th className={Style.th} onClick={() => setSort("speed")}>Speed</th>
-                        <th className={Style.th} onClick={() => setSort("house")}>House</th>
-                        <th className={Style.th} onClick={() => setSort("house")}>Aspects</th>
+                        <th className={Style.th} onClick={() => handleSort("lat")}>Latitude</th>
+                        <th className={Style.th} onClick={() => handleSort("speed")}>Speed</th>
+                        <th className={Style.th} onClick={() => handleSort("house")}>House</th>
+                        <th className={Style.th} onClick={() => handleSort("aspect")}>Aspects</th>
                     </tr>
                 </thead>
                 <tbody>{sortedArray(planetsArray)}</tbody>
@@ -146,7 +169,7 @@ type FixedStarsTableProps = {
 export const FixedStarsTable: React.FC<FixedStarsTableProps> = ({ starsArray, aspects }) => {
     type sortOptions =
         | "aspect"
-        | "star"
+        | "name"
         | "constellation"
         | "position"
         | "lat"
@@ -157,12 +180,23 @@ export const FixedStarsTable: React.FC<FixedStarsTableProps> = ({ starsArray, as
         | "sign";
 
     const [sort, setSort] = useState<sortOptions>("position");
-
+    const [reverse, setReverse] = useState<boolean>(false);
+    const handleSort = (sortTo: sortOptions) => {
+        if (sortTo === sort) {
+            setReverse(!reverse)
+            return;
+        }
+        setSort(sortTo);
+    }
     const sortedArray = (starsArray: star[]) => {
         const output = starsArray;
         return output
             .sort((a, b) => {
-
+                if (reverse) {
+                    if (a[sort] < b[sort]) return 1;
+                    if (a[sort] > b[sort]) return -1;
+                    return 0;
+                }
                 if (a[sort] < b[sort]) return -1;
                 if (a[sort] > b[sort]) return 1;
                 return 0;
@@ -170,11 +204,11 @@ export const FixedStarsTable: React.FC<FixedStarsTableProps> = ({ starsArray, as
             .map((star, index) => (
                 <tr className={Style.tr} key={index}>
                     <td className={Style.td}>{getAspectString(aspects, 'star', star.name)}</td>
-                    <td className={Style.td} style={{ minWidth: "150px", maxWidth: "150px" }} title={star.name}>{limitCharacters(star.name)}</td>
+                    <td className={Style.td} title={star.name}>{limitCharacters(star.name)}</td>
                     <td className={Style.td}>{star.constellation}</td>
                     <td className={Style.td}>{star.position}</td>
                     <td className={Style.td}>{star.sign}</td>
-                    <td className={Style.td} style={{ minWidth: "130px" }}>{star.longDegree}° {star.longMinute}&lsquo; {star.longSecond}&quot;</td>
+                    <td className={Style.td} style={{ minWidth: '130px' }}>{star.longDegree}° {star.longMinute}&lsquo; {star.longSecond}&quot;</td>
                     <td className={Style.td}>{star.house}</td>
                     <td className={Style.td}>{star.lat.toFixed(2)}</td>
                     <td className={Style.td}>{star.speed}</td>
@@ -197,17 +231,17 @@ export const FixedStarsTable: React.FC<FixedStarsTableProps> = ({ starsArray, as
             <table className={Style.table}>
                 <thead>
                     <tr className={Style.thead}>
-                        <th className={Style.th} style={{ minWidth: "130px" }}>Aspects</th>
-                        <th className={Style.th} style={{ minWidth: "150px", maxWidth: "150px" }} onClick={() => setSort("star")}>Star</th>
-                        <th className={Style.th} onClick={() => setSort("constellation")}>Alt Name</th>
-                        <th className={Style.th} onClick={() => setSort("position")}>Long (decimal)</th>
-                        <th className={Style.th} onClick={() => setSort("sign")}>Sign</th>
-                        <th className={Style.th} style={{ minWidth: "130px" }}>Long (DMS)</th>
-                        <th className={Style.th} onClick={() => setSort("house")}>House</th>
-                        <th className={Style.th} onClick={() => setSort("lat")}>Latitude</th>
-                        <th className={Style.th} onClick={() => setSort("speed")}>Speed</th>
-                        <th className={Style.th} onClick={() => setSort("distance")}>Distance(LY)</th>
-                        <th className={Style.th} onClick={() => setSort("magnitude")}>Magnitude</th>
+                        <th className={Style.th} >Aspects</th>
+                        <th className={Style.th} onClick={() => handleSort("name")}>Star</th>
+                        <th className={Style.th} onClick={() => handleSort("constellation")}>Alt Name</th>
+                        <th className={Style.th} onClick={() => handleSort("position")}>Long (decimal)</th>
+                        <th className={Style.th} onClick={() => handleSort("sign")}>Sign</th>
+                        <th className={Style.th} style={{ minWidth: '130px' }}>Long (DMS)</th>
+                        <th className={Style.th} onClick={() => handleSort("house")}>House</th>
+                        <th className={Style.th} onClick={() => handleSort("lat")}>Latitude</th>
+                        <th className={Style.th} onClick={() => handleSort("speed")}>Speed</th>
+                        <th className={Style.th} onClick={() => handleSort("distance")}>Distance(LY)</th>
+                        <th className={Style.th} onClick={() => handleSort("magnitude")}>Magnitude</th>
                     </tr>
                 </thead>
                 <tbody>{sortedArray(starsArray)}</tbody>

@@ -222,6 +222,15 @@
     margin-bottom: 0;
 }
 
+.coordInputs {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 5px;
+    margin-left: 5px;
+}
+
 .decInput {
     display: flex;
     flex-direction: row;
@@ -440,6 +449,15 @@
 
 /* City Selection */
 
+.citySelectionContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 5px;
+    margin-left: 5px;
+}
+
 .countryContainer {
     display: flex;
     flex-direction: column;
@@ -465,6 +483,7 @@
     border-bottom-left-radius: 8px;
     border-bottom-right-radius: 8px;
     z-index: 999;
+    width: 100%;
 }
 
 .countryModalOpen {
@@ -474,6 +493,7 @@
 .countryModalOption {
     text-align: left;
     width: 100%;
+    margin: 0;
     padding-left: 10px;
     padding-right: 10px;
     white-space: nowrap;
@@ -487,4 +507,25 @@
 
 .countryModalOption:hover {
     background-color: var(--GRAY1);
+}
+
+.locationInput {
+    height: 28px;
+    gap: 2px;
+    border: 1px solid var(--GRAY1);
+    background-color: var(--WHITE1);
+    width: 110px;
+    border-radius: 4px;
+    width: 100%;
+    font-size: 14px;
+    font-family: -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    
+}
+
+@media screen and (max-width:1260px) {
+    
+        .locationInput {
+            font-size: 10px;
+        }
+    
 }

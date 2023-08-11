@@ -21,6 +21,8 @@ export const getCountries = (queryString:string) => {
     const countriesSet = [...new Set(countries)];
     return countriesSet.filter((country) => {
         return country.toLowerCase().includes(queryString.toLowerCase());
+    }).sort((a, b) => {
+        return a > b ? 1 : -1;
     });
   };
 

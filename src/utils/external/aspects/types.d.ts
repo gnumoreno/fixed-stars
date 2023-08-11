@@ -31,3 +31,18 @@ export type aspectedTo = {
     position: number,
     angle: number,
 }
+
+export type aspectDetails = {
+    astroA: {
+        name: string;
+        angle: number;
+        aspectType: string;
+        aspectedAstro: string;
+    };
+    astroB: {
+        name: string;
+        angle: number;
+        aspectType: string;
+        aspectedAstro: string;
+    };
+};

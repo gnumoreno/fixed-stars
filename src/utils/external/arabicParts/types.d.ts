@@ -9,5 +9,5 @@ export type arabicPart = {
     longDegree: number;
     longMinute: number;
     longSecond: number;
-    house: string;
+    house: number;
   };

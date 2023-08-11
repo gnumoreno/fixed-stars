@@ -101,7 +101,6 @@ export const chartRouter = createTRPCRouter({
         country: z.string(),
     })).query(({ input }) => {
         const citiesResult = queryCities(input.queryString, input.country);
-        console.log(citiesResult.slice(0, 10));
         return citiesResult;
     })
 
