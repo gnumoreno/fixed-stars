@@ -35,7 +35,7 @@ export type planet = {
     longDegree: number;
     longMinute: number;
     longSecond: number;
-    house: string;
+    house: number;
     lat: number;
     speed: number;
     unicode: string;

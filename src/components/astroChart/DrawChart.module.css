@@ -23,27 +23,25 @@
 
 
 }
-
+/* 
 @media screen and (max-width: 800px) {
     .svgContainer {
-        width: 100vw;
-        height: 100vw;
-        margin-top: 70px;
+       margin-top: 100px;
     }
   
-}
+} */
 
-@media screen and (max-width: 420px) {
+/* @media screen and (max-width: 420px) {
 
     .svgContainer > svg {
         margin-left: -250px;
         margin-top: -370px;
-        transform: scale(0.6);
+        transform: scale(0.55);
         overflow: visible;
     }
-}
+} */
 
- @media screen and (max-width: 500px) and (min-width:420px) {
+ /* @media screen and (max-width: 500px) and (min-width:420px) {
 
     .svgContainer > svg {
         margin-left: -250px;
@@ -81,7 +79,7 @@
         transform: scale(1);
         overflow: visible;
     }
-} 
+}  */
 
   .signSymbol {
     cursor: pointer;

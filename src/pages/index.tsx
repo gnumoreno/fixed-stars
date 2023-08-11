@@ -8,7 +8,7 @@ import { ChartSVG } from "~/components/astroChart/DrawChart";
 import { CoordinatesSelection, DateSelection, TimeSelection } from "~/components/input/CustomInputs";
 import type { house } from "~/utils/external/houses/types";
 import type { planet } from "~/utils/external/planets/types";
-import type{ star } from "~/utils/external/stars/types";
+import type { star } from "~/utils/external/stars/types";
 import { FixedStarsTable, HousesTable, PlanetsTable } from "~/components/tables/Tables";
 import { type aspect } from "~/utils/external/aspects/types";
 import { type arabicPart } from "~/utils/external/arabicParts/types";
@@ -39,7 +39,7 @@ const NavButtons: React.FC = () => {
   const [starsData, setStarsData] = useState<star[] | null>(null);
   const [aspectsData, setAspectsData] = useState<aspect[] | null>(null);
   const [arabicPartsData, setArabicPartsData] = useState<arabicPart[] | null>(null);
-  const [inputType, setInputType] = useState<"decimal" | "dms">("dms");
+  const [inputType, setInputType] = useState<"decimal" | "dms">("decimal");
   const [decimalValues, setDecimalValues] = useState<{ long: string; lat: string }>({ long: "0", lat: "0" });
   const [longitude, setLongitude] = useState<{ degrees: string; minutes: string; seconds: string }>({ degrees: "0", minutes: "0", seconds: "0" });
   const [latitude, setLatitude] = useState<{ degrees: string; minutes: string; seconds: string }>({ degrees: "0", minutes: "0", seconds: "0" });
@@ -128,19 +128,27 @@ const NavButtons: React.FC = () => {
               :
               <button type="submit" className={Style.submitButton}>Calculate</button>
           }
-            </form>
+        </form>
 
       </div>
-          {
-            !testCommand.data && !testCommand.isLoading && <p className={Style.noData}>You haven&apos;t submit any data</p>
-          }
-        {testCommand.data && <ChartSVG
-          housesData={housesData}
-          planetsData={planetsData}
-          starsData={starsData}
-          arabicPartsData={arabicPartsData}
-          aspectsData={aspectsData}
-        />}
+      {
+        !testCommand.data && !testCommand.isLoading && <p className={Style.noData}>You haven&apos;t submit any data</p>
+      }
+      {
+        testCommand.data
+        &&
+        <div className={Style.chartOverflowWrapper}>
+          <div className={Style.chartOverflow}>
+            <ChartSVG
+              housesData={housesData}
+              planetsData={planetsData}
+              starsData={starsData}
+              arabicPartsData={arabicPartsData}
+              aspectsData={aspectsData}
+            />
+          </div>
+        </div>
+      }
 
       <div className={Style.buttonsContainer}>
 
@@ -159,7 +167,7 @@ const NavButtons: React.FC = () => {
         <button
           // onClick={() => { setSelectedCalc("antarab") }}
           className={Style.button}>
-          Antiscia & Arab Parts
+          Arabic Parts (TBD)
         </button>
 
         <button
@@ -182,11 +190,11 @@ const NavButtons: React.FC = () => {
             :
             selectedCalc === "planets" && planetsData
               ?
-              <PlanetsTable planetsArray={planetsData} aspects={aspectsData}/>
+              <PlanetsTable planetsArray={planetsData} aspects={aspectsData} />
               :
               selectedCalc === "stars" && starsData
                 ?
-                <FixedStarsTable starsArray={starsData} aspects={aspectsData}/>
+                <FixedStarsTable starsArray={starsData} aspects={aspectsData} />
                 :
                 null
         }

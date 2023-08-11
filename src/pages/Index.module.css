@@ -1,9 +1,37 @@
 .pageContainer2 {
   width: 100%;
   height: 100%;
-  overflow: hidden;
+  overflow: scroll;
   padding-top: 80px;
 }
+.chartOverflowWrapper {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: scroll;
+}
+.chartOverflow {
+  overflow: visible;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  /* transform: scale(0.6); */
+}
+
+@media screen and (max-width: 800px) {
+  
+  .chartOverflow {
+    transform: scale(0.6);
+    margin-top: -150px;
+    margin-bottom: -150px;
+  }
+}
+  
+
 
 .buttonsContainer {
   display: flex;
@@ -21,7 +49,7 @@
 
 .button {
   width: 150px;
-  height: 150px;
+  height: 70px;
   border: 2px solid black;
   display: flex;
   align-items: center;
@@ -211,7 +239,6 @@
   text-align: left;
   border-bottom: 1px solid #ddd;
   width: 100%;
-  
 }
 
 

@@ -1,6 +1,6 @@
 import type { house } from "./external/houses/types";
 import type { planet } from "./external/planets/types";
-import type { aspect, aspectedTo } from "./external/aspects/types";
+import type { aspect, aspectDetails, aspectedTo } from "./external/aspects/types";
 import { aspectProperties } from "./external/aspects/properties";
 
 
@@ -76,7 +76,7 @@ export const houseFromDec = (houses: house[], element: number) => {
       stop = true;
     }
   })
-  return myHouse.name.split(" ").pop();
+  return parseFloat(myHouse.name.split(" ").pop());
 
 };
 
@@ -286,7 +286,7 @@ export function getStarAspects(aspects: aspect[]) {
   });
   
   // Map the filtered data to extract the required information for each side of the aspect
-  const starAspectDetails = starAspects.map((aspect) => {
+  const starAspectDetails: aspectDetails[] = starAspects.map((aspect) => {
     const astroA = {
       name: aspect.astronameA,
       angle: aspect.angleA,
@@ -314,7 +314,7 @@ export function aspectedToTableString(aspects: aspectedTo[]) {
   const aspectString:string[] = [];
   for(let i = 0; i < aspects.length; i++) {
     const aspect = aspects[i];
-    aspectString.push(`${getAspectUnicode(aspect.aspect)} ${aspect.astroname}(${aspect.astrotype})`);
+    aspectString.push(`${getAspectUnicode(aspect.aspect)} ${aspect.astroname} (${aspect.astrotype})`);
   }
   return aspectString.join("\n");
 }

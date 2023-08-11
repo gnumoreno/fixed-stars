@@ -8,6 +8,9 @@ import { TimePicker } from 'react-time-picker-typescript'
 import "react-time-picker-typescript/dist/style.css";
 import 'react-date-range/dist/styles.css'; // main css file
 import 'react-date-range/dist/theme/default.css'; // theme css file
+import { api } from '~/utils/api'
+import { type CityData } from '~/utils/cities/queries'
+import { Loading } from '../utils/Loading'
 
 type DateSelectionProps = {
     date: Date
@@ -86,11 +89,11 @@ export const DateSelection: React.FC<DateSelectionProps> = ({
     }
 
     const concatDate = (day: string, month: string, year: string) => {
-        return new Date(`${padWithLeadingZeros(year, 4)}-${padWithLeadingZeros(month, 2)}-${padWithLeadingZeros(day,2)}T12:00:00.000Z`)
+        return new Date(`${padWithLeadingZeros(year, 4)}-${padWithLeadingZeros(month, 2)}-${padWithLeadingZeros(day, 2)}T12:00:00.000Z`)
     }
 
     const directlySetDate = (date: Date) => {
-        if(!isValid(date)) {
+        if (!isValid(date)) {
             directlySetDate(new Date())
             return
         }
@@ -367,11 +370,11 @@ export const CoordinatesSelection: React.FC<CoordinatesSelectionProps> = ({
     longitude,
     setLongitude,
     setInputType,
-    nextInputRef,
+    // nextInputRef,
     startRef
 }) => {
 
-    const [isDMS, setIsDMS] = useState<boolean>(true);
+    const [locationType, setLocationType] = useState<"DMS" | "Decimal" | "City">("City");
 
     const handleLongitudeDecChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const current = e.currentTarget.value
@@ -567,162 +570,355 @@ export const CoordinatesSelection: React.FC<CoordinatesSelectionProps> = ({
         setLatitude((prevValues) => ({ ...prevValues, seconds: secondsValue.toString() }));
     };
 
-    const handleInputTypeChange = (dms: boolean) => {
+    const handleInputTypeChange = (type: "City" | "DMS" | "Decimal") => {
 
-        if (dms) {
+        if (type === "City") {
+            setLocationType("City");
+            setInputType("decimal");
+            return
+        }
+
+        if (type === "DMS") {
             setLongitude({ degrees: "0", minutes: "0", seconds: "0" });
             setLatitude({ degrees: "0", minutes: "0", seconds: "0" });
-            setIsDMS(true);
+            setLocationType("DMS");
             setInputType("dms");
 
         } else {
             setDecimalCord({ long: "0", lat: "0" });
-            setIsDMS(false);
+            setLocationType("Decimal");
             setInputType("decimal");
         }
     };
 
     return (
         <div className={Style.coordContainer}>
-            <label htmlFor="longitude">Longitude:</label>
-            {!isDMS ? (
-                <div className={Style.decInputBox}>
-                    <input
-                        name="longitude"
-                        type="text"
-                        value={decimalCord.long}
-                        onClick={(e) => e.currentTarget.select()}
-                        onFocus={(e) => e.currentTarget.select()}
-                        onChange={handleLongitudeDecChange}
-                        className={Style.decInput}
-                        ref={!isDMS ? startRef : null}
-                    // placeholder='0'
+            {
+                locationType === "City"
+                    ?
+                    <CitySelection
+                        setDecimalCord={setDecimalCord}
+                        startRef={startRef}
                     />
-                </div>
-            ) : (
-                <div className={Style.dmsInputContainer}>
-                    <div className={Style.dmsInputBox}>
-                        <input
-                            name="degrees"
-                            type="text"
-                            value={longitude.degrees}
-                            onClick={(e) => e.currentTarget.select()}
-                            onFocus={(e) => e.currentTarget.select()}
-                            onBlur={(e) => e.currentTarget.value === "" ? setLongitude((prevValues) => ({ ...prevValues, degrees: "0" })) : null}
-                            onChange={handleLongitudeDegreesChange}
-                            className={Style.dmsInput}
-                            ref={isDMS ? startRef : null}
-                        />
-                    </div>
-                    <div className={Style.dmsInputBox}>
-                        <input
-                            name="minutes"
-                            type="text"
-                            value={longitude.minutes}
-                            min={0}
-                            max={59}
-                            onClick={(e) => e.currentTarget.select()}
-                            onFocus={(e) => e.currentTarget.select()}
-                            onChange={handleLongitudeMinutesChange}
-                            placeholder="'"
-                            className={Style.dmsInput}
-                        />
-                    </div>
-                    <div className={Style.dmsInputBox}>
-                        <input
-                            name="seconds"
-                            type="text"
-                            value={longitude.seconds}
-                            min={0}
-                            max={59}
-                            onClick={(e) => e.currentTarget.select()}
-                            onFocus={(e) => e.currentTarget.select()}
-                            onChange={handleLongitudeSecondsChange}
-                            placeholder='"'
-                            className={Style.dmsInput}
-                        />
-                    </div>
-                </div>
-            )}
-            <label htmlFor="latitude">Latitude:</label>
-            {!isDMS ? (
-                <div className={Style.decInputBox}>
-                    <input
-                        name="latitude"
-                        type="text"
-                        value={decimalCord.lat}
-                        min={-90}
-                        max={90}
-                        onClick={(e) => e.currentTarget.select()}
-                        onFocus={(e) => e.currentTarget.select()}
-                        onChange={handleLatitudeDecChange}
-                        className={Style.decInput}
+                    :
+                    <div className={Style.coordInputs}>
+                        <label htmlFor="longitude">Longitude:</label>
+                        {locationType === "Decimal" ? (
+                            <div className={Style.decInputBox}>
+                                <input
+                                    name="longitude"
+                                    type="text"
+                                    value={decimalCord.long}
+                                    onClick={(e) => e.currentTarget.select()}
+                                    onFocus={(e) => e.currentTarget.select()}
+                                    onChange={handleLongitudeDecChange}
+                                    className={Style.decInput}
+                                    ref={!locationType ? startRef : null}
+                                // placeholder='0'
+                                />
+                            </div>
+                        ) : (
+                            <div className={Style.dmsInputContainer}>
+                                <div className={Style.dmsInputBox}>
+                                    <input
+                                        name="degrees"
+                                        type="text"
+                                        value={longitude.degrees}
+                                        onClick={(e) => e.currentTarget.select()}
+                                        onFocus={(e) => e.currentTarget.select()}
+                                        onBlur={(e) => e.currentTarget.value === "" ? setLongitude((prevValues) => ({ ...prevValues, degrees: "0" })) : null}
+                                        onChange={handleLongitudeDegreesChange}
+                                        className={Style.dmsInput}
+                                        ref={locationType ? startRef : null}
+                                    />
+                                </div>
+                                <div className={Style.dmsInputBox}>
+                                    <input
+                                        name="minutes"
+                                        type="text"
+                                        value={longitude.minutes}
+                                        min={0}
+                                        max={59}
+                                        onClick={(e) => e.currentTarget.select()}
+                                        onFocus={(e) => e.currentTarget.select()}
+                                        onChange={handleLongitudeMinutesChange}
+                                        placeholder="'"
+                                        className={Style.dmsInput}
+                                    />
+                                </div>
+                                <div className={Style.dmsInputBox}>
+                                    <input
+                                        name="seconds"
+                                        type="text"
+                                        value={longitude.seconds}
+                                        min={0}
+                                        max={59}
+                                        onClick={(e) => e.currentTarget.select()}
+                                        onFocus={(e) => e.currentTarget.select()}
+                                        onChange={handleLongitudeSecondsChange}
+                                        placeholder='"'
+                                        className={Style.dmsInput}
+                                    />
+                                </div>
+                            </div>
+                        )}
+                        <label htmlFor="latitude">Latitude:</label>
+                        {locationType === "Decimal" ? (
+                            <div className={Style.decInputBox}>
+                                <input
+                                    name="latitude"
+                                    type="text"
+                                    value={decimalCord.lat}
+                                    min={-90}
+                                    max={90}
+                                    onClick={(e) => e.currentTarget.select()}
+                                    onFocus={(e) => e.currentTarget.select()}
+                                    onChange={handleLatitudeDecChange}
+                                    className={Style.decInput}
 
-                    />
-                </div>
-            ) : (
-                <div className={Style.dmsInputContainer}>
-                    <div className={Style.dmsInputBox}>
-                        <input
-                            name="degrees"
-                            type="text"
-                            value={latitude.degrees}
-                            min={-90}
-                            max={90}
-                            onClick={(e) => e.currentTarget.select()}
-                            onFocus={(e) => e.currentTarget.select()}
-                            onChange={handleLatitudeDegreesChange}
-                            className={Style.dmsInput}
-                            placeholder="°"
-                        />
+                                />
+                            </div>
+                        ) : (
+                            <div className={Style.dmsInputContainer}>
+                                <div className={Style.dmsInputBox}>
+                                    <input
+                                        name="degrees"
+                                        type="text"
+                                        value={latitude.degrees}
+                                        min={-90}
+                                        max={90}
+                                        onClick={(e) => e.currentTarget.select()}
+                                        onFocus={(e) => e.currentTarget.select()}
+                                        onChange={handleLatitudeDegreesChange}
+                                        className={Style.dmsInput}
+                                        placeholder="°"
+                                    />
+                                </div>
+                                <div className={Style.dmsInputBox}>
+                                    <input
+                                        name="minutes"
+                                        type="text"
+                                        value={latitude.minutes}
+                                        min={0}
+                                        max={59}
+                                        onClick={(e) => e.currentTarget.select()}
+                                        onFocus={(e) => e.currentTarget.select()}
+                                        onChange={handleLatitudeMinutesChange}
+                                        className={Style.dmsInput}
+                                        placeholder="'"
+                                    />
+                                </div>
+                                <div className={Style.dmsInputBox}>
+                                    <input
+                                        name="seconds"
+                                        type="text"
+                                        value={latitude.seconds}
+                                        min={0}
+                                        max={59}
+                                        onClick={(e) => e.currentTarget.select()}
+                                        onFocus={(e) => e.currentTarget.select()}
+                                        onChange={handleLatitudeSecondsChange}
+                                        className={Style.dmsInput}
+                                        placeholder='"'
+                                    />
+                                </div>
+                            </div>
+                        )}
                     </div>
-                    <div className={Style.dmsInputBox}>
-                        <input
-                            name="minutes"
-                            type="text"
-                            value={latitude.minutes}
-                            min={0}
-                            max={59}
-                            onClick={(e) => e.currentTarget.select()}
-                            onFocus={(e) => e.currentTarget.select()}
-                            onChange={handleLatitudeMinutesChange}
-                            className={Style.dmsInput}
-                            placeholder="'"
-                        />
-                    </div>
-                    <div className={Style.dmsInputBox}>
-                        <input
-                            name="seconds"
-                            type="text"
-                            value={latitude.seconds}
-                            min={0}
-                            max={59}
-                            onClick={(e) => e.currentTarget.select()}
-                            onFocus={(e) => e.currentTarget.select()}
-                            onChange={handleLatitudeSecondsChange}
-                            className={Style.dmsInput}
-                            placeholder='"'
-                        />
-                    </div>
-                </div>
-            )}
+            }
             <div className={Style.coordType}>
                 <div className={Style.coordTypeOptions}>
-                    <div className={Style.coordTypeButton + ' ' + `${!isDMS ? Style.coordTypeButtonActive : ''}`}
-                        onClick={() => handleInputTypeChange(false)}
+                    <div className={Style.coordTypeButton + ' ' + `${locationType === "Decimal" ? Style.coordTypeButtonActive : ''}`}
+                        onClick={() => handleInputTypeChange("Decimal")}
                     ></div>
                     <p className={Style.coordTypeText}>
                         Decimal
                     </p>
                 </div>
                 <div className={Style.coordTypeOptions}>
-                    <div className={Style.coordTypeButton + ' ' + `${isDMS ? Style.coordTypeButtonActive : ''}`}
-                        onClick={() => handleInputTypeChange(true)}
+                    <div className={Style.coordTypeButton + ' ' + `${locationType === "DMS" ? Style.coordTypeButtonActive : ''}`}
+                        onClick={() => handleInputTypeChange("DMS")}
                     ></div>
                     <p className={Style.coordTypeText}>
                         Degrees, Minutes,<br></br> Seconds (DMS)
                     </p>
                 </div>
+                <div className={Style.coordTypeOptions}>
+                    <div className={Style.coordTypeButton + ' ' + `${locationType === "City" ? Style.coordTypeButtonActive : ''}`}
+                        onClick={() => handleInputTypeChange("City")}
+                    ></div>
+                    <p className={Style.coordTypeText}>
+                        City
+                    </p>
+                </div>
+            </div>
+        </div>
+    )
+}
+
+type CitySelectionProps = {
+    setDecimalCord: React.Dispatch<React.SetStateAction<{ long: string; lat: string }>>
+    startRef?: React.RefObject<HTMLInputElement>
+}
+
+export const CitySelection: React.FC<CitySelectionProps> = ({
+    setDecimalCord,
+    startRef
+}) => {
+    const [country, setCountry] = useState<string>("")
+    const queryCountry = api.chart.getCountries.useQuery({
+        queryString: country
+    }, {
+        refetchOnWindowFocus: false,
+        onSuccess: (data) => {
+            console.log(data)
+        }
+    });
+    const [selectedCountry, setSelectedCountry] = useState<string>("")
+    const [isCountryFocused, setIsCountryFocused] = useState<boolean>(false)
+
+    const handleCountryBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+        if (e.relatedTarget !== null) {
+            if (e.relatedTarget.getAttribute('data-type') === 'country') return
+            setIsCountryFocused(false)
+        } else {
+            setIsCountryFocused(false)
+        }
+    }
+
+    const [city, setCity] = useState<string>("")
+    const queryCity = api.chart.getCities.useQuery({
+        queryString: city,
+        country: selectedCountry
+    }, {
+        refetchOnWindowFocus: false,
+        onSuccess: (data) => {
+            console.log(data)
+        },
+        enabled: !!selectedCountry
+    });
+    const [selectedCity, setSelectedCity] = useState<CityData | null>(null)
+    const [isCityFocused, setIsCityFocused] = useState<boolean>(false)
+    const cityRef = useRef<HTMLInputElement>(null)
+
+    const handleSelectCity = (city: CityData) => {
+        setSelectedCity(city)
+        setCity(city.city_ascii)
+        setDecimalCord({ long: city.lng.toString(), lat: city.lat.toString() })
+    }
+
+    const handleCityBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+        if (e.relatedTarget !== null) {
+            if (e.relatedTarget.getAttribute('data-type') === 'city') return
+            setIsCityFocused(false)
+        } else {
+            setIsCityFocused(false)
+        }
+    }
+
+    return (
+        <div className={Style.citySelectionContainer}>
+            <div className={Style.countryContainer}
+                onFocus={() => setIsCountryFocused(true)}
+                onBlur={handleCountryBlur}
+            >
+                <input
+                    type="text"
+                    value={selectedCountry ? selectedCountry : country}
+                    onChange={(e) => setCountry(e.target.value)}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Backspace') {
+                            console.log('Backspace')
+                            setSelectedCountry('')
+                        }
+                    }}
+                    ref={startRef}
+                    className={Style.locationInput}
+                    placeholder='Country'
+                />
+                <div className={Style.countryModal + ' ' + `${!!country && !selectedCountry && isCountryFocused ? Style.countryModalOpen : null}`}>
+                    {
+                        queryCountry.isLoading
+                            ?
+                            <Loading width={20} />
+                            :
+                            queryCountry.data?.map((country, idx) => {
+                                return (
+                                    <p
+                                        key={`${country}-${idx}}`}
+                                        onClick={() => { setSelectedCountry(country); setCountry(country) }}
+                                        className={Style.countryModalOption}
+                                        data-type='country'
+                                        tabIndex={0}
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter') {
+                                                e.preventDefault()
+                                                setSelectedCountry(country)
+                                                setCountry(country)
+                                                cityRef.current?.focus()
+                                            }
+                                        }}
+                                    >
+                                        {country}
+                                    </p>
+                                )
+                            })
+                    }
+                </div>
+
+            </div>
+
+            <div className={Style.countryContainer}
+                onFocus={() => setIsCityFocused(true)}
+                onBlur={handleCityBlur}
+            >
+                <input
+                    type="text"
+                    value={selectedCity ? selectedCity.city : city}
+                    onChange={(e) => setCity(e.target.value)}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Backspace') {
+                            console.log('Backspace')
+                            setSelectedCity(null)
+                        }
+                    }}
+                    className={Style.locationInput}
+                    placeholder='City'
+                    onBlur={handleCityBlur}
+                    ref={cityRef}
+                />
+                {
+                    !!selectedCountry &&
+                    <div className={Style.countryModal + ' ' + `${!!city && !selectedCity && isCityFocused ? Style.countryModalOpen : null}`}>
+                        {
+                            queryCity.isLoading
+                                ?
+                                <Loading width={20} />
+                                :
+                                queryCity.data?.slice(0, 50).map((city, idx) => {
+                                    return (
+                                        <p
+                                            key={`${city.city}-${city.city_ascii}-${idx}}`}
+                                            onClick={() => handleSelectCity(city)}
+                                            className={Style.countryModalOption}
+                                            data-type='city'
+                                            tabIndex={0}
+                                            onKeyDown={(e) => {
+                                                if (e.key === 'Enter') {
+                                                    e.preventDefault()
+                                                    handleSelectCity(city)
+                                                }
+                                            }}
+
+                                        >
+                                            {city.city} ({city.admin_name}) ({city.lng} {city.lat})
+                                        </p>
+                                    )
+                                })
+                        }
+                    </div>
+                }
+
             </div>
         </div>
     )

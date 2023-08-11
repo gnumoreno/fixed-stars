@@ -55,15 +55,17 @@
     padding: 8px;
     text-align: left;
     border-bottom: 1px solid #ddd;
-    width: 100%;
-    
+    width: 6.25%;
+    max-width: 100%;
+    white-space: pre-wrap;
+    /* width: 200px; */
   }
-
   
   .th {
     background-color: #f2f2f2;
     font-weight: bold;
     cursor: pointer;
+    user-select: none;
   }
   
   /* CSS for table rows */

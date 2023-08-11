@@ -7,6 +7,7 @@ import { getHousesData } from "~/utils/external/houses/houses";
 import { getPlanetsData } from "~/utils/external/planets/planets";
 import { getAspects, getAstroTable } from "~/utils/external/aspects/aspects";
 import { getArabicPartArray } from "~/utils/external/arabicParts/arabic";
+import { getCountries, queryCities } from "~/utils/cities/queries";
 export const GO_API_ENDPOINT = "http://18.231.181.140:8000"
 export const chartRouter = createTRPCRouter({
 
@@ -87,6 +88,21 @@ export const chartRouter = createTRPCRouter({
 
 
     }),
+
+    getCountries: publicProcedure.input(z.object({
+        queryString: z.string(),
+    })).query(({ input }) => {
+        const countriesResult = getCountries(input.queryString);
+        return countriesResult;
+    }),
+
+    getCities: publicProcedure.input(z.object({
+        queryString: z.string(),
+        country: z.string(),
+    })).query(({ input }) => {
+        const citiesResult = queryCities(input.queryString, input.country);
+        return citiesResult;
+    })
 
 
 
