@@ -8,6 +8,10 @@ import { getPlanetsData } from "~/utils/external/planets/planets";
 import { getAspects, getAstroTable } from "~/utils/external/aspects/aspects";
 import { getArabicPartArray } from "~/utils/external/arabicParts/arabic";
 import { getCountries, queryCities } from "~/utils/cities/queries";
+import {find} from 'geo-tz';
+import { findTimezone } from "~/utils/scripts/timezone";
+import { performance } from "perf_hooks";
+
 export const GO_API_ENDPOINT = "http://18.231.181.140:8000"
 export const chartRouter = createTRPCRouter({
 
@@ -102,8 +106,28 @@ export const chartRouter = createTRPCRouter({
     })).query(({ input }) => {
         const citiesResult = queryCities(input.queryString, input.country);
         return citiesResult;
+    }),
+
+    getTimezone: publicProcedure.input(z.object({
+        long: z.number(),
+        lat: z.number(),
+        countryCode: z.string(),
+        date: z.date(),
+    })).query(({ input }) => {
+        const t0 = performance.now();
+        const timezoneName = find(input.lat, input.long)[0];
+        const t1 = performance.now();
+        const unixDate = input.date.getTime() / 1000;
+        const TzPerf = performance.now();
+        const adjustedTimeZone = findTimezone(input.countryCode, timezoneName, unixDate);
+        const TzPerfEnd = performance.now();
+
+        return {
+            timeZone: adjustedTimeZone,
+            geoTzPerf:`(GeoTz: ${(t1 - t0).toFixed(4)}ms)`,
+            BinarySearchPerf: `(BinarySearch: ${(TzPerfEnd - TzPerf).toFixed(4)}ms)`,
+            queryPerf: `(Query: ${(TzPerfEnd - t0).toFixed(4)}ms)`
+        };
     })
-
-
 
 });

@@ -12,6 +12,7 @@ import type { star } from "~/utils/external/stars/types";
 import { FixedStarsTable, HousesTable, PlanetsTable } from "~/components/tables/Tables";
 import { type aspect } from "~/utils/external/aspects/types";
 import { type arabicPart } from "~/utils/external/arabicParts/types";
+import { CityData } from "~/utils/cities/queries";
 
 
 const Testpage: NextPage = () => {
@@ -88,6 +89,20 @@ const NavButtons: React.FC = () => {
   const timeSelectionRef = React.useRef<HTMLInputElement>(null);
   const coordinatesSelectionRef = React.useRef<HTMLInputElement>(null);
 
+  // TimeZone
+  const [city, setCity] = useState<CityData | null>(null)
+  const adjustedTimeZone = api.chart.getTimezone.useQuery({
+    date: date,
+    countryCode: city?.iso2,
+    lat: city?.lat,
+    long: city?.lng,
+  }, {
+    enabled: city !== null,
+    onSuccess: (data) => {
+      console.log(data);
+    }
+  })
+
 
   return (
     <div className={Style.pageContainer}>
@@ -109,7 +124,7 @@ const NavButtons: React.FC = () => {
             startRef={timeSelectionRef}
           />
           <CoordinatesSelection
-
+            setQueryCity={setCity}
             decimalCord={decimalValues}
             setDecimalCord={setDecimalValues}
             latitude={latitude}

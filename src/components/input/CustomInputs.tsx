@@ -360,6 +360,7 @@ type CoordinatesSelectionProps = {
     setInputType: React.Dispatch<React.SetStateAction<"decimal" | "dms">>
     nextInputRef?: React.RefObject<HTMLInputElement>
     startRef?: React.RefObject<HTMLInputElement>
+    setQueryCity: React.Dispatch<React.SetStateAction<CityData | null>>
 }
 
 export const CoordinatesSelection: React.FC<CoordinatesSelectionProps> = ({
@@ -371,6 +372,7 @@ export const CoordinatesSelection: React.FC<CoordinatesSelectionProps> = ({
     setLongitude,
     setInputType,
     // nextInputRef,
+    setQueryCity,
     startRef
 }) => {
 
@@ -599,6 +601,7 @@ export const CoordinatesSelection: React.FC<CoordinatesSelectionProps> = ({
                     <CitySelection
                         setDecimalCord={setDecimalCord}
                         startRef={startRef}
+                        setQueryCity={setQueryCity}
                     />
                     :
                     <div className={Style.coordInputs}>
@@ -759,11 +762,13 @@ export const CoordinatesSelection: React.FC<CoordinatesSelectionProps> = ({
 type CitySelectionProps = {
     setDecimalCord: React.Dispatch<React.SetStateAction<{ long: string; lat: string }>>
     startRef?: React.RefObject<HTMLInputElement>
+    setQueryCity: React.Dispatch<React.SetStateAction<CityData | null>>
 }
 
 export const CitySelection: React.FC<CitySelectionProps> = ({
     setDecimalCord,
-    startRef
+    startRef,
+    setQueryCity
 }) => {
     const [country, setCountry] = useState<string>("")
     const queryCountry = api.chart.getCountries.useQuery({
@@ -803,6 +808,7 @@ export const CitySelection: React.FC<CitySelectionProps> = ({
 
     const handleSelectCity = (city: CityData) => {
         setSelectedCity(city)
+        setQueryCity(city)
         setCity(city.city_ascii)
         setDecimalCord({ long: city.lng.toString(), lat: city.lat.toString() })
     }
