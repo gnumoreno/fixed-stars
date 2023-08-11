@@ -5,18 +5,26 @@ import { decToDMS, getAngle, houseFromDec } from "~/utils/astroCalc";
 import type { house } from "../houses/types";
 
 
-
-export const getStarsData = async (date: string, time: string, houses: house[], ascendantPos: number) => {
-    const starNames = stars.map((star) => star.name);
-    const starsURL = `${env.GO_API_ENDPOINT}/run-star?birthdate=${date}&utctime=${time}&stars=${starNames.join(',')}`
-
+export const getStarsData = async (
+    date: string,
+    time: string,
+    houses: house[],
+    ascendantPos: number,
+    latitude: number,
+    longitude: number,
+    altitude: number,
+    houseSystem: string) => {
+    const starNames = stars.map((star) => star.name).filter((name) => {
+        const isPlanet = name === "Pluto" || name === "Neptune" || name === "Uranus";
+        return !isPlanet;
+    });
+    const starsURL = `${env.GO_API_ENDPOINT}/run-star?birthdate=${date}&utctime=${time}&stars=${starNames.join(',')}&latitude=${latitude}&longitude=${longitude}&altitude=${altitude}&housesystem=${houseSystem}`
     const starsArrayResponse = await fetch(starsURL, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
         }
     })
-
     const starsArray = await starsArrayResponse.json() as starAPI[];
 
     return starsArray.map(star => {
