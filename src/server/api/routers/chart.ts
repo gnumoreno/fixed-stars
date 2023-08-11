@@ -11,6 +11,7 @@ import { getCountries, queryCities } from "~/utils/cities/queries";
 import {find} from 'geo-tz';
 import { findTimezone } from "~/utils/scripts/timezone";
 import { performance } from "perf_hooks";
+import { getUnixTime } from "date-fns";
 
 export const GO_API_ENDPOINT = "http://18.231.181.140:8000"
 export const chartRouter = createTRPCRouter({
@@ -118,16 +119,25 @@ export const chartRouter = createTRPCRouter({
         console.log('Received Date: ', input.date)
         const myDate = input.date;
         myDate.setHours(0, 0, 0, 0);
+        const fnsUnix = getUnixTime(myDate);
+        console.log('fnsUnix:', new Date(fnsUnix * 1000))
+        const UnixWithoutOffset = fnsUnix - (myDate.getTimezoneOffset() * 60);
+        console.log('UnixWithoutOffset:', new Date(UnixWithoutOffset * 1000))
+       
         const timezoneName = find(input.lat, input.long)[0];
-        const timeInMs = timeStringToMs(input.time);
-        const unixDate = (myDate.getTime() + timeInMs) / 1000;
+        const timeInSeconds = timeStringToSeconds(input.time);
+        console.log('Time in Seconds: ', timeInSeconds)
+        const unixDate = UnixWithoutOffset + timeInSeconds;
+        console.log('Unix Date: ', new Date(unixDate * 1000))
 
         const TzPerf = performance.now();
         const adjustedTimeZone = findTimezone(input.countryCode, timezoneName, unixDate);
-        console.log('Adjusted Timezone: ', adjustedTimeZone)
+        // console.log('Adjusted Timezone: ', adjustedTimeZone)
         const TzPerfEnd = performance.now();
-
-        const UTCDate = new Date((unixDate * 1000) + (adjustedTimeZone.gmt_offset * -1));
+        const AdjustedUnixDate = unixDate + (adjustedTimeZone.gmt_offset * -1);
+        console.log('Adjusted Unix Date: ', new Date(AdjustedUnixDate * 1000))
+        const UTCDate = new Date(AdjustedUnixDate * 1000);
+        console.log(UTCDate.toISOString())
 
         return {
             timeZone: {
@@ -141,13 +151,13 @@ export const chartRouter = createTRPCRouter({
 
 });
 
-const timeStringToMs = (timeString: string) => {
+const timeStringToSeconds = (timeString: string) => {
     const timeArray = timeString.split(":");
     const hours = parseInt(timeArray[0]);
     const minutes = parseInt(timeArray[1]);
 
-    const hoursToMs = hours * 60 * 60 * 1000;
-    const minutesToMs = minutes * 60 * 1000;
+    const hoursToMs = hours * 60 * 60;
+    const minutesToMs = minutes * 60;
 
     return hoursToMs + minutesToMs
 }
