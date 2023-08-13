@@ -4,7 +4,7 @@ import { api } from "~/utils/api";
 import Style from "./Index.module.css";
 import Head from "next/head";
 import { Loading } from "~/components/utils/Loading";
-import { ChartSVG } from "~/components/astroChart/DrawChart";
+import { ChartOptions, ChartSVG } from "~/components/astroChart/DrawChart";
 import { CoordinatesSelection, DateSelection, TimeSelection, TimeZoneSelection } from "~/components/input/CustomInputs";
 import type { house } from "~/utils/external/houses/types";
 import type { planet } from "~/utils/external/planets/types";
@@ -108,6 +108,8 @@ const NavButtons: React.FC = () => {
     enabled: city !== null
   })
 
+  const [chartOptions, setChartOptions] = useState<ChartOptions>({ aspectLines: true });
+
 
   return (
     <div className={Style.pageContainer}>
@@ -181,6 +183,7 @@ const NavButtons: React.FC = () => {
               starsData={starsData}
               arabicPartsData={arabicPartsData}
               aspectsData={aspectsData}
+              options={chartOptions}
             />
           </div>
         </div>
@@ -202,6 +205,7 @@ const NavButtons: React.FC = () => {
 
         <button
           // onClick={() => { setSelectedCalc("antarab") }}
+          onClick={() => setChartOptions({ ...chartOptions, aspectLines: !chartOptions.aspectLines })}
           className={Style.button}>
           Arabic Parts (TBD)
         </button>

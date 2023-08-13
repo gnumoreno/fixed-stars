@@ -15,6 +15,7 @@ import { drawArabicParts } from "~/utils/charts/arabics";
 import { drawAntiscia } from "~/utils/charts/antiscia";
 import { drawStars } from "~/utils/charts/stars";
 import { drawWheelElements } from "~/utils/charts/wheelElements";
+import { drawAspectLines } from "~/utils/charts/aspects";
 
 type ChartSVGProps = {
     housesData: house[] | null;
@@ -22,9 +23,14 @@ type ChartSVGProps = {
     starsData: star[] | null;
     arabicPartsData: arabicPart[] | null;
     aspectsData: aspect[] | null;
+    options: ChartOptions;
 }
 
-export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, starsData, arabicPartsData, aspectsData }) => {
+export type ChartOptions = {
+    aspectLines: boolean;
+}
+
+export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, starsData, arabicPartsData, aspectsData, options }) => {
 
     const svgContainerRef = useRef<SVGSVGElement>(null);
 
@@ -68,6 +74,18 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
         if (!drawRef) {
             console.log("drawRef is null", drawRef)
             return;
+        }
+        if(options.aspectLines) {
+            drawAspectLines({
+                aspectsData: aspectsData,
+                centerX: centerX,
+                centerY: centerY,
+                percentages: percentages,
+                radius: radius,
+                drawRef: drawRef,
+                // createPopup: createPopup,
+                // lineXYCircle: lineXYCircle,
+            })
         }
         drawWheelElements({
             drawRef: drawRef,
@@ -162,7 +180,7 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
             SVG(drawRef).clear();
         }
 
-    }, [housesData, planetsData, starsData]); // eslint-disable-line react-hooks/exhaustive-deps
+    }, [housesData, planetsData, starsData, options]); // eslint-disable-line react-hooks/exhaustive-deps
 
 
 
