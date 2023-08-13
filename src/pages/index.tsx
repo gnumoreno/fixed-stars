@@ -5,7 +5,7 @@ import Style from "./Index.module.css";
 import Head from "next/head";
 import { Loading } from "~/components/utils/Loading";
 import { ChartOptions, ChartSVG } from "~/components/astroChart/DrawChart";
-import { CoordinatesSelection, DateSelection, OptionsSelection, TimeSelection, TimeZoneSelection } from "~/components/input/CustomInputs";
+import { CoordinatesSelection, DateSelection, HouseSystem, HouseSystemSelection, OptionsSelection, TimeSelection, TimeZoneSelection } from "~/components/input/CustomInputs";
 import type { house } from "~/utils/external/houses/types";
 import type { planet } from "~/utils/external/planets/types";
 import type { star } from "~/utils/external/stars/types";
@@ -52,7 +52,7 @@ const NavButtons: React.FC = () => {
     e.preventDefault();
     let reqTime = time;
     let reqDate = date;
-    if(adjustedTimeZone.data) {
+    if (adjustedTimeZone.data) {
       reqTime = `${padWithLeadingZeros(adjustedTimeZone.data.timeZone.utc.getUTCHours(), 2)}:${padWithLeadingZeros(adjustedTimeZone.data.timeZone.utc.getUTCMinutes(), 2)}`;
       reqDate = adjustedTimeZone.data.timeZone.utc;
     }
@@ -73,6 +73,7 @@ const NavButtons: React.FC = () => {
           seconds: Number(latitude.seconds),
         },
         inputType: inputType,
+        houseSystem: houseSystem,
       },
       {
         onSuccess: (data) => {
@@ -108,6 +109,9 @@ const NavButtons: React.FC = () => {
     enabled: city !== null
   })
 
+
+  // House System
+  const [houseSystem, setHouseSystem] = useState<HouseSystem>('P')
   const [chartOptions, setChartOptions] = useState<ChartOptions>({ aspectLines: true });
 
 
@@ -116,55 +120,61 @@ const NavButtons: React.FC = () => {
       <div className={Style.formContainer}>
         <form onSubmit={(e) => { handleFormSubmit(e) }} className={Style.form}>
           <div className={Style.formRow}>
-          <h1 className={Style.title} onClick={() => console.log(time, longitude)}>BirthData</h1>
-          <div className={Style.logoDivider}></div>
-          {/* <label htmlFor="date">Date:</label> */}
-          <DateSelection
-            date={date}
-            setDate={setDate}
-            nextInputRef={timeSelectionRef}
-          />
-          {/* <label htmlFor="time">Time:</label> */}
-          <TimeSelection
-            time={time}
-            setTime={setTime}
-            nextInputRef={coordinatesSelectionRef}
-            startRef={timeSelectionRef}
-          />
-          {
-            adjustedTimeZone.data ?
-            <TimeZoneSelection
-              abv={adjustedTimeZone.data.timeZone.abv}
-              gmt_offset={adjustedTimeZone.data.timeZone.gmt_offset}
-              utcDateTime={adjustedTimeZone.data.timeZone.utc}
-              currentDate={date.getDate()}
-             />
-             :
-             null
-          }
+            <h1 className={Style.title} onClick={() => console.log(time, longitude)}>Fixed Stars</h1>
+            <div className={Style.logoDivider}></div>
+            {/* <label htmlFor="date">Date:</label> */}
+            <DateSelection
+              date={date}
+              setDate={setDate}
+              nextInputRef={timeSelectionRef}
+            />
+            {/* <label htmlFor="time">Time:</label> */}
+            <TimeSelection
+              time={time}
+              setTime={setTime}
+              nextInputRef={coordinatesSelectionRef}
+              startRef={timeSelectionRef}
+            />
+            {
+              adjustedTimeZone.data ?
+                <TimeZoneSelection
+                  abv={adjustedTimeZone.data.timeZone.abv}
+                  gmt_offset={adjustedTimeZone.data.timeZone.gmt_offset}
+                  utcDateTime={adjustedTimeZone.data.timeZone.utc}
+                  currentDate={date.getDate()}
+                />
+                :
+                null
+            }
           </div>
 
           <div className={Style.formRow}>
-          <CoordinatesSelection
-            setQueryCity={setCity}
-            decimalCord={decimalValues}
-            setDecimalCord={setDecimalValues}
-            latitude={latitude}
-            setLatitude={setLatitude}
-            longitude={longitude}
-            setLongitude={setLongitude}
-            setInputType={setInputType}
-            startRef={coordinatesSelectionRef}
-          />
-          {
-            testCommand.isLoading
-              ?
-              <div className={Style.loadingContainer}>
-                <Loading width={30} />
-              </div>
-              :
-              <button type="submit" className={Style.submitButton}>Calculate</button>
-          }
+            <CoordinatesSelection
+              setQueryCity={setCity}
+              decimalCord={decimalValues}
+              setDecimalCord={setDecimalValues}
+              latitude={latitude}
+              setLatitude={setLatitude}
+              longitude={longitude}
+              setLongitude={setLongitude}
+              setInputType={setInputType}
+              startRef={coordinatesSelectionRef}
+            />
+          </div>
+          <div className={Style.formRow}>
+            <HouseSystemSelection
+              houseSystem={houseSystem}
+              setHouseSystem={setHouseSystem}
+            />
+            {
+              testCommand.isLoading
+                ?
+                <div className={Style.loadingContainer}>
+                  <Loading width={30} />
+                </div>
+                :
+                <button type="submit" className={Style.submitButton}>Calculate</button>
+            }
           </div>
         </form>
           <OptionsSelection

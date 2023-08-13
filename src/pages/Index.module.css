@@ -120,7 +120,8 @@
 
 
 .title {
-  width: 150px;
+  width: 130px;
+  font-size: 24px;
   margin-top: 0;
   margin-bottom: 0;
 }
@@ -203,20 +204,24 @@
   }
 
   .form {
-    flex-wrap: wrap;
+    /* flex-wrap: wrap; */
     margin-top: 0;
     margin-bottom: 0;
-    justify-content: center;
     gap: 5px;
     max-width: 500px;
     width: 100vw !important;
-    padding-left: 2px;
-    padding-right: 2px;
+    padding-left: 0px;
+    padding-right: 0px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
   }
 
   .formRow {
     flex-wrap: wrap;
     gap: 3px;
+    height: 100%;
   }
 
   .form > label {
@@ -224,8 +229,9 @@
   }
 
   .title {
-    font-size: 12px;
-    width: 56px;
+    font-size: 10px;
+    width: 30px;
+    text-align: center;
   }
 
   .logoDivider {

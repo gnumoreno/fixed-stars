@@ -103,7 +103,10 @@
         width: 90px;
     }
 
-    .textInput, .textInputDay, .textInputDivider, .textInputYear {
+    .textInput,
+    .textInputDay,
+    .textInputDivider,
+    .textInputYear {
         font-size: 10px;
     }
 
@@ -113,7 +116,7 @@
         margin-right: 0;
     }
 
-    .inputIcon > svg {
+    .inputIcon>svg {
         width: 14px;
         height: 14px;
     }
@@ -193,14 +196,16 @@
 }
 
 @media screen and (max-width:1260px) {
-    
-        .timeInputContainer {
-            width: 60px;
-        }
-    
-        .timeInput, .timeInputDay, .timeInputDivider {
-            font-size: 10px;
-        }
+
+    .timeInputContainer {
+        width: 60px;
+    }
+
+    .timeInput,
+    .timeInputDay,
+    .timeInputDivider {
+        font-size: 10px;
+    }
 
 
 }
@@ -357,7 +362,7 @@
     background-color: var(--WHITE1);
     cursor: pointer;
     /* padding: 2px; */
-    
+
 }
 
 .coordTypeButtonActive {
@@ -371,7 +376,7 @@
         flex-wrap: wrap;
     }
 
-    .coordContainer > label {
+    .coordContainer>label {
         font-size: 12px;
     }
 
@@ -404,7 +409,7 @@
         font-size: 14px;
         /* background-color: red; */
     }
-    
+
     .dmsInputBox:nth-of-type(2)::after {
         content: "\'";
         position: absolute;
@@ -416,7 +421,7 @@
         font-size: 14px;
         /* background-color: red; */
     }
-    
+
     .dmsInputBox:nth-of-type(3)::after {
         content: "\"";
         position: absolute;
@@ -432,13 +437,16 @@
     .coordType {
         flex-direction: row;
         gap: 14px;
-        order: 1;
+        width: 130px;
+        align-items: center;
+        justify-content: center;
+        /* order: 1; */
     }
 
     .coordTypeOptions {
         gap: 2px;
     }
-    
+
     .coordTypeText {
         font-size: 8px;
         margin-left: 0;
@@ -521,21 +529,21 @@
     width: 100%;
     font-size: 14px;
     font-family: -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-    
+
 }
 
 @media screen and (max-width:1260px) {
-    
-        .locationInput {
-            font-size: 10px;
-        }
-    
+
+    .locationInput {
+        font-size: 10px;
+    }
+
 }
 
 
 /* timezones */
 
-.timezoneContainer{
+.timezoneContainer {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -543,7 +551,7 @@
     width: auto;
 }
 
-.timezoneAbv{
+.timezoneAbv {
     font-size: 12px;
     font-weight: 600;
     margin: 0;
@@ -558,7 +566,7 @@
     cursor: not-allowed;
 }
 
-.timezoneHour{
+.timezoneHour {
     font-size: 12px;
     font-weight: 600;
     margin: 0;
@@ -574,7 +582,7 @@
 
 }
 
-.timezoneHourMini{
+.timezoneHourMini {
     font-size: 10px;
     font-weight: 600;
     margin: 0;
@@ -582,19 +590,101 @@
 }
 
 @media screen and (max-width:1260px) {
-    
-    .timezoneAbv{
+
+    .timezoneAbv {
         font-size: 10px;
     }
-    
-    .timezoneHour{
+
+    .timezoneHour {
         font-size: 10px;
     }
-    
-    .timezoneHourMini{
+
+    .timezoneHourMini {
         font-size: 8px;
     }
-    
+
+
+}
+
+/* house system */
+
+
+.hsystemType {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    /* margin-top: 10px; */
+    margin-left: 5px;
+    height: 100%;
+    padding-right: 30px;
+}
+
+.hsystemTypeOptions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0px;
+    width: 100%;
+    height: 30px;
+}
+
+.hsystemTypeText {
+    font-size: 10px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.hsystemTypeButton {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 1px solid var(--GRAY1);
+    background-color: var(--WHITE1);
+    cursor: pointer;
+    /* padding: 2px; */
+
+}
+
+.hsystemTypeButtonActive {
+    background-color: var(--BLUE1);
+    border: none;
+}
+
+@media screen and (max-width:1260px) {
+
+    .hsystemType {
+        padding-right: 30px;
+    }
+
+    .hsystemContainer {
+        flex-wrap: wrap;
+
+    }
+
+    .hsystemContainer>label {
+        font-size: 12px;
+    }
+
+    .hsystemType {
+        flex-direction: row;
+        gap: 6px;
+        /* order: 1; */
+    }
+
+    .hsystemTypeOptions {
+        gap: 2px;
+    }
+
+    .hsystemTypeText {
+        font-size: 8px;
+        margin-left: 0;
+    }
+
+
+
 
 }
 

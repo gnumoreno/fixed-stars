@@ -944,7 +944,7 @@ export const TimeZoneSelection: React.FC<TimeZoneSelectionProps> = ({
         const UTCDayAndMonth = `${isDifferentDay ? `, ${date.getUTCDate()} ${months[date.getUTCMonth()]}` : ''}`
         return (
             <p className={Style.timezoneHour}>
-                {UTCTimeString}<span className={Style.timezoneHourMini}>{UTCDayAndMonth}</span>
+                {UTCTimeString} (UTC)<span className={Style.timezoneHourMini}>{UTCDayAndMonth}</span>
             </p>
         )
     }
@@ -958,6 +958,38 @@ export const TimeZoneSelection: React.FC<TimeZoneSelectionProps> = ({
     )
 }
 
+export type HouseSystem = "P" | "R"
+
+type HouseSystemSelectionProps = {
+    setHouseSystem: React.Dispatch<React.SetStateAction<HouseSystem>>;
+    houseSystem: HouseSystem;
+}
+
+export const HouseSystemSelection: React.FC<HouseSystemSelectionProps> = ({
+    houseSystem,
+    setHouseSystem
+}) => {
+    return (
+        <div className={Style.hsystemType}>
+            <div className={Style.hsystemTypeOptions}>
+                <div className={Style.hsystemTypeButton + ' ' + `${houseSystem === "P" ? Style.hsystemTypeButtonActive : ''}`}
+                    onClick={() => setHouseSystem("P")}
+                ></div>
+                <p className={Style.hsystemTypeText}>
+                    Placidus
+                </p>
+            </div>
+            <div className={Style.hsystemTypeOptions}>
+                <div className={Style.hsystemTypeButton + ' ' + `${houseSystem === "R" ? Style.hsystemTypeButtonActive : ''}`}
+                    onClick={() => setHouseSystem("R")}
+                ></div>
+                <p className={Style.hsystemTypeText}>
+                    Regiomontanus
+                </p>
+            </div>
+        </div>
+    )
+}
 type OptionsSelectionProps = {
     chartOptions: ChartOptions;
     setChartOptions: React.Dispatch<React.SetStateAction<ChartOptions>>;
