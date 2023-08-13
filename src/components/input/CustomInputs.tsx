@@ -11,6 +11,7 @@ import 'react-date-range/dist/theme/default.css'; // theme css file
 import { api } from '~/utils/api'
 import { type CityData } from '~/utils/cities/queries'
 import { Loading } from '../utils/Loading'
+import { ChartOptions } from '../astroChart/DrawChart'
 
 type DateSelectionProps = {
     date: Date
@@ -985,6 +986,31 @@ export const HouseSystemSelection: React.FC<HouseSystemSelectionProps> = ({
                 <p className={Style.hsystemTypeText}>
                     Regiomontanus
                 </p>
+            </div>
+        </div>
+    )
+}
+type OptionsSelectionProps = {
+    chartOptions: ChartOptions;
+    setChartOptions: React.Dispatch<React.SetStateAction<ChartOptions>>;
+}
+
+export const OptionsSelection: React.FC<OptionsSelectionProps> = ({
+    chartOptions,
+    setChartOptions
+}) => {
+
+    return (
+        <div className={Style.optionsContainer}>
+            <div className={Style.option}>
+                <div
+                    className={Style.optionCheckBox + ' ' + `${chartOptions.aspectLines ? Style.optionCheckBoxActive : null}`}
+                    onClick={() => setChartOptions(prev => ({ ...prev, aspectLines: !prev.aspectLines }))}
+                >
+                </div>
+                    <p className={Style.optionTitle}>
+                        Aspects
+                    </p>
             </div>
         </div>
     )
