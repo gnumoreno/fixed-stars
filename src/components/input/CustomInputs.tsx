@@ -11,6 +11,7 @@ import 'react-date-range/dist/theme/default.css'; // theme css file
 import { api } from '~/utils/api'
 import { type CityData } from '~/utils/cities/queries'
 import { Loading } from '../utils/Loading'
+import { ChartOptions } from '../astroChart/DrawChart'
 
 type DateSelectionProps = {
     date: Date
@@ -936,7 +937,7 @@ export const TimeZoneSelection: React.FC<TimeZoneSelectionProps> = ({
     utcDateTime,
     currentDate
 }) => {
-    const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     const getDateString = (date: Date) => {
         const UTCTimeString = `${padWithLeadingZeros(date.getUTCHours(), 2)}:${padWithLeadingZeros(date.getUTCMinutes(), 2)}`
         const isDifferentDay = currentDate !== date.getUTCDate();
@@ -950,9 +951,35 @@ export const TimeZoneSelection: React.FC<TimeZoneSelectionProps> = ({
     return (
         <div className={Style.timezoneContainer}>
             <p className={Style.timezoneAbv}>
-                UTC{gmt_offset > 0 ? `+${gmt_offset}`: gmt_offset < 0 ? `-${Math.abs(gmt_offset)}`:'' } ({abv})
+                UTC{gmt_offset > 0 ? `+${gmt_offset}` : gmt_offset < 0 ? `-${Math.abs(gmt_offset)}` : ''} ({abv})
             </p>
             {getDateString(utcDateTime)}
+        </div>
+    )
+}
+
+type OptionsSelectionProps = {
+    chartOptions: ChartOptions;
+    setChartOptions: React.Dispatch<React.SetStateAction<ChartOptions>>;
+}
+
+export const OptionsSelection: React.FC<OptionsSelectionProps> = ({
+    chartOptions,
+    setChartOptions
+}) => {
+
+    return (
+        <div className={Style.optionsContainer}>
+            <div className={Style.option}>
+                <div
+                    className={Style.optionCheckBox + ' ' + `${chartOptions.aspectLines ? Style.optionCheckBoxActive : null}`}
+                    onClick={() => setChartOptions(prev => ({ ...prev, aspectLines: !prev.aspectLines }))}
+                >
+                </div>
+                    <p className={Style.optionTitle}>
+                        Aspects
+                    </p>
+            </div>
         </div>
     )
 }

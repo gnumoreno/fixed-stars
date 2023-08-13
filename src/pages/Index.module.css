@@ -199,6 +199,7 @@
   .formContainer {
     height: 170px;
     align-items: flex-start;
+    flex-direction: column;
   }
 
   .form {
