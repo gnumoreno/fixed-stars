@@ -1,8 +1,9 @@
 import { env } from "~/env.mjs";
 import type { house } from "../houses/types";
-import type { PlanetProperties, planet, planetAPI } from "./types";
-import { decToDMS, getAngle, houseFromDec, getOposition } from "~/utils/astroCalc";
+import type { PlanetProperties, planet, planetAPI, planetBase } from "./types";
+import { decToDMS, getAngle, houseFromDec, getOposition, dayOrNight } from "~/utils/astroCalc";
 import { planets } from "./properties";
+import { getDignities } from "../dignities/dignities";
 
 export const getPlanetsData = async (
     date: string,
@@ -38,7 +39,9 @@ export const getPlanetsData = async (
     };
     planetsArray.splice(8, 0, southNodeObject);
 
-    return planetsArray.map((planet) => {
+   
+
+    const planetsTmp = planetsArray.map((planet) => {
         const long = parseFloat(planet.longitude);
         const tmp = decToDMS(long);
         const house = houseFromDec(housesData, long)
@@ -65,7 +68,25 @@ export const getPlanetsData = async (
             temperature: planetProps.temperature,
             humidity: planetProps.humidity,
             element: planetProps.element,
-        } as planet;
+        } as planetBase;
         return result
     }).slice(0, 9)
+
+
+    const isDay = dayOrNight(planetsTmp, housesData)
+    const planetsData = planetsTmp.map(planet => {
+        const receptions = getDignities(planet.name, planet.sign,planet.longDegree,isDay)
+        return  {
+            ...planet,
+            dom: receptions.domicile,
+            exalt: receptions.exaltation,
+            trip: receptions.triplicity,
+            term: receptions.term,
+            face: receptions.face,
+            detriment: receptions.detriment,
+            fall: receptions.fall,
+        }
+    })
+
+    return planetsData as planet[];
 }

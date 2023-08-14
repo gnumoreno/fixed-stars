@@ -6,7 +6,6 @@ import type { planet } from "~/utils/external/planets/types";
 import { type aspect } from "~/utils/external/aspects/types";
 import { getAspectString } from "~/utils/astroCalc";
 
-
 type HousesTableProps = {
     housesArray: house[];
     aspects: aspect[];
@@ -121,6 +120,13 @@ export const PlanetsTable: React.FC<PlanetsTableProps> = ({ planetsArray, aspect
             .map((planet, index) => (
                 <tr className={Style.tr} key={index}>
                     <td className={Style.td} title={planet.name}>{limitCharacters(planet.name)}</td>
+                    <td className={Style.td}>{planet.dom}</td>
+                    <td className={Style.td}>{planet.exalt}</td>
+                    <td className={Style.td}>{planet.trip}</td>
+                    <td className={Style.td}>{planet.term}</td>
+                    <td className={Style.td}>{planet.face}</td>
+                    <td className={Style.td}>{planet.detriment}</td>
+                    <td className={Style.td}>{planet.fall}</td>
                     <td className={Style.td}>{planet.position}</td>
                     <td className={Style.td}>{planet.sign}</td>
                     <td className={Style.td} style={{ minWidth: "130px" }}>{planet.longDegree}° {planet.longMinute}&lsquo; {planet.longSecond}&quot;</td>
@@ -146,6 +152,13 @@ export const PlanetsTable: React.FC<PlanetsTableProps> = ({ planetsArray, aspect
                 <thead>
                     <tr className={Style.thead}>
                         <th className={Style.th} style={{ minWidth: "150px", maxWidth: "150px" }} onClick={() => handleSort("name")}>Planet</th>
+                        <th className={Style.th} onClick={() => "dom"}>Dom</th>
+                        <th className={Style.th} onClick={() => "exalt"}>Ex</th>
+                        <th className={Style.th} onClick={() => "trip"}>Trip</th>
+                        <th className={Style.th} onClick={() => "term"}>Term</th>
+                        <th className={Style.th} onClick={() => "face"}>Face</th>
+                        <th className={Style.th} onClick={() => "detriment"}>Det</th>
+                        <th className={Style.th} onClick={() => "fall"}>Fall</th>
                         <th className={Style.th} onClick={() => handleSort("position")}>Long (decimal)</th>
                         <th className={Style.th} onClick={() => handleSort("sign")}>Sign</th>
                         <th className={Style.th} style={{ minWidth: "130px" }}>Long (DMS)</th>

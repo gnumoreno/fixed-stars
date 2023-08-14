@@ -4,8 +4,10 @@ import { api } from "~/utils/api";
 import Style from "./Index.module.css";
 import Head from "next/head";
 import { Loading } from "~/components/utils/Loading";
-import { ChartOptions, ChartSVG } from "~/components/astroChart/DrawChart";
-import { CoordinatesSelection, DateSelection, HouseSystem, HouseSystemSelection, OptionsSelection, TimeSelection, TimeZoneSelection } from "~/components/input/CustomInputs";
+import { ChartSVG } from "~/components/astroChart/DrawChart";
+import type { ChartOptions } from "~/components/astroChart/DrawChart";
+import { CoordinatesSelection, DateSelection, HouseSystemSelection, OptionsSelection, TimeSelection, TimeZoneSelection } from "~/components/input/CustomInputs";
+import type { HouseSystem } from "~/components/input/CustomInputs";
 import type { house } from "~/utils/external/houses/types";
 import type { planet } from "~/utils/external/planets/types";
 import type { star } from "~/utils/external/stars/types";
@@ -232,10 +234,6 @@ const NavButtons: React.FC = () => {
       </div>
 
       <div className={Style.tablesContainer}>
-        {/* {selectedCalc === "houses" && housesData && <HousesTable housesArray={housesData} />}
-        {selectedCalc === "planets" && planetsData && <PlanetsTable planetsArray={planetsData} />}
-        {selectedCalc === "stars" && starsData && <FixedStarsTable starsArray={starsData} />} */}
-
         {
           selectedCalc === "houses" && housesData
             ?

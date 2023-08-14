@@ -1,8 +1,9 @@
 import type { Path, Svg } from "@svgdotjs/svg.js";
 import type { handleMouseOverPopupArgs } from "~/hooks/usePopup";
 import type { house } from "../external/houses/types";
-import { Signs, getAllFaces, getAllTermAngles, getAllTermSymbols, getTriplicityArray, signAngles } from "../astroCalc";
+import { getAllFaces, getAllTermAngles, getAllTermSymbols, getTriplicityArray, signAngles } from "../astroCalc";
 import type { planet } from "../external/planets/types";
+import { Signs } from "../external/dignities/properties";
 
 type drawWheelElementsArgs = {
     housesData: house[];

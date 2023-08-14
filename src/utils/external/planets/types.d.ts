@@ -26,6 +26,24 @@ export type terms = {
     degree: number;
 };
 
+export type planetBase = {
+    name: string;
+    position: number;
+    angle: number;
+    orb: number;
+    sign: string;
+    longDegree: number;
+    longMinute: number;
+    longSecond: number;
+    house: number;
+    lat: number;
+    speed: number;
+    unicode: string;
+    temperature: string;
+    humidity: string;
+    element: string;
+};
+
 export type planet = {
     name: string;
     position: number;
@@ -42,4 +60,11 @@ export type planet = {
     temperature: string;
     humidity: string;
     element: string;
+    dom: string;
+    exalt: string;
+    trip: string;
+    term: string;
+    face: string;
+    detriment: string;
+    fall: string;
 };
