@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { getErrorMessage } from "~/utils/error";
-import { dmsToDec } from "~/utils/astroCalc";
+import {  dmsToDec } from "~/utils/astroCalc";
 import { getStarsData } from "~/utils/external/stars/stars";
 import { getHousesData } from "~/utils/external/houses/houses";
 import { getPlanetsData } from "~/utils/external/planets/planets";
@@ -65,6 +65,9 @@ export const chartRouter = createTRPCRouter({
             const astroTable = getAstroTable(planetsData.slice(0,7), housesData, starsData, arabicPartsData)
             const aspectsData = getAspects(astroTable)
 
+            
+
+
             return {
                 status: 200,
                 elements: {
@@ -72,7 +75,7 @@ export const chartRouter = createTRPCRouter({
                     stars: starsData,
                     planets: planetsData,
                     arabicParts: arabicPartsData,
-                    aspects: aspectsData
+                    aspects: aspectsData,
                 },
                 error: undefined as undefined
             }
