@@ -8,8 +8,13 @@ export const getDignities = (
   position: number,
   isDay: string
 ): Dignities => {
+  if (planetName === "true Node" || planetName === "south Node") {
+    return null; // Return null if planetName is "true Node" or "south Node"
+  }
+
   const planet = planets.find((p) => p.name === planetName);
   const sign = Signs.find((s) => s.sign === signName);
+  const planetUnicode = planet?.unicode;
 
   if (!planet || !sign) {
     throw new Error("Invalid planet or sign name");
@@ -52,7 +57,7 @@ export const getDignities = (
 
   const dignities: Dignities = {
     sign: sign.unicode,
-    domicile: domicilePlanet ? domicilePlanet.unicode : "",
+    domicile: domicilePlanet ? (domicilePlanet.unicode === planetUnicode ? domicilePlanet.unicode + "✓" : domicilePlanet.unicode) : "",
     exaltation: exaltationPlanet ? exaltationPlanet.unicode : "",
     detriment: domicilePlanet ? detrimentPlanet.unicode : "",
     fall: fallPlanet ? fallPlanet.unicode : "",
