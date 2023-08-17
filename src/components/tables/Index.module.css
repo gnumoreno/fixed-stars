@@ -86,3 +86,11 @@
    
   }
 
+  .blueText {
+    color: blue;
+    font-weight: bolder;
+  }
+
+  .redText {
+    color: red;
+  }

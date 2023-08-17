@@ -120,13 +120,13 @@ export const PlanetsTable: React.FC<PlanetsTableProps> = ({ planetsArray, aspect
             .map((planet, index) => (
                 <tr className={Style.tr} key={index}>
                     <td className={Style.td} title={planet.name}>{limitCharacters(planet.name)}</td>
-                    <td className={Style.td}>{planet.dom}</td>
-                    <td className={Style.td}>{planet.exalt}</td>
-                    <td className={Style.td}>{planet.trip}</td>
-                    <td className={Style.td}>{planet.term}</td>
-                    <td className={Style.td}>{planet.face}</td>
-                    <td className={Style.td}>{planet.detriment}</td>
-                    <td className={Style.td}>{planet.fall}</td>
+                    <td className={Style.td + (planet.dom === planet.unicode ? ' ' + Style.blueText : '')}>{planet.dom}</td>
+                    <td className={Style.td + (planet.exalt === planet.unicode ? ' ' + Style.blueText : '')}>{planet.exalt}</td>
+                    <td className={Style.td + (planet.trip === planet.unicode ? ' ' + Style.blueText : '')}>{planet.trip}</td>
+                    <td className={Style.td + (planet.term === planet.unicode ? ' ' + Style.blueText : '')}>{planet.term}</td>
+                    <td className={Style.td + (planet.face === planet.unicode ? ' ' + Style.blueText : '')}>{planet.face}</td>
+                    <td className={Style.td + (planet.detriment === planet.unicode ? ' ' + Style.redText : '')}>{planet.detriment}</td>
+                    <td className={Style.td + (planet.fall === planet.unicode ? ' ' + Style.redText : '')}>{planet.fall}</td>
                     <td className={Style.td}>{planet.position}</td>
                     <td className={Style.td}>{planet.sign}</td>
                     <td className={Style.td} style={{ minWidth: "130px" }}>{planet.longDegree}° {planet.longMinute}&lsquo; {planet.longSecond}&quot;</td>
