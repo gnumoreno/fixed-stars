@@ -8,8 +8,23 @@ export const getDignities = (
   position: number,
   isDay: string
 ): Dignities => {
+  if (planetName === "true Node" || planetName === "south Node") {
+    const emptyDignities: Dignities = {
+      sign: "",
+      domicile: "",
+      exaltation: "",
+      detriment: "",
+      fall: "",
+      triplicity: "",
+      term:  "",
+      face: "",
+    }
+    return emptyDignities; // Return null if planetName is "true Node" or "south Node"
+  }
+
   const planet = planets.find((p) => p.name === planetName);
   const sign = Signs.find((s) => s.sign === signName);
+  const planetUnicode = planet?.unicode;
 
   if (!planet || !sign) {
     throw new Error("Invalid planet or sign name");
@@ -52,13 +67,14 @@ export const getDignities = (
 
   const dignities: Dignities = {
     sign: sign.unicode,
-    domicile: domicilePlanet ? domicilePlanet.unicode : "",
-    exaltation: exaltationPlanet ? exaltationPlanet.unicode : "",
-    detriment: domicilePlanet ? detrimentPlanet.unicode : "",
-    fall: fallPlanet ? fallPlanet.unicode : "",
-    triplicity: triplicityPlanet ? triplicityPlanet.unicode : "",
-    term: termDignity ? termPlanet?.unicode : "",
-    face: faceDignity ? facePlanet?.unicode : "",
+    // domicile: domicilePlanet ? (domicilePlanet.unicode === planetUnicode ? domicilePlanet.unicode + "✓" : domicilePlanet.unicode) : "",
+    domicile: domicilePlanet ? domicilePlanet.unicode : "-",
+    exaltation: exaltationPlanet ? exaltationPlanet.unicode : "-",
+    detriment: domicilePlanet ? detrimentPlanet.unicode : "-",
+    fall: fallPlanet ? fallPlanet.unicode : "-",
+    triplicity: triplicityPlanet ? triplicityPlanet.unicode : "-",
+    term: termDignity ? termPlanet?.unicode : "-",
+    face: faceDignity ? facePlanet?.unicode : "-",
   }
 
   return dignities;

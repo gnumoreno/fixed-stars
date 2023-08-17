@@ -233,10 +233,10 @@ export const drawWheelElements = ({
             text.path(textPaths[i]);
         }
     };
-    signLines(drawRef);
     degreeLines(drawRef);
     termLines(drawRef);
     facesLines(drawRef);
+    signLines(drawRef);
     createCircle(drawRef, percentages);
     createSignTextsonPath(drawRef, createSignCircleTextPaths(drawRef, centerX, centerY, radius, percentages));
     createTriplicityTextsonPath(drawRef, createTriplicityCircleTextPaths(drawRef, centerX, centerY, radius, percentages));

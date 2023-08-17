@@ -75,18 +75,6 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
             console.log("drawRef is null", drawRef)
             return;
         }
-        if(options.aspectLines) {
-            drawAspectLines({
-                aspectsData: aspectsData,
-                centerX: centerX,
-                centerY: centerY,
-                percentages: percentages,
-                radius: radius,
-                drawRef: drawRef,
-                // createPopup: createPopup,
-                // lineXYCircle: lineXYCircle,
-            })
-        }
         drawWheelElements({
             drawRef: drawRef,
             housesData: housesData,
@@ -164,6 +152,18 @@ export const ChartSVG: React.FC<ChartSVGProps> = ({ housesData, planetsData, sta
             getStarAspects: getStarAspects,
             lineXYCircle: lineXYCircle,
         })
+        if(options.aspectLines) {
+            drawAspectLines({
+                aspectsData: aspectsData,
+                centerX: centerX,
+                centerY: centerY,
+                percentages: percentages,
+                radius: radius,
+                drawRef: drawRef,
+                // createPopup: createPopup,
+                // lineXYCircle: lineXYCircle,
+            })
+        }
     }
 
     useEffect(() => {

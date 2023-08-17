@@ -26,14 +26,14 @@ export const drawAspectLines = ({
         const startY = centerY + Math.sin(angle1 * Math.PI / 180) * radius;
         const endX = centerX + Math.cos(angle2 * Math.PI / 180) * radius;
         const endY = centerY + Math.sin(angle2 * Math.PI / 180) * radius;
-        console.log (`S(x${startX},y${startY}), E(x${endX},y${endY})`)
+        // console.log (`S(x${startX},y${startY}), E(x${endX},y${endY})`)
         // Calculate the midpoint of the line
         const midX = (startX + endX) / 2;
         const midY = (startY + endY) / 2;
 
-        const lineLengthX = endX - startX;
-        const lineLengthY = endY - startY;
-        const lineLength = Math.sqrt(Math.pow(lineLengthX, 2) + Math.pow(lineLengthY, 2));
+        // const lineLengthX = endX - startX;
+        // const lineLengthY = endY - startY;
+        // const lineLength = Math.sqrt(Math.pow(lineLengthX, 2) + Math.pow(lineLengthY, 2));
 
         const resizeFactor = 0.55;
 
@@ -47,8 +47,6 @@ export const drawAspectLines = ({
         const startSecondX = startX + (deltaX * resizeFactor);
         const startSecondY = startY + (deltaY * resizeFactor);
 
-        
-        console.log(lineLength) 
 
         // Calculate the adjusted coordinates for the symbol
         const symbolSpace = 15; // Space for the symbol
