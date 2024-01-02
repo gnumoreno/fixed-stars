@@ -12,6 +12,13 @@ import {find} from 'geo-tz';
 import { findTimezone } from "~/utils/scripts/timezone";
 import { performance } from "perf_hooks";
 import { getUnixTime } from "date-fns";
+import sweph from "sweph";
+
+// Not sure if this will work in the server.
+// The problem with this is that it doesn't fail if the path is incorrect.
+// The values in the chart still get calculated if the folder is not found,
+// but they are different (and probably wrong).
+sweph.set_ephe_path(`${process.cwd()}/ephe`);
 
 export const GO_API_ENDPOINT = "http://18.231.181.140:8000"
 export const chartRouter = createTRPCRouter({
@@ -57,10 +64,15 @@ export const chartRouter = createTRPCRouter({
             const alt = 0
             const houseSystem = input.houseSystem;
 
-            const housesData = getHousesData(input.date, input.time, latitude, longitude, alt, houseSystem);
+            const [hours, minutes] = input.time.split(":");
+
+            const hoursDec = parseInt(hours) + (parseInt(minutes) / 60);
+            const julianDay = sweph.julday(year, month, day, hoursDec, sweph.constants.SE_GREG_CAL);
+
+            const housesData = getHousesData(julianDay, latitude, longitude, alt, houseSystem);
 
             const ascendantPos = housesData[0].position || 0;
-            const starsData = await getStarsData(formatedDate, formatedTime, housesData, ascendantPos, latitude, longitude, alt, houseSystem);
+            const starsData = getStarsData(julianDay, formatedDate, formatedTime, housesData, ascendantPos);
             const planetsData = await getPlanetsData(formatedDate, formatedTime, latitude, longitude, alt, houseSystem, housesData, ascendantPos)
             const arabicPartsData = getArabicPartArray(housesData, planetsData)
             const astroTable = getAstroTable(planetsData.slice(0,7), housesData, starsData, arabicPartsData)

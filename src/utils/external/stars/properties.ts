@@ -38,7 +38,7 @@ export const stars: StarProperties[] = [
     { name: "Neptune", orb: 1, nature: "♆", url: ""},
     { name: "Nunki", orb: 1, nature: "♃ + < ☿", url: "https://www.constellationsofwords.com/nunki/"},
     { name: "Pollux", orb: 1, nature: "♂", url: "https://www.constellationsofwords.com/pollux/"},
-    { name: "Praesepe", orb: 1, nature: "♂ + ☾", url: "https://www.constellationsofwords.com/praesaepe/"},
+    { name: "Praesepe Cluster", orb: 1, nature: "♂ + ☾", url: "https://www.constellationsofwords.com/praesaepe/"},
     { name: "Procyon", orb: 1, nature: "☿ + < ♂", url: "https://www.constellationsofwords.com/procyon/"},
     { name: "Pluto", orb: 1, nature: "♇", url: ""},
     { name: "Rasalgethi", orb: 1, nature: "☿", url: "https://www.constellationsofwords.com/ras-algethi/"},

@@ -3,29 +3,40 @@ import { stars } from "./properties";
 import type { star, starAPI } from "./types";
 import { decToDMS, getAngle, houseFromDec } from "~/utils/astroCalc";
 import type { house } from "../houses/types";
+import sweph, {fixstar2_ut} from "sweph";
 
-
-export const getStarsData = async (
+export const getStarsData = (
+    julianDay: number,
     date: string,
     time: string,
     houses: house[],
-    ascendantPos: number,
-    latitude: number,
-    longitude: number,
-    altitude: number,
-    houseSystem: string) => {
+    ascendantPos: number) => {
     const starNames = stars.map((star) => star.name).filter((name) => {
         const isPlanet = name === "Pluto" || name === "Neptune" || name === "Uranus";
         return !isPlanet;
     });
-    const starsURL = `${env.GO_API_ENDPOINT}/run-star?birthdate=${date}&utctime=${time}&stars=${starNames.join(',')}&latitude=${latitude}&longitude=${longitude}&altitude=${altitude}&housesystem=${houseSystem}`
-    const starsArrayResponse = await fetch(starsURL, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
+
+    const starCalcFlags = sweph.constants.SEFLG_SWIEPH | sweph.constants.SEFLG_SPEED;
+    const starsArray: starAPI[] = starNames
+        .map<starAPI>(star => {
+        const starPositionData = sweph.fixstar2_ut(star, julianDay, starCalcFlags);
+
+        const [starName, altName] = starPositionData.name.split(",");
+        const [longitude, latitude, distance, speed, ..._rest] = starPositionData.data;
+
+        const magnitude = sweph.fixstar2_mag(starName).data;
+
+        return {
+            starName,
+            altName,
+            longitude,
+            latitude,
+            distance,
+            speed,
+            magnitude,
+            house: "",
         }
-    })
-    const starsArray = await starsArrayResponse.json() as starAPI[];
+    });
 
     return starsArray.map(star => {
         const starProps = stars.find((s) => s.name === star.starName) || {
@@ -34,20 +45,19 @@ export const getStarsData = async (
             nature: "",
             url: "",
         };
-        const tmp = decToDMS(parseFloat(star.longitude));
-        // const long = parseFloat(star.longitude);
-        const longitude = parseFloat(star.longitude);
+        const tmp = decToDMS(star.longitude);
+        const longitude = star.longitude;
         const starHouse = houseFromDec(houses, longitude);
         const result: star = {
             name: star.starName,
             constellation: star.altName,
             position: longitude,
             angle: getAngle(longitude, ascendantPos),
-            distance: parseFloat(star.distance),
+            distance: star.distance,
             house: Number(starHouse),
-            lat: parseFloat(star.latitude),
-            magnitude: parseFloat(star.magnitude),
-            speed: parseFloat(star.speed),
+            lat: star.latitude,
+            magnitude: star.magnitude,
+            speed: star.speed,
             sign: tmp.sign,
             longDegree: tmp.signDegree,
             longMinute: tmp.signMinute,
