@@ -55,9 +55,10 @@ export const chartRouter = createTRPCRouter({
             }
 
             const alt = 0
-            const houseSystem = input.houseSystem
+            const houseSystem = input.houseSystem;
 
-            const housesData = await getHousesData(formatedDate, formatedTime, latitude, longitude, alt, houseSystem)
+            const housesData = getHousesData(input.date, input.time, latitude, longitude, alt, houseSystem);
+
             const ascendantPos = housesData[0].position || 0;
             const starsData = await getStarsData(formatedDate, formatedTime, housesData, ascendantPos, latitude, longitude, alt, houseSystem);
             const planetsData = await getPlanetsData(formatedDate, formatedTime, latitude, longitude, alt, houseSystem, housesData, ascendantPos)

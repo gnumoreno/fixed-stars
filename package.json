@@ -29,6 +29,7 @@
     "react-ios-time-picker": "^0.2.2",
     "react-time-picker-typescript": "^1.2.3",
     "superjson": "1.12.4",
+    "sweph": "^2.10.3-3",
     "zod": "^3.21.4"
   },
   "devDependencies": {

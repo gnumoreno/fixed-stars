@@ -1,29 +1,32 @@
-import { env } from "~/env.mjs"
+import sweph from "sweph";
 import { decToDMS, getAngle } from "~/utils/astroCalc"
 import { type house, type houseAPI } from "./types"
 
+// Não tenho certeza se vai funcionar no servidor
+sweph.set_ephe_path(`${process.cwd()}/ephe`);
 
-
-export const getHousesData = async (
-    date: string,
+export const getHousesData = (
+    date: Date,
     time: string,
     latitude: number,
     longitude: number,
     altitude: number,
     houseSystem: string,
 ) => {
-    const housesURL = `${env.GO_API_ENDPOINT}/run-houses?birthdate=${date}&utctime=${time}&latitude=${latitude}&longitude=${longitude}&altitude=${altitude}&housesystem=${houseSystem}`
-    const housesArrayResponse = await fetch(housesURL, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-        }
-    })
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
+    const [hours, minutes] = time.split(":");
 
-    const housesArray = await housesArrayResponse.json() as houseAPI[]
-    const ascendantPos = parseFloat(housesArray[0].longitude) || 0;
+    const hoursDec = parseInt(hours) + (parseInt(minutes) / 60);
+    const julianDay = sweph.julday(year, month, day, hoursDec, sweph.constants.SE_GREG_CAL);
+
+    const housesData = sweph.houses(julianDay, latitude, longitude, houseSystem);
+    const housesArray: houseAPI[] = housesData.data.houses.map((longitude, i) => ({ name: `house  ${i + 1}`, longitude }));
+
+    const ascendantPos = housesArray[0].longitude;
     return housesArray.map((house) => {
-        const long = parseFloat(house.longitude);
+        const long = house.longitude;
         const tmp = decToDMS(long);
         const result = {
             name: house.name,

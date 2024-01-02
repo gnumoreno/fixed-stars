@@ -11,7 +11,7 @@ export type house = {
   
   export type houseAPI = {
     name: string;
-    longitude: string;
+    longitude: number;
   }
 
   export type houseProps = {
