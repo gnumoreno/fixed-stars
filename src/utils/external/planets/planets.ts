@@ -4,45 +4,45 @@ import type { PlanetProperties, planet, planetAPI, planetBase } from "./types";
 import { decToDMS, getAngle, houseFromDec, getOposition, dayOrNight } from "~/utils/astroCalc";
 import { planets } from "./properties";
 import { getDignities } from "../dignities/dignities";
+import sweph from "sweph";
 
-export const getPlanetsData = async (
-    date: string,
-    time: string,
-    latitude: number,
-    longitude: number,
-    altitude: number,
-    houseSystem: string,
+export const getPlanetsData = (
+    julianDay: number,
     housesData: house[],
     ascendantPos: number,
 ) => {
-    const planetsURL = `${env.GO_API_ENDPOINT}/run-planets?birthdate=${date}&utctime=${time}&latitude=${latitude}&longitude=${longitude}&altitude=${altitude}&housesystem=${houseSystem}`
+    const planetsWithSwephCodes = planets.filter((planet) => planet.swephCode !== null);
 
+    const planetCalcFlags = sweph.constants.SEFLG_SWIEPH | sweph.constants.SEFLG_SPEED;
+    const planetsArray: planetAPI[] = planetsWithSwephCodes.map((planet) => {
+        const planetPositionData = sweph.calc_ut(julianDay, planet.swephCode, planetCalcFlags);
 
-    const planetsArrayResponse = await fetch(planetsURL, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
+        const [longitude, latitude, _distance, speed, ..._rest] = planetPositionData.data;
+
+        return {
+            name: planet.name,
+            latitude,
+            longitude,
+            dailySpeed: speed,
         }
-    })
-
-    const planetsArray = await planetsArrayResponse.json() as planetAPI[]
+    });
 
     // There must be a better way to do this
     const trueNode = planetsArray.find(planet => planet.name === "true Node");
-    const trueNodePosition = trueNode ? parseFloat(trueNode.longitude) : 0;
+    const trueNodePosition = trueNode ? trueNode.longitude : 0;
     const southNodePosition = getOposition(trueNodePosition);
     const southNodeObject: planetAPI = {
         name: "south Node",
-        latitude: "0",
-        longitude: southNodePosition.toString(),
-        dailySpeed: "0",
+        latitude: 0,
+        longitude: southNodePosition,
+        dailySpeed: 0,
     };
-    planetsArray.splice(8, 0, southNodeObject);
+    planetsArray.push(southNodeObject);
 
    
 
     const planetsTmp = planetsArray.map((planet) => {
-        const long = parseFloat(planet.longitude);
+        const long = planet.longitude;
         const tmp = decToDMS(long);
         const house = houseFromDec(housesData, long)
         const planetProps = planets.find((p) => p.name === planet.name) || {
@@ -62,8 +62,8 @@ export const getPlanetsData = async (
             longMinute: tmp.signMinute,
             longSecond: tmp.signSecond,
             house: house,
-            lat: parseFloat(planet.latitude),
-            speed: parseFloat(planet.dailySpeed),
+            lat: planet.latitude,
+            speed: planet.dailySpeed,
             unicode: planetProps.unicode,
             temperature: planetProps.temperature,
             humidity: planetProps.humidity,

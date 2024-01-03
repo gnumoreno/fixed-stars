@@ -18,6 +18,19 @@ const config = {
     locales: ["en"],
     defaultLocale: "en",
   },
+
+  /**
+   * As per solution in an issue about Vercel including resource files and folders in the build.
+   *
+   * This is necessary for the sweph.set_ephe_path() function, so it finds the ephemeris files.
+   *
+   * @see https://github.com/vercel/next.js/discussions/14807#discussioncomment-6435359
+   */
+  experimental: {
+    outputFileTracingIncludes: {
+      "/api/trpc/chart*": ["./ephe/**/*"],
+    }
+  }
 };
 
 export default config;

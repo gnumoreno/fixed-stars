@@ -4,6 +4,7 @@ export type PlanetProperties = {
     temperature: string;
     humidity: string;
     element: string;
+    swephCode: number;
 };
 
 export type PlanetData = {
@@ -16,9 +17,9 @@ export type PlanetData = {
 
 export type planetAPI = {
     name: string;
-    latitude: string;
-    longitude: string;
-    dailySpeed: string;
+    latitude: number;
+    longitude: number;
+    dailySpeed: number;
 };
 
 export type terms = {

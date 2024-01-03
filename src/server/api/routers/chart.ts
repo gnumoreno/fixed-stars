@@ -1,3 +1,4 @@
+import fs from "fs";
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { getErrorMessage } from "~/utils/error";
@@ -12,6 +13,13 @@ import {find} from 'geo-tz';
 import { findTimezone } from "~/utils/scripts/timezone";
 import { performance } from "perf_hooks";
 import { getUnixTime } from "date-fns";
+import sweph from "sweph";
+
+// Make sure this is found in the server. Issue: https://github.com/vercel/next.js/discussions/14807
+// The problem is that this function doesn't fail if the path is incorrect. The values in the chart
+// still get calculated, but using the Moshier ephemeris instead of the Swiss Ephemeris, as described
+// here: https://www.astro.com/swisseph/swephprg.htm#_Toc112948952
+sweph.set_ephe_path(`${process.cwd()}/ephe`);
 
 export const GO_API_ENDPOINT = "http://18.231.181.140:8000"
 export const chartRouter = createTRPCRouter({
@@ -33,14 +41,15 @@ export const chartRouter = createTRPCRouter({
         }),
         inputType: z.enum(["decimal", "dms"]),
         houseSystem: z.enum(["P", "R"])
-    })).mutation(async ({ input }) => {
+    })).mutation( ({ input }) => {
 
         try {
+            // check if ephemeris folder exists and logs it
+            console.log('Ephemeris folder exists: ', fs.existsSync(`${process.cwd()}/ephe`));
+
             const day = input.date.getDate();
             const month = input.date.getMonth() + 1;
             const year = input.date.getFullYear();
-            const formatedDate = `${day}.${month}.${year}`;
-            const formatedTime = input.time;
             let longitude: number;
             let latitude: number;
 
@@ -55,12 +64,18 @@ export const chartRouter = createTRPCRouter({
             }
 
             const alt = 0
-            const houseSystem = input.houseSystem
+            const houseSystem = input.houseSystem;
 
-            const housesData = await getHousesData(formatedDate, formatedTime, latitude, longitude, alt, houseSystem)
+            const [hours, minutes] = input.time.split(":");
+
+            const hoursDec = parseInt(hours) + (parseInt(minutes) / 60);
+            const julianDay = sweph.julday(year, month, day, hoursDec, sweph.constants.SE_GREG_CAL);
+
+            const housesData = getHousesData(julianDay, latitude, longitude, alt, houseSystem);
+
             const ascendantPos = housesData[0].position || 0;
-            const starsData = await getStarsData(formatedDate, formatedTime, housesData, ascendantPos, latitude, longitude, alt, houseSystem);
-            const planetsData = await getPlanetsData(formatedDate, formatedTime, latitude, longitude, alt, houseSystem, housesData, ascendantPos)
+            const starsData = getStarsData(julianDay, housesData, ascendantPos);
+            const planetsData = getPlanetsData(julianDay, housesData, ascendantPos)
             const arabicPartsData = getArabicPartArray(housesData, planetsData)
             const astroTable = getAstroTable(planetsData.slice(0,7), housesData, starsData, arabicPartsData)
             const aspectsData = getAspects(astroTable)

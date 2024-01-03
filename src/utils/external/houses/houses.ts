@@ -1,29 +1,22 @@
-import { env } from "~/env.mjs"
+import sweph from "sweph";
 import { decToDMS, getAngle } from "~/utils/astroCalc"
 import { type house, type houseAPI } from "./types"
 
 
 
-export const getHousesData = async (
-    date: string,
-    time: string,
+export const getHousesData = (
+    julianDay: number,
     latitude: number,
     longitude: number,
     altitude: number,
     houseSystem: string,
 ) => {
-    const housesURL = `${env.GO_API_ENDPOINT}/run-houses?birthdate=${date}&utctime=${time}&latitude=${latitude}&longitude=${longitude}&altitude=${altitude}&housesystem=${houseSystem}`
-    const housesArrayResponse = await fetch(housesURL, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-        }
-    })
+    const housesData = sweph.houses(julianDay, latitude, longitude, houseSystem);
+    const housesArray: houseAPI[] = housesData.data.houses.map((longitude, i) => ({ name: `house  ${i + 1}`, longitude }));
 
-    const housesArray = await housesArrayResponse.json() as houseAPI[]
-    const ascendantPos = parseFloat(housesArray[0].longitude) || 0;
+    const ascendantPos = housesArray[0].longitude;
     return housesArray.map((house) => {
-        const long = parseFloat(house.longitude);
+        const long = house.longitude;
         const tmp = decToDMS(long);
         const result = {
             name: house.name,

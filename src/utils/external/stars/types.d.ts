@@ -1,11 +1,11 @@
 export type starAPI = {
     starName: string;
-    longitude: string;
-    latitude: string;
+    longitude: number;
+    latitude: number;
     house: string;
-    distance: string;
-    speed: string;
-    magnitude: string;
+    distance: number;
+    speed: number;
+    magnitude: number;
     altName: string;
 }
 
