@@ -1,3 +1,4 @@
+import fs from "fs";
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { getErrorMessage } from "~/utils/error";
@@ -43,6 +44,9 @@ export const chartRouter = createTRPCRouter({
     })).mutation( ({ input }) => {
 
         try {
+            // check if ephemeris folder exists and logs it
+            console.log('Ephemeris folder exists: ', fs.existsSync(`${process.cwd()}/ephe`));
+
             const day = input.date.getDate();
             const month = input.date.getMonth() + 1;
             const year = input.date.getFullYear();
