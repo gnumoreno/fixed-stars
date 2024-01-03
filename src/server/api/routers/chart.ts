@@ -14,10 +14,10 @@ import { performance } from "perf_hooks";
 import { getUnixTime } from "date-fns";
 import sweph from "sweph";
 
-// Not sure if this will work in the server.
-// The problem with this is that it doesn't fail if the path is incorrect.
-// The values in the chart still get calculated if the folder is not found,
-// but they are different (and probably wrong).
+// Make sure this is found in the server. Issue: https://github.com/vercel/next.js/discussions/14807
+// The problem is that this function doesn't fail if the path is incorrect. The values in the chart
+// still get calculated, but using the Moshier ephemeris instead of the Swiss Ephemeris, as described
+// here: https://www.astro.com/swisseph/swephprg.htm#_Toc112948952
 sweph.set_ephe_path(`${process.cwd()}/ephe`);
 
 export const GO_API_ENDPOINT = "http://18.231.181.140:8000"
@@ -40,7 +40,7 @@ export const chartRouter = createTRPCRouter({
         }),
         inputType: z.enum(["decimal", "dms"]),
         houseSystem: z.enum(["P", "R"])
-    })).mutation(async ({ input }) => {
+    })).mutation( ({ input }) => {
 
         try {
             const day = input.date.getDate();
@@ -73,7 +73,7 @@ export const chartRouter = createTRPCRouter({
 
             const ascendantPos = housesData[0].position || 0;
             const starsData = getStarsData(julianDay, formatedDate, formatedTime, housesData, ascendantPos);
-            const planetsData = await getPlanetsData(formatedDate, formatedTime, latitude, longitude, alt, houseSystem, housesData, ascendantPos)
+            const planetsData = getPlanetsData(julianDay, formatedDate, formatedTime, latitude, longitude, alt, houseSystem, housesData, ascendantPos)
             const arabicPartsData = getArabicPartArray(housesData, planetsData)
             const astroTable = getAstroTable(planetsData.slice(0,7), housesData, starsData, arabicPartsData)
             const aspectsData = getAspects(astroTable)

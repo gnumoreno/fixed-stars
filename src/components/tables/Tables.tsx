@@ -44,7 +44,7 @@ export const HousesTable: React.FC<HousesTableProps> = ({ housesArray, aspects }
             .map((house, index) => (
                 <tr className={Style.tr} key={index}>
                     <td className={Style.td} title={house.name}>{limitCharacters(house.name)}</td>
-                    <td className={Style.td}>{house.position}</td>
+                    <td className={Style.td}>{house.position.toFixed(7)}</td>
                     <td className={Style.td}>{house.sign}</td>
                     <td className={Style.td} style={{ minWidth: "130px" }}>{house.longDegree}° {house.longMinute}&lsquo; {house.longSecond}&quot;</td>
                     <td className={Style.td}>{getAspectString(aspects, 'house', house.name)}</td>
@@ -127,11 +127,11 @@ export const PlanetsTable: React.FC<PlanetsTableProps> = ({ planetsArray, aspect
                     <td className={Style.td + (planet.face === planet.unicode ? ' ' + Style.blueText : '')}>{planet.face}</td>
                     <td className={Style.td + (planet.detriment === planet.unicode ? ' ' + Style.redText : '')}>{planet.detriment}</td>
                     <td className={Style.td + (planet.fall === planet.unicode ? ' ' + Style.redText : '')}>{planet.fall}</td>
-                    <td className={Style.td}>{planet.position}</td>
+                    <td className={Style.td}>{planet.position.toFixed(7)}</td>
                     <td className={Style.td}>{planet.sign}</td>
                     <td className={Style.td} style={{ minWidth: "130px" }}>{planet.longDegree}° {planet.longMinute}&lsquo; {planet.longSecond}&quot;</td>
-                    <td className={Style.td}>{planet.lat}</td>
-                    <td className={Style.td}>{planet.speed}</td>
+                    <td className={Style.td}>{planet.lat.toFixed(7)}</td>
+                    <td className={Style.td}>{planet.speed.toFixed(7)}</td>
                     <td className={Style.td}>{planet.house}</td>
                     <td className={Style.td}>{getAspectString(aspects, 'planet', planet.name)}</td>
                 </tr>
@@ -224,7 +224,7 @@ export const FixedStarsTable: React.FC<FixedStarsTableProps> = ({ starsArray, as
                     <td className={Style.td} style={{ minWidth: '130px' }}>{star.longDegree}° {star.longMinute}&lsquo; {star.longSecond}&quot;</td>
                     <td className={Style.td}>{star.house}</td>
                     <td className={Style.td}>{star.lat.toFixed(2)}</td>
-                    <td className={Style.td}>{star.speed}</td>
+                    <td className={Style.td}>{star.speed.toFixed(7)}</td>
                     <td className={Style.td}>{star.distance.toFixed(2)}</td>
                     <td className={Style.td}>{star.magnitude}</td>
                 </tr>

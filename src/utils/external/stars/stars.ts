@@ -1,9 +1,8 @@
-import { env } from "~/env.mjs";
 import { stars } from "./properties";
 import type { star, starAPI } from "./types";
 import { decToDMS, getAngle, houseFromDec } from "~/utils/astroCalc";
 import type { house } from "../houses/types";
-import sweph, {fixstar2_ut} from "sweph";
+import sweph from "sweph";
 
 export const getStarsData = (
     julianDay: number,
