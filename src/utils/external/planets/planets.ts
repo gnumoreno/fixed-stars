@@ -8,12 +8,6 @@ import sweph from "sweph";
 
 export const getPlanetsData = (
     julianDay: number,
-    date: string,
-    time: string,
-    latitude: number,
-    longitude: number,
-    altitude: number,
-    houseSystem: string,
     housesData: house[],
     ascendantPos: number,
 ) => {

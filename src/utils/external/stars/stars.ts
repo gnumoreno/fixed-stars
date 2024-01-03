@@ -6,8 +6,6 @@ import sweph from "sweph";
 
 export const getStarsData = (
     julianDay: number,
-    date: string,
-    time: string,
     houses: house[],
     ascendantPos: number) => {
     const starNames = stars.map((star) => star.name).filter((name) => {

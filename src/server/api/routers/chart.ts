@@ -72,8 +72,8 @@ export const chartRouter = createTRPCRouter({
             const housesData = getHousesData(julianDay, latitude, longitude, alt, houseSystem);
 
             const ascendantPos = housesData[0].position || 0;
-            const starsData = getStarsData(julianDay, formatedDate, formatedTime, housesData, ascendantPos);
-            const planetsData = getPlanetsData(julianDay, formatedDate, formatedTime, latitude, longitude, alt, houseSystem, housesData, ascendantPos)
+            const starsData = getStarsData(julianDay, housesData, ascendantPos);
+            const planetsData = getPlanetsData(julianDay, housesData, ascendantPos)
             const arabicPartsData = getArabicPartArray(housesData, planetsData)
             const astroTable = getAstroTable(planetsData.slice(0,7), housesData, starsData, arabicPartsData)
             const aspectsData = getAspects(astroTable)
