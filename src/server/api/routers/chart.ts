@@ -46,8 +46,6 @@ export const chartRouter = createTRPCRouter({
             const day = input.date.getDate();
             const month = input.date.getMonth() + 1;
             const year = input.date.getFullYear();
-            const formatedDate = `${day}.${month}.${year}`;
-            const formatedTime = input.time;
             let longitude: number;
             let latitude: number;
 
