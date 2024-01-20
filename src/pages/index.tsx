@@ -25,6 +25,13 @@ const Testpage: NextPage = () => {
         <title>Fixed Stars</title>
       </Head>
       <NavButtons></NavButtons>
+      <div>
+      <div id="g_id_onload"
+         data-client_id="383086323854-erovqgtgonfasiljehjcect0gun8m8rl.apps.googleusercontent.com"
+         data-callback="handleCredentialResponse">
+    </div>
+    <div className="g_id_signin" data-type="standard"></div>
+      </div>
     </div>
   );
 };
